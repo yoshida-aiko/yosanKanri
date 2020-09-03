@@ -1,0 +1,134 @@
+nav ul.navbar-nav{
+    display: table;
+    /*margin: 0 auto;*/
+    padding: 0 ;
+    /*width: 80%;*/
+    text-align: center;
+}
+nav ul.navbar-nav li{
+    width:100%;
+
+}
+nav ul.navbar-nav a{
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color:#fff;
+    padding-bottom: 5px;
+}
+nav ul.navbar-nav a:hover {
+    text-decoration: none;
+}
+/*nav ul.navbar-nav li.current{
+border-bottom: 1px solid #92D050;
+}*/
+nav ul.navbar-nav li:hover{
+    
+    /*opacity:0.7;*/
+}
+.navbar-login {
+    list-style: none;
+    color:#fff;
+    margin:0;
+    padding:0;
+}
+.navbar-login a {
+    color:#fff;
+}
+.navbar-login .dropdown-item {
+    color:#000 !important;
+}    
+.bg-darkblue {
+    background-color: #154170;
+    color:#fff;
+}
+.nav-menu-master::before {
+	font-family: 'FontAwesome';
+	content:"\f013";
+	padding-right:3px;
+	color:#fff;    
+}
+.nav-menu-purchase::before {
+	font-family: 'FontAwesome';
+	content:"\f1da";
+	padding-right:3px;
+	color:#fff;    
+}
+.nav-menu-budget::before {
+	font-family: 'FontAwesome';
+	content:"\f1fe";
+	padding-right:3px;
+	color:#fff;    
+}
+.nav-menu-payment::before {
+	font-family: 'FontAwesome';
+	content:"\f0d6";
+	padding-right:3px;
+	color:#fff;    
+}
+.nav-menu-delivery::before {
+	font-family: 'FontAwesome';
+	content:"\f187";
+	padding-right:3px;
+	color:#fff;    
+}
+.nav-menu-order::before {
+	font-family: 'FontAwesome';
+	content:"\f218";
+	padding-right:3px;
+	color:#fff;    
+}
+.nav-menu-orderrequest::before {
+	font-family: 'FontAwesome';
+	content:"\f108";
+	padding-right:3px;
+	color:#fff;    
+}
+.nav-menu-search::before {
+	font-family: 'FontAwesome';
+	content:"\f00e";
+	padding-right:3px;
+	color:#fff;    
+}
+.nav-menu-home::before {
+	font-family: 'FontAwesome';
+	content:"\f015";
+	padding-right:3px;
+	color:#fff;    
+}
+#myNavbar {
+    min-width:740px;        
+}
+/*
+    #myNavbar > li:before {
+        position:absolute;
+        top:1.6em;
+        left:3px;
+        content: "";
+        display:inline-block;
+        width:0;
+        height:1px;
+        transition:1s;
+        background-color:#fff;
+    }
+    #myNavbar > li:active {
+        font-weight:bolder;
+    }
+    #myNavbar > li:not(.dropdown):hover:before{
+        width:95%;
+        width:calc(100% - 6px);
+        width: -webkit-calc(100% - 6px);
+    }*/
+
+@media (min-width:768px) {
+    nav ul.navbar-nav li{
+        display: table-cell;
+        width: 100px;        
+        }
+    nav ul.navbar-nav > li:not(.dropdown) > a:hover {
+        color:#acb8ca !important;
+    }
+    .navbar-login {
+        width:150px;
+    }
+}
