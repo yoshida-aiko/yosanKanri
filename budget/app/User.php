@@ -2,9 +2,11 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Notifications\PasswordResetNotification;
 
 class User extends Authenticatable
 {
@@ -16,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'password', 'email',
     ];
 
     /**
@@ -36,4 +38,21 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //論理削除
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
+    /**
+     * Override to send for password reset notification.
+     *
+     * @param [type] $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new PasswordResetNotification($token));
+    }
+   
+
 }
