@@ -32,7 +32,55 @@
         </table>
     </div>
     <div class="divMasterInput">
-       
+        <form id="frmSupplierMaster" class="frmMasterInput" action="{{action('SupplierController@store')}}" method="POST">
+            
+            {{-- エラーメッセージ --}}
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                </div>
+                <?php
+                $editSupplier->SupplierNameJp = old('SupplierNameJp');
+                $editSupplier->ChargeUserJp = old('ChargeUserJp');
+                $editSupplier->Tel = old('Tel');
+                $editSupplier->Fax = old('Fax');
+                $editSupplier->EMail = old('EMail');
+                ?>
+            @endif
+
+            @csrf
+            <div class="form-group">
+                <label for="SupplierNameJp" class="required">発注先名</label>
+                <input type="text" id="SupplierNameJp" name="SupplierNameJp" value="{{ $editSupplier->SupplierNameJp }}" >
+           </div>
+            <div class="form-group">
+                <label for="ChargeUserJp">担当者名</label>
+                <input type="text" id="ChargeUserJp" name="ChargeUserJp" value="{{ $editSupplier->ChargeUserJp }}" >
+            </div>
+            <div class="form-group">
+                <label for="Tel">電話番号</label>
+                <input type="tel" id="Tel" name="Tel" value="{{ $editSupplier->Tel }}">
+            </div>
+            <div class="form-group">
+                <label for="Fax">ファックス番号</label>
+                <input type="tel" id="Fax" name="Fax" value="{{ $editSupplier->Fax }}">
+            </div>
+            <div class="form-group">
+                <label for="email" class="required">メールアドレス</label>
+                <input type="email" id="EMail" name="EMail" value="{{ $editSupplier->EMail }}" >
+                <div class="alert-string" style="margin-left:150px;">※カンマで区切り、CCアドレスを指定できます</div>
+            </div>
+            <div class="form-group text-center">
+                <button id="submit_user_regist" name="submit_user_regist" class="btn btn-primary" >保存</button>
+                <input id="btn_user_clear" type="button" class="btn btn-secondary" value="クリア">
+                <input type="hidden" id="id" name="id" value="{{ $editSupplier->id }}" >
+            </div>
+
+        </form>
     </div>
 </div>
 </div>

@@ -54,10 +54,10 @@ class SupplierController extends Controller
 
         $rules = [
             'SupplierNameJp' => ['required', 'string', 'max:50'],
-            'ChargeUserJp' => ['nullable', 'string', 'min:50'],
+            'ChargeUserJp' => ['nullable', 'string', 'max:50'],
             'Tel' => ['nullable','string', 'max:20'],
             'Fax' => ['nullable','string', 'max:20'],
-            'EMail' => ['required', 'string', 'email', 'max:100', Rule::unique('suppliers', 'EMail')->whereNull('deleted_at')->whereNot('EMail', $request->EMail)]
+            'EMail' => ['required', 'string', 'email', 'max:100']
         ];
         $this->validate($request, $rules);
 
@@ -77,7 +77,7 @@ class SupplierController extends Controller
         $Suppliers = Supplier::where('Status','=', 1)->get();
         $editSupplier = new Supplier();
 
-        return view('Supplier/index',compact('Suppliers'));
+        return view('Supplier/index',compact('Suppliers','editSupplier'));
     }
 
     /**
