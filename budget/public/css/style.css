@@ -720,3 +720,17 @@ label.required:after {
 .contextmenu_deleteicon::before{
 	content:"\f1f8";
 }
+
+/*発注先マスタ*/
+/*マスタテーブル Supplier*/
+.masterSupplier {
+	width:700px !important;
+}
+.masterSupplier thead th:nth-child(2),
+.masterSupplier tbody td:nth-child(2) {
+    width:290px !important;
+}
+.masterSupplier thead th:nth-child(3),
+.masterSupplier tbody td:nth-child(3) {
+    width:290px !important;
+}
