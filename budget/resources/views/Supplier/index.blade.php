@@ -32,7 +32,7 @@
         </table>
     </div>
     <div class="divMasterInput">
-        <form id="frmSupplierMaster" class="frmMasterInput" action="{{action('SupplierController@store')}}" method="POST">
+        <form id="frmSupplierMaster" class="frmSupplierMasterInput" action="{{action('SupplierController@store')}}" method="POST">
             
             {{-- エラーメッセージ --}}
             @if ($errors->any())
@@ -63,7 +63,7 @@
             </div>
             <div class="form-group">
                 <label for="Tel">電話番号</label>
-                <input type="tel" id="Tel" name="Tel" value="{{ $editSupplier->Tel }}">
+                <input type="tel" id="Tel" name="SupplierTel" value="{{ $editSupplier->Tel }}">
             </div>
             <div class="form-group">
                 <label for="Fax">ファックス番号</label>
@@ -71,12 +71,12 @@
             </div>
             <div class="form-group">
                 <label for="email" class="required">メールアドレス</label>
-                <input type="email" id="EMail" name="EMail" value="{{ $editSupplier->EMail }}" >
+                <input type="text" id="EMail" name="email" value="{{ $editSupplier->EMail }}" >
                 <div class="alert-string" style="margin-left:150px;">※カンマで区切り、CCアドレスを指定できます</div>
             </div>
             <div class="form-group text-center">
-                <button id="submit_user_regist" name="submit_user_regist" class="btn btn-primary" >保存</button>
-                <input id="btn_user_clear" type="button" class="btn btn-secondary" value="クリア">
+                <button id="submit_supplier_regist" name="submit_supplier_regist" class="btn btn-primary" >保存</button>
+                <input id="btn_supplier_clear" type="button" class="btn btn-secondary" value="クリア">
                 <input type="hidden" id="id" name="id" value="{{ $editSupplier->id }}" >
             </div>
 

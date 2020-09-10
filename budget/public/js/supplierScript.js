@@ -15,4 +15,13 @@ jQuery (function ()
          var tblwidth = parseInt($(".table-masterFixed").css('width').replace('px',''));
          tblwidth = tblwidth - 120;
      }
+
+     /*マスタ　クリアボタンクリック時*/
+    $("#btn_supplier_clear").click(function() {
+        $("#frmSupplierMaster > div.form-group > input[type=text]").val("");
+        $("#frmSupplierMaster > div.form-group > input[type=tel]").val("");
+        $("#frmSupplierMaster > div.form-group > input[type=email]").val("");
+        $("#frmSupplierMaster > div.form-group > input[type=hidden]").val("");
+    });
+
 })

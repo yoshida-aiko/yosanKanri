@@ -55,9 +55,9 @@ class SupplierController extends Controller
         $rules = [
             'SupplierNameJp' => ['required', 'string', 'max:50'],
             'ChargeUserJp' => ['nullable', 'string', 'max:50'],
-            'Tel' => ['nullable','string', 'max:20'],
+            'SupplierTel' => ['nullable','string', 'max:20'],
             'Fax' => ['nullable','string', 'max:20'],
-            'EMail' => ['required', 'string', 'email', 'max:100']
+            'email' => ['required', 'string', 'max:100']
         ];
         $this->validate($request, $rules);
 
@@ -69,9 +69,9 @@ class SupplierController extends Controller
         }
         $Supplier->SupplierNameJp = $request->SupplierNameJp;
         $Supplier->ChargeUserJp = $request->ChargeUserJp;
-        $Supplier->Tel = $request->Tel;
+        $Supplier->Tel = $request->SupplierTel;
         $Supplier->Fax = $request->Fax;
-        $Supplier->EMail = $request->EMail;
+        $Supplier->EMail = $request->email;
 
         $Supplier->save();
         $Suppliers = Supplier::where('Status','=', 1)->get();
@@ -116,18 +116,18 @@ class SupplierController extends Controller
         $rules = [
             'SupplierNameJp' => ['required', 'string', 'max:50'],
             'ChargeUserJp' => ['string', 'min:50'],
-            'Tel' => ['string', 'max:20'],
+            'SupplierTel' => ['string', 'max:20'],
             'Fax' => ['string', 'max:20'],
-            'EMail' => ['required', 'string', 'email', 'max:100']
+            'email' => ['required', 'string', 'max:100']
         ];
         $this->validate($request, $rules);
 
         $Supplier = Supplier::findOrFail($id);
         $Supplier->SupplierNameJp = $request->SupplierNameJp;
         $Supplier->ChargeUserJp = $request->ChargeUserJp;
-        $Supplier->Tel = $request->Tel;
+        $Supplier->Tel = $request->SupplierTel;
         $Supplier->Fax = $request->Fax;
-        $Supplier->EMail = $request->EMail;
+        $Supplier->EMail = $request->email;
         $Supplier->save();
  
         $editSupplier = new Supplier();

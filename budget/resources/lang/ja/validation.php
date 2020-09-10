@@ -161,6 +161,10 @@ return [
         'Tel' => '連絡先（携帯等）',
         'email' => 'メールアドレス',
         'Signature' => '署名',
+        'SupplierNameJp' => '発注先名',
+        'ChargeUserJp' => '担当者名',
+        'SupplierTel' => '電話番号', //発注先マスタの電話番号
+        'Fax' => 'ファックス番号'
     ],
 
 ];
