@@ -143,7 +143,7 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
-        $Supplier = Supplier::findOrFail($id);
+        $Supplier = Supplier::lockForUpdate()->withTrashed()->find($id);
         $Supplier->delete();
 
         return redirect()->route('Supplier.index');

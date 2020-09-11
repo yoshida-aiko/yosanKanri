@@ -145,7 +145,7 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $User = User::findOrFail($id);
+        $User = User::lockForUpdate()->withTrashed()->find($id);
         $User->delete();
 
         return redirect()->route('User.index');
