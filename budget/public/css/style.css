@@ -196,6 +196,7 @@ h5{
     float: left;
     position: relative;
 }
+
 .table-fixed tbody td::after,
 .table-fixed tbody th::after,
 .table-fixed thead > tr > th::after {
@@ -207,7 +208,7 @@ h5{
 	white-space:nowrap;
 	overflow:hidden;
 }
-.table-fixed tr:hover {
+.table-fixed tbody>  tr:hover {
 	background-color:#cfdff8 !important;
 }
 
@@ -427,7 +428,7 @@ input[name="tabFavorite"]:checked + .tabLabel + .tabContent {
 #toggle-button-searchpage {
 	width:32px;
 	height:200px;
-	background-image: url("../images/detailsearchbutton.PNG");
+	background-image: url("../images/detailsearchbutton.png");
 	background-repeat: no-repeat;
 	margin-top:49px;
 }
@@ -617,6 +618,7 @@ input[name="tabFavorite"]:checked + .tabLabel + .tabContent {
 	font-size:1.3em !important;
 	border:1px solid #959595 !important;
 	border-radius:3px;
+	padding:5px !important;
 }
 .btn-delete-icon:hover {
 	background-color:#c6c6c6;
