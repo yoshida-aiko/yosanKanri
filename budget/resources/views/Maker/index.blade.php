@@ -6,7 +6,7 @@
 <h5 class="master-title">メーカーマスタ</h5>
 <div class="wrapper">
     <div class="divMasterList">
-        <table id="tblMakerMasterList" class="table table-fixed table-masterFixed masterSupplier table-striped">
+        <table id="tblMakerMasterList" class="table table-fixed table-masterFixed master3column table-striped">
             <thead>
                 <th></th>
                 <th>メーカー名</th>
@@ -32,7 +32,7 @@
         </table>
     </div>
     <div class="divMasterInput">
-    <form id="frmMakerMaster" class="frmMakerMasterInput" action="{{action('MakerController@store')}}" method="POST">
+        <form id="frmMakerMaster" class="frmMakerMasterInput" action="{{action('MakerController@store')}}" method="POST">
             
             {{-- エラーメッセージ --}}
             @if ($errors->any())
@@ -51,12 +51,12 @@
 
             @csrf
             <div class="form-group">
-                <label for="MakerNameJp" class="required">発注先名</label>
+                <label for="MakerNameJp" class="required">メーカー名</label>
                 <input type="text" id="MakerNameJp" name="MakerNameJp" value="{{ $editMaker->MakerNameJp }}" >
            </div>
             <div class="form-group">
-                <label for="ChargeUserJp">優先する発注先</label>
-                <select>
+                <label for="SupplierNameJp">優先する発注先</label>
+                <select name="MainSupplierId">
                 @foreach($Suppliers as $Supplier)
                     @if ($editMaker->MainSupplierId == $Supplier->id)
                         <option value="{{ $Supplier->id }}" selected>{{$Supplier->SupplierNameJp}}</option>

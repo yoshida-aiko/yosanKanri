@@ -725,19 +725,19 @@ label.required:after {
 	content:"\f1f8";
 }
 
-/*発注先マスタ*/
-/*マスタテーブル Supplier*/
-.masterSupplier {
+/*マスタテーブル 3列*/
+.master3column {
 	width:700px !important;
 }
-.masterSupplier thead th:nth-child(2),
-.masterSupplier tbody td:nth-child(2) {
+.master3column thead th:nth-child(2),
+.master3column tbody td:nth-child(2) {
     width:290px !important;
 }
-.masterSupplier thead th:nth-child(3),
-.masterSupplier tbody td:nth-child(3) {
+.master3column thead th:nth-child(3),
+.master3column tbody td:nth-child(3) {
     width:290px !important;
 }
+
 /* 発注先マスタ　フォーム */
 .frmSupplierMasterInput {
 	padding-top:10px;
@@ -751,5 +751,19 @@ label.required:after {
 .frmSupplierMasterInput > div.form-group > input[type=text],
 .frmSupplierMasterInput > div.form-group > input[type=email],
 .frmSupplierMasterInput > div.form-group > input[type=tel] {
+	width:400px;
+}
+/* メーカーマスタ　フォーム */
+.frmMakerMasterInput {
+	padding-top:10px;
+}
+.frmMakerMasterInput >div.form-group > label {
+	width:150px;
+	text-align: right;
+	padding-right:10px;
+	vertical-align: top;
+}
+.frmMakerMasterInput > div.form-group > input[type=text],
+.frmMakerMasterInput > div.form-group > select{
 	width:400px;
 }

@@ -57,7 +57,7 @@ class MakerController extends Controller
         }
 
         $rules = [
-            'MakerNameJp' => ['required', 'string', 'max:50'],
+            'MakerNameJp' => ['required', 'string', 'max:255'],
         ];
         $this->validate($request, $rules);
 
@@ -68,14 +68,14 @@ class MakerController extends Controller
             $Maker = new Maker();
         }
         $Maker->MakerNameJp = $request->MakerNameJp;
-        //TODO MainMakerId
-        // $Maker->MainMakerId = $request->MainMakerId;
+        $Maker->MainSupplierId = $request->MainSupplierId;
 
         $Maker->save();
         $Makers = Maker::where('Status','=', 1)->get();
         $editMaker = new Maker();
+        $Suppliers = Supplier::where('Status','=', 1)->select('id','SupplierNameJp')->get();
 
-        return view('Maker/index',compact('Makers','editMaker'));
+        return view('Maker/index',compact('Makers','editMaker','Suppliers'));
     }
 
     /**
@@ -122,11 +122,12 @@ class MakerController extends Controller
 
         $Maker = Maker::findOrFail($id);
         $Maker->MakerNameJp = $request->MakerNameJp;
-        //TODO MainMakerId
-        $Maker->MainMakerId = $request->MainMakerId;
+        //TODO MainSupplierId
+        $Maker->MainSupplierId = $request->MainSupplierId;
         $Maker->save();
  
         $editMaker = new Maker();
+        // $Suppliers = Supplier::where('Status','=', 1)->get();
         $Suppliers = Supplier::where('Status','=', 1)->select('id','SupplierNameJp')->get();
 
         return view('Maker/index',compact('Makers','editMaker','Suppliers'));

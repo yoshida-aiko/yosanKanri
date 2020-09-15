@@ -20,5 +20,6 @@ jQuery (function ()
    $("#btn_Maker_clear").click(function() {
        $("#frmMakerMaster > div.form-group > input[type=text]").val("");
        $("#frmMakerMaster > div.form-group > input[type=hidden]").val("");
+       $("#frmMakerMaster > div.form-group > select > option").prop('selected',false);
    });
 })

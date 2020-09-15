@@ -6,7 +6,7 @@
 <h5 class="master-title">発注先マスタ</h5>
 <div class="wrapper">
     <div class="divMasterList">
-        <table id="tblSupplierMasterList" class="table table-fixed table-masterFixed masterSupplier table-striped">
+        <table id="tblSupplierMasterList" class="table table-fixed table-masterFixed master3column table-striped">
             <thead>
                 <th></th>
                 <th>発注先</th>

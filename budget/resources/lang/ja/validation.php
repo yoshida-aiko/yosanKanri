@@ -164,7 +164,8 @@ return [
         'SupplierNameJp' => '発注先名',
         'ChargeUserJp' => '担当者名',
         'SupplierTel' => '電話番号', //発注先マスタの電話番号
-        'Fax' => 'ファックス番号'
+        'Fax' => 'ファックス番号',
+        'MakerNameJp'  => 'メーカー名'
     ],
 
 ];
