@@ -2,6 +2,7 @@
 
 @section('content')
 <script src="{{ asset('js/searchPageScript.js') }}" defer></script>
+
 <div class="container">
 <div class="wrapper">
 
@@ -52,7 +53,7 @@
                                 <input type="checkbox" name="makerCheckboxR[]" id="Maker{{ $loop->iteration }}R" value="{{ $Maker->id }}" />
                             @endif
                         @else
-                            <input type="checkbox" name="makerCheckboxR[]" id="Maker{{ $loop->iteration }}R" value="{{ $Maker->id }}" />
+                            <input type="checkbox" name="makerCheckboxR[]" id="Maker{{ $loop->iteration }}R" value="{{ $Maker->id }}"  />
                         @endif
                         {{ $Maker->MakerNameJp }}</label><br />
                     @endforeach
@@ -94,7 +95,7 @@
                     @foreach ($Makers as $Maker)
                         <label for="Maker{{ $loop->iteration }}A" >
                         @if (!empty($makerCheckboxA))
-                            @if (in_array( $Maker->id ,$makerCheckboxA))
+                            @if (in_array( $Maker->id ,$makerCheckboxA, true))
                                 <input type="checkbox" name="makerCheckboxA[]" id="Maker{{ $loop->iteration }}A" value="{{ $Maker->id }}" checked />
                             @else
                                 <input type="checkbox" name="makerCheckboxA[]" id="Maker{{ $loop->iteration }}A" value="{{ $Maker->id }}" />
@@ -113,6 +114,7 @@
             </div>
         </div>
         <input type="hidden" name="submit_key" id="submit_key" value="" >
+        <input type="hidden" name="submit_chkSharedKey" id="submit_chkSharedKey" value="" >
         </form>
     </div>
     <div class="toggle-fixed-37">
@@ -141,7 +143,7 @@
             </thead>
             <tbody>
             @foreach ($CatalogItems as $CatalogItem)
-                <tr>
+                <tr class="table-searchFixed-tr">
                     <td class="align-center">
                         @if($CatalogItem->ItemClass == '1')
                             試薬
@@ -154,7 +156,17 @@
                     <td class="align-center">{{ $CatalogItem->Standard }}</td>
                     <td class="align-center">{{ $CatalogItem->CatalogCode }}</td>
                     <td>{{ $CatalogItem->maker->MakerNameJp }}</td>
-                    <td class="align-right">{{ $CatalogItem->UnitPrice }}</td>
+                    <td class="align-right">
+                    <?php
+                        if ($CatalogItem->UnitPrice > 0) {
+                            $CatalogItem->UnitPrice = number_format($CatalogItem->UnitPrice);
+                        }
+                        else{
+                            $CatalogItem->UnitPrice = '';
+                        }
+                    ?>
+                        {{ $CatalogItem->UnitPrice }}
+                    </td>
                     <td>
                         <form style="display:inline-block;" action="{{ route('SearchPage.update', $CatalogItem->id) }}" method="POST" >
                             @csrf
@@ -164,6 +176,7 @@
                             <input type="hidden" value="" name="cartFavorite_submit_key">
                         </form>
                     </td>
+                    <td style="display:none;">{{$CatalogItem->maker->supllier->SupplierNameJp}}</td>
                 </tr>
             @endforeach
             </tbody>
@@ -171,10 +184,47 @@
     @else
     <p>データがありません</p>
     @endif
+
+    <div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
+        <!--以下modal-dialogのCSSの部分で modal-lgやmodal-smを追加するとモーダルのサイズを変更することができる-->
+        <div  class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Modal">商品詳細</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="modal-detail-table">
+                        <tbody>
+                            <tr>
+                                <td>商品名：</td><td id="detailProductName"></td><td></td><td></td>
+                            </tr>
+                            <tr>
+                                <td>容量：</td><td id="detailAmount"></td><td>規格：</td><td id="detailStandard"></td>
+                            </tr>
+                            <tr>
+                                <td>カタログコード：</td><td id="detailCatalogCode"></td><td>単価：</td><td id="detailUnitPrice"></td>
+                            </tr>
+                            <tr>
+                                <td>メーカー：</td><td id="detailMakerName"></td><td>優先する発注先：</td><td id="detailSupplierName"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+               </div>
+            </div>
+        </div>
+    </div>
+
+    
     </div>
     <div class="leftside-fixed-280">
         <h6 class="h6-title">発注依頼リスト</h6>
-        <div id="wrapperOrderRequestList">
+        <div id="wrapperOrderRequestList" style="margin-bottom:20px;">
             <input type="radio" name="tabCart" id="tabCartReagent" value="1" >
             <label class="tabLabel" for="tabCartReagent">試薬</label>
             <div class="tabContent">
@@ -196,8 +246,9 @@
                             <div class="standardetc"><span>{{$Cart->Standard}}</span><span>{{$Cart->CatalogCode}}</span><span>{{$Cart->AmountUnit}}</span></div>
                         </div>
                         <div>
-                            <input type="number" value="{{$Cart->OrderRequestNumber}}" class="numCartOrderRequestNumber">
-                        </div>             
+                            <input type="number" value="{{$Cart->OrderRequestNumber}}" min="1" class="numCartOrderRequestNumber">
+                            <input type="hidden" name="CartId" value="{{$Cart->id}}" >             
+                        </div>
                     </article>
                     @endif
                 @endforeach
@@ -224,111 +275,29 @@
                             <div><span>{{$Cart->Standard}}</span><span>{{$Cart->CatalogCode}}</span><span>{{$Cart->AmountUnit}}</span></div>
                         </div>
                         <div>
-                            <input type="number" value="{{$Cart->OrderRequestNumber}}" class="numCartOrderRequestNumber">
-                        </div>             
-                    </article>
-                    @endif
-                @endforeach
-                </section>
-            </div>
-        </div>
-        <h6 class="h6-title" style="margin-top:20px;">お気に入り</h6>
-        <div id="wrapperFavoriteList">
-        <input type="button" value="&#xf07b;" id="btnFolderAdd" name="btnFolderAdd" class="fa btn-folderadd-icon" title="フォルダ作成" >
-        <label for="chkShared" ><input type="checkbox" id="chkShared" name="chkShared" value="1">共用</label>
-        <input type="radio" name="tabFavorite" id="tabFavoriteReagent" value="1" >
-            <label class="tabLabel" for="tabFavoriteReagent">試薬</label>
-            <div class="tabContent">
-                <section class="sectionOrderRequest">
-                @foreach ($Favorites as $Favorite)
-                    @if ($Favorite->ItemClass==1)
-                    <article>
-                        <form action="{{ route('SearchPage.destroy', $Favorite->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <input type="submit" value="&#xf1f8;" name="btnFavoriteDelete" class="fa btn-cart-favorite-delete-icon"
-                                    onClick="if (!confirm('削除しますか？')){ return false;} return true;">
-                            <input type="hidden" name="deleteType" value="delFavoriteReagent" >
-                        </form>
-                        <div>
-                            <h6>{{$Favorite->item->ItemNameJp}}</h6>                   
+                            <input type="number" value="{{$Cart->OrderRequestNumber}}" min="1" class="numCartOrderRequestNumber">
+                            <input type="hidden" name="CartId" value="{{$Cart->id}}" >             
                         </div>
                     </article>
                     @endif
                 @endforeach
                 </section>
             </div>
+        </div>
+        @component('components.favorite')
+            @slot('url','SearchPage.update')
+            @slot('jsonFavoriteTreeReagent',$jsonFavoriteTreeReagent)
+            @slot('jsonFavoriteTreeArticle',$jsonFavoriteTreeArticle)
+            @slot('itemClass',$searchFormTab)
+        @endcomponent
 
-            <input type="radio" name="tabFavorite" id="tabFavoriteArticle" value="2" >
-            <label class="tabLabel" for="tabFavoriteArticle">物品</label>
-            <div class="tabContent">
-                <section class="sectionOrderRequest">
-                @foreach ($Favorites as $Favorite)
-                    @if ($Favorite->ItemClass==2)
-                    <article>
-                        <form action="{{ route('SearchPage.destroy', $Favorite->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <input type="submit" value="&#xf1f8;" name="btnFavoriteDelete" class="fa btn-cart-favorite-delete-icon"
-                                    onClick="if (!confirm('削除しますか？')){ return false;} return true;">
-                            <input type="hidden" name="deleteType" value="delFavoriteArticle" >
-                        </form>
-                        <div>
-                            <h6>{{$Favorite->item->ItemNameJp}}</h6>                   
-                        </div>
-                    </article>
-                    @endif
-                @endforeach
-                </section>
-            </div>
-        </div>
 
-        <div id="modal-folderadd" class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
-        <!--以下modal-dialogのCSSの部分で modal-lgやmodal-smを追加するとモーダルのサイズを変更することができる-->
-        <div  class="modal-dialog modal-sm" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="Modal">フォルダの作成</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form method="POST" action="{{action('SearchPageController@store')}}">   
-                <div class="modal-body">
-                    <section>
-                        @csrf
-                        <div class="form-group" style="margin-top:10px;">
-                            <label for="RegistDate" style="margin-left:5px !important;">フォルダ名</label>
-                            <input type="text" id="FolderName" name="FolderName" value="{{old('FolderName')}}" required="required">
-                        </div>
-                        {{-- エラーメッセージ --}}
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                            </div>
-                            <?php
-                            $favoriteFolder->FolderName = old('FolderName');
-                            $favoriteFolder->UseAuth = old('UserAuth');
-                            ?>
-                        @endif
-                    </section>
-                </div>
-                <div class="modal-footer">
-                    <input type="submit" id="submit_folder_save" name="submit_bulletinboad" class="btn btn-primary" value="保存" />
-                    <input type="button" id="btnFolderClear" class="btn btn-secondary" value="クリア">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-               </div>
-               </form>
-            </div>
-        </div>
-        </div>
+
+
 
 
     </div>
 </div>
 </div>
+
 @endsection

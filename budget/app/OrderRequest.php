@@ -16,7 +16,10 @@ class OrderRequest extends Model
         return $query->orderBy('CONCAT(RequestDate,OrderDate) as RequestDate',$direction);
     }*/
 
-
+    //suppliers hasOne
+    public function supplier() {
+        return $this->hasOne('App\Supplier','id','SupplierId');
+    }
 
     //items hasOne
     public function item() {

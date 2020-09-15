@@ -718,6 +718,8 @@ label.required:after {
 	display:inline-block;
 	cursor: pointer;
 	font-style: normal;
+	font-size:15px !important;
+	
 }
 .contextmenu_deleteicon::before{
 	content:"\f1f8";

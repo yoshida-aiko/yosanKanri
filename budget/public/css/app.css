@@ -1,8 +1,7 @@
-@import url(https://fonts.googleapis.com/css?family=Nunito);
-@charset "UTF-8";
+@import url(https://fonts.googleapis.com/css?family=Nunito);@charset "UTF-8";
 
 /*!
- * Bootstrap v4.5.1 (https://getbootstrap.com/)
+ * Bootstrap v4.5.2 (https://getbootstrap.com/)
  * Copyright 2011-2020 The Bootstrap Authors
  * Copyright 2011-2020 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
@@ -12,7 +11,7 @@
   --blue: #3490dc;
   --indigo: #6574cd;
   --purple: #9561e2;
-  --pink: #f66d9b;
+  --pink: #f66D9b;
   --red: #e3342f;
   --orange: #f6993f;
   --yellow: #ffed4a;
@@ -47,11 +46,9 @@
 
 html {
   font-family: sans-serif;
-  /*font-family:"Yu Gothic", "游ゴシック", YuGothic, "游ゴシック体", "ヒラギノ角ゴ Pro W3", "メイリオ", sans-serif;*/
   line-height: 1.15;
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  height: 100%;
 }
 
 article,
@@ -69,14 +66,13 @@ section {
 
 body {
   margin: 0;
-  /*font-family: "Nunito", sans-serif;*/
+  font-family: "Nunito", sans-serif;
   font-size: 0.9rem;
   font-weight: 400;
   line-height: 1.6;
   color: #212529;
   text-align: left;
   background-color: #f8fafc;
-  height: 100%;
 }
 
 [tabindex="-1"]:focus:not(:focus-visible) {
@@ -308,7 +304,6 @@ input[type=radio],
 input[type=checkbox] {
   box-sizing: border-box;
   padding: 0;
-  vertical-align: middle;/*2020.08.20 Add*/
 }
 
 textarea {
@@ -538,7 +533,7 @@ mark,
 
 code {
   font-size: 87.5%;
-  color: #f66d9b;
+  color: #f66D9b;
   word-wrap: break-word;
 }
 
@@ -593,7 +588,7 @@ pre code {
 @media (min-width: 576px) {
   .container-sm,
   .container {
-    /*max-width: 540px;2020.08.06 nakamichi*/
+    max-width: 540px;
   }
 }
 
@@ -601,7 +596,7 @@ pre code {
   .container-md,
   .container-sm,
   .container {
-    /*max-width: 720px;2020.08.06 nakamichi*/
+    max-width: 720px;
   }
 }
 
@@ -610,7 +605,7 @@ pre code {
   .container-md,
   .container-sm,
   .container {
-    /*max-width: 960px;2020.08.06 nakamichi*/
+    max-width: 960px;
   }
 }
 
@@ -620,13 +615,12 @@ pre code {
   .container-md,
   .container-sm,
   .container {
-    /*max-width: 1140px;2020.08.06 nakamichi*/
+    max-width: 1140px;
   }
 }
 
 .row {
   display: flex;
-  flex: 1 0 100%;
   flex-wrap: wrap;
   margin-right: -15px;
   margin-left: -15px;
@@ -2639,9 +2633,8 @@ textarea.form-control.is-invalid {
   background-color: transparent;
   border: 1px solid transparent;
   padding: 0.375rem 0.75rem;
-  /*font-size: 0.9rem;
-  line-height: 1.6;2020.08.24 Comment*/
-  line-height: 1.0;/*2020.08.24 Add*/
+  font-size: 0.9rem;
+  line-height: 1.6;
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
@@ -3421,10 +3414,6 @@ input[type=button].btn-block {
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 0.25rem;
-}
-.dropdown-menu-originalcolor {
-  color: #fff !important;
-  background-color:RGBA(21,65,112,1.0) !important;
 }
 
 .dropdown-menu-left {
@@ -4691,7 +4680,6 @@ input[type=button].btn-block {
   .navbar-expand-md .navbar-collapse {
     display: flex !important;
     flex-basis: auto;
-    height: 35px;
   }
 
   .navbar-expand-md .navbar-toggler {
@@ -4846,13 +4834,12 @@ input[type=button].btn-block {
 }
 
 .navbar-light .navbar-brand {
-  /*color: rgba(0, 0, 0, 0.9);*/
-  color:#fff;
+  color: rgba(0, 0, 0, 0.9);
 }
 
 .navbar-light .navbar-brand:hover,
 .navbar-light .navbar-brand:focus {
-  /*color: rgba(0, 0, 0, 0.9);2020.08.06nakamichi*/
+  color: rgba(0, 0, 0, 0.9);
 }
 
 .navbar-light .navbar-nav .nav-link {
@@ -4878,7 +4865,6 @@ input[type=button].btn-block {
 .navbar-light .navbar-toggler {
   color: rgba(0, 0, 0, 0.5);
   border-color: rgba(0, 0, 0, 0.1);
-  background-color:#88cce8;
 }
 
 .navbar-light .navbar-toggler-icon {
@@ -6195,8 +6181,7 @@ a.close.disabled {
 }
 
 .modal.fade .modal-dialog {
-  /*transition: transform 0.3s ease-out;2020.08.24 Comment*/
-  transition: transform 1s ease-out;
+  transition: transform 0.3s ease-out;
   transform: translate(0, -50px);
 }
 
@@ -6369,10 +6354,6 @@ a.close.disabled {
 
   .modal-sm {
     max-width: 300px;
-  }
-
-  .modal-sm100 {
-    max-width: 400px;
   }
 }
 
@@ -10921,5 +10902,10 @@ a.text-dark:focus {
     color: inherit;
     border-color: #dee2e6;
   }
+}
+
+.navbar-laravel {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 }
 

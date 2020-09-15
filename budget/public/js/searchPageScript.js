@@ -13,181 +13,33 @@ jQuery (function ($)
     $(".numCartOrderRequestNumber").on('input', function() {
         var cartid = $(this).parent("div").children("input[name=CartId]").val();
         var ordernumber = $(this).val();
-        console.log("cartid:" + cartid + " ordernumber:" + ordernumber);
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: 'SearchPage/' + cartid + '',
-            type: 'GET',
-            datatype: 'json',
-            data : {'update_id' : cartid, 'parent_id' : -1, 'delete_id' : -1, 'order_number' : ordernumber}
-        })
-        // Ajaxリクエスト成功時の処理
-        .done(function(data) {
-            if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました');
-            }
-        })
-        // Ajaxリクエスト失敗時の処理
-        .fail(function(data) {
-            alert('データ更新に失敗しました');
-        });
+        
+        var deferred = updateOrderRequestNumber(cartid,ordernumber);
+        deferred.done(function(){
+            $.unblockUI();
+        }); 
     });
 
     var jdataReagent = $.parseJSON($("#hidFavoriteTreeReagent").val());
 
-    $('#favoriteTreeReagent').jstree({
-        "core":{
-            "data":jdataReagent,
-            "check_callback":function(operation,node,node_parent,node_position,more){
-                if (operation=="move_node"){
-                    if(node_parent.icon != "jstree-folder" && node_parent.id != "#"){
-                        return false;
-                    }
-                }
-            }
-        },
-        "plugins":["contextmenu", "dnd"],
-        "contextmenu":{
-            "items": function($node) {
-                var tree = $('#favoriteTreeReagent').jstree(true);
-                return {
-                    "Delete": {
-                        "separator_before": false,
-                        "separator_after": false,
-                        "label": "削除",
-                        "icon": "contextmenu_deleteicon",
-                        "action": function (obj) {
-                            if (confirm('削除しますか？')){
-                                deletekey = $node.original.key;
-                                $.ajax({
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                    },
-                                    url: 'SearchPage/' + deletekey + '',
-                                    type: 'GET',
-                                    datatype: 'json',
-                                    data : {'update_id' : -1, 'parent_id' : -1, 'delete_id' : deletekey, 'order_number' : -1}
-                                })
-                                // Ajaxリクエスト成功時の処理
-                                .done(function(data) {
-                                    if (data['status'] !== 'OK') {
-                                        alert('データ削除に失敗しました');
-                                    }
-                                    else{
-                                        tree.delete_node($node);
-                                    }
-                                })
-                                // Ajaxリクエスト失敗時の処理
-                                .fail(function(data) {
-                                    alert('データ削除に失敗しました');
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }).on('move_node.jstree', function(e, data){
-        /*移動したデータのFavoriteテーブルid*/
-        movenodeKey = data.node.original.key;
-        parentKey = '-1';
-        if (data.parent !== '#') {
-            parentKey = data.instance.get_node(data.node.parent).original.key;        
-        }
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: 'SearchPage/' + movenodeKey + '',
-            type: 'GET',
-            datatype: 'json',
-            data : {'update_id' : movenodeKey, 'parent_id' : parentKey, 'delete_id' : -1, 'order_number' : -1}
-        })
-        // Ajaxリクエスト成功時の処理
-        .done(function(data) {
-            if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました');
-            }
-        })
-        // Ajaxリクエスト失敗時の処理
-        .fail(function(data) {
-            alert('データ更新に失敗しました');
-        });
-    });
-
-
+    jsTreeCreate(jdataReagent,'SearchPage','favoriteTreeReagent');
 
     var jdataArticle = $.parseJSON($("#hidFavoriteTreeArticle").val());
 
-    $('#favoriteTreeArticle').jstree({
-        "core":{
-            "data":jdataArticle,
-            "check_callback":function(operation,node,node_parent,node_position,more){
-                if (operation=="move_node"){
-                    if(node_parent.icon != "jstree-folder" && node_parent.id != "#"){
-                        return false;
-                    }
-                }
-            }
-        },
-        "plugins":["contextmenu", "dnd"],
-        "contextmenu":{
-            "items": function($node) {
-                var tree = $('#favoriteTreeArticle').jstree(true);
-                return {
-                    "Delete": {
-                        "separator_before": false,
-                        "separator_after": false,
-                        "label": "削除",
-                        "icon": "contextmenu_deleteicon",
-                        "action": function (obj) {
-                            if (confirm('削除しますか？')){
-                                deletekey = $node.original.key;
-                                $.ajax({
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                    },
-                                    url: 'SearchPage/' + deletekey + '',
-                                    type: 'GET',
-                                    datatype: 'json',
-                                    data : {'update_id' : -1, 'parent_id' : -1, 'delete_id' : deletekey, 'order_number' : -1}
-                                })
-                                // Ajaxリクエスト成功時の処理
-                                .done(function(data) {
-                                    if (data['status'] !== 'OK') {
-                                        alert('データ削除に失敗しました');
-                                    }
-                                    else{
-                                        tree.delete_node($node);
-                                    }
-                                })
-                                // Ajaxリクエスト失敗時の処理
-                                .fail(function(data) {
-                                    alert('データ削除に失敗しました');
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }).on('move_node.jstree', function(e, data){
-        /*移動したデータのFavoriteテーブルid*/
-        movenodeKey = data.node.original.key;
-        parentKey = '-1';
-        if (data.parent !== '#') {
-            parentKey = data.instance.get_node(data.node.parent).original.key;        
-        }
+    jsTreeCreate(jdataArticle,'SearchPage','favoriteTreeArticle');
+    
+
+    function updateOrderRequestNumber(cartid,ordernumber){
+        processing();
+        var deferred = new $.Deferred();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: 'SearchPage/' + movenodeKey + '',
+            url: 'SearchPage/updateCartOrderRequestNum',
             type: 'GET',
             datatype: 'json',
-            data : {'update_id' : movenodeKey, 'parent_id' : parentKey, 'delete_id' : -1, 'order_number' : -1}
+            data : {'update_id' : cartid, 'order_number' : ordernumber}
         })
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
@@ -198,10 +50,15 @@ jQuery (function ($)
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
             alert('データ更新に失敗しました');
+        })
+        .always(function(data) {
+            deferred.resolve();           
         });
-    });
 
+        return deferred;
+    }
 
+    $("input[name=searchFormTab]").val([1]);
     $("input[name=tabCart]").val([$("input[name=searchFormTab]:checked").val()]);
     $("input[name=tabFavorite]").val([$("input[name=searchFormTab]:checked").val()]);
 
@@ -304,16 +161,6 @@ jQuery (function ($)
         $("#submit_key").val("btnFavorite");
     });
 
-    /*フォルダ作成ボタン*/
-    $("#btnFolderAdd").click(function() {
-        $("#modal-folderadd").modal('show');
-    });
-
-    /*フォルダクリアボタン*/
-    $("#btnFolderClear").click(function() {
-        $("#FolderName").val("");
-    });
-
     /*検索、発注依頼、お気に入りのタブ（試薬・物品）をを共通でセットする*/
     $("input[name=searchFormTab]").change(function() {
         $("input[name=tabCart]").val([$(this).val()]);
@@ -337,8 +184,18 @@ jQuery (function ($)
         $(this).addClass("table-fixed-selectRow");
     });
 
-    $("#chkShared").click(function() {
-        $(".searchConditionForm").submit();
+    /*$("#chkShared").change(function() {
+        console.log("chkShared:" + $("#chkShared").val());
+        if ($("#chkShared:checked").val() === '共用') {
+            $("#submit_chkSharedKey").val($("#chkShared:checked").val());
+            $(".searchConditionForm").submit();
+        }else{
+            $("#submit_chkSharedKey").val('');
+        }
     });
+    $("#submit_chkSharedKey").change(function() {
+        console.log("submit_chkSharedKey:" + $("#submit_chkSharedKey").val());
+        $("#chkShared:checked").val($("#submit_chkSharedKey").val());
+    });*/
 
 })
