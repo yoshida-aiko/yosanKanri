@@ -16,15 +16,8 @@ class MakerController extends Controller
      */
     public function index()
     {
-        // $Makers = Maker::where('Status','=', 1)->get();
-        $Makers = DB::table('makers')
-                    ->leftJoin('suppliers', function ($join) {
-                        $join->on('makers.MainSupplierId', '=', 'suppliers.id')
-                            ->where('makers.Status', '=', 1);
-                    })
-                    ->select('makers.*', 'suppliers.SupplierNameJp')
-                    ->get();
-        
+        $Makers = Maker::where('Status','=', 1)->get();
+
         $editMaker = new Maker();
         //発注先取得
         // $SupplierNameJpList = $Maker->supplier->SupplierNameJp;
@@ -41,7 +34,7 @@ class MakerController extends Controller
     {
         $Maker = new Maker();
 
-        return view('Maker\create',compact('Maker'));
+        return view('Maker/create',compact('Maker'));
     }
 
     /**
@@ -104,19 +97,13 @@ class MakerController extends Controller
      */
     public function edit($id)
     {
-        // $Makers = Maker::where('Status','=', 1)->get();
-        // $Makers = DB::table('makers')-> leftjoin('suppliers', 'makers.MainSupplierId', '=', 'suppliers.id') -> get();
-        $Makers = DB::table('makers')
-                    ->leftJoin('suppliers', function ($join) {
-                        $join->on('makers.MainSupplierId', '=', 'suppliers.id')
-                            ->where('makers.Status', '=', 1);
-                    })
-                    ->select('makers.*', 'suppliers.SupplierNameJp')
-                    ->get();
+        $Makers = Maker::where('Status','=', 1)->get();
 
         $editMaker = Maker::findOrFail($id);
+
+        $Suppliers = Supplier::where('Status','=', 1)->get();
         
-        return view('Maker/index',compact('Makers','editMaker'));
+        return view('Maker/index',compact('Makers','editMaker','Suppliers'));
     }
 
     /**
@@ -136,12 +123,13 @@ class MakerController extends Controller
         $Maker = Maker::findOrFail($id);
         $Maker->MakerNameJp = $request->MakerNameJp;
         //TODO MainMakerId
-        // $Maker->MainMakerId = $request->MainMakerId;
+        $Maker->MainMakerId = $request->MainMakerId;
         $Maker->save();
  
         $editMaker = new Maker();
+        $Suppliers = Supplier::where('Status','=', 1)->select('id','SupplierNameJp')->get();
 
-        return view('Maker/index',compact('Makers','editMaker'));
+        return view('Maker/index',compact('Makers','editMaker','Suppliers'));
     }
 
     /**

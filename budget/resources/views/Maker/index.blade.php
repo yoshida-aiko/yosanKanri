@@ -24,7 +24,7 @@
                     </form>
                 </td>
                 <td><a href="{{ route('Maker.edit', $Maker->id) }}">{{$Maker->MakerNameJp}}</a></td>
-                <td>{{$Maker->SupplierNameJp}}</td>
+                <td>{{$Maker->supplier->SupplierNameJp}}</td>
             </tr>
             @endforeach
             </tbody>
@@ -44,6 +44,7 @@
                 </ul>
                 </div>
                 <?php
+                $editMaker->id = old('id');
                 $editMaker->MakerNameJp = old('MakerNameJp');
                 ?>
             @endif
@@ -57,7 +58,11 @@
                 <label for="ChargeUserJp">優先する発注先</label>
                 <select>
                 @foreach($Suppliers as $Supplier)
-                    <option value="{{ $Supplier->id }}">{{$Supplier->SupplierNameJp}}</option>
+                    @if ($editMaker->MainSupplierId == $Supplier->id)
+                        <option value="{{ $Supplier->id }}" selected>{{$Supplier->SupplierNameJp}}</option>
+                    @else
+                        <option value="{{ $Supplier->id }}">{{$Supplier->SupplierNameJp}}</option>
+                    @endif
                 @endforeach
                 </select>
             </div>
