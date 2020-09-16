@@ -84,40 +84,40 @@
             <div class="form-group">
                 <label for="author">権限</label>
                 <fieldset id="author">
-                    @if ($editUser->UserAuth >= 1)
-                    <input type="checkbox" id="chkOrder" name="chkAuthor[]" value="1" checked >
+                    @if (strpos($editUser->UserAuthString,'Order') !== false)
+                    <input type="checkbox" id="chkOrder" name="chkAuthor[]" value="Order" checked >
                     @else
-                    <input type="checkbox" id="chkOrder" name="chkAuthor[]" value="1" >
+                    <input type="checkbox" id="chkOrder" name="chkAuthor[]" value="Order" >
                     @endif
                     <label for="chkOrder">発注</label>
-                    @if ($editUser->UserAuth >= 2)
-                    <input type="checkbox" id="chkDelivery" name="chkAuthor[]" value="2" checked >
+                    @if (strpos($editUser->UserAuthString,'Delivery') !== false)
+                    <input type="checkbox" id="chkDelivery" name="chkAuthor[]" value="Delivery" checked >
                     @else
-                    <input type="checkbox" id="chkDelivery" name="chkAuthor[]" value="2" >
+                    <input type="checkbox" id="chkDelivery" name="chkAuthor[]" value="Delivery" >
                     @endif
                     <label for="chkDelivery">納品</label>
-                    @if ($editUser->UserAuth >= 4)
-                    <input type="checkbox" id="chkBudget" name="chkAuthor[]" value="4" checked  >
+                    @if (strpos($editUser->UserAuthString,'Budget') !== false)
+                    <input type="checkbox" id="chkBudget" name="chkAuthor[]" value="Budget" checked  >
                     @else
-                    <input type="checkbox" id="chkBudget" name="chkAuthor[]" value="4" >
+                    <input type="checkbox" id="chkBudget" name="chkAuthor[]" value="Budget" >
                     @endif
                     <label for="chkBudget">予算状況</label><br />
-                    @if ($editUser->UserAuth >= 8)
-                    <input type="checkbox" id="chkPurchase" name="chkAuthor[]" value="8" checked >
+                    @if (strpos($editUser->UserAuthString,'Purchase') !== false)
+                    <input type="checkbox" id="chkPurchase" name="chkAuthor[]" value="Purchase" checked >
                     @else
-                    <input type="checkbox" id="chkPurchase" name="chkAuthor[]" value="8" >
+                    <input type="checkbox" id="chkPurchase" name="chkAuthor[]" value="Purchase" >
                     @endif
                     <label for="chkPurchase">購入履歴</label>
-                    @if ($editUser->UserAuth >= 16)
-                    <input type="checkbox" id="chkMaster" name="chkAuthor[]" value="16" checked >
+                    @if (strpos($editUser->UserAuthString,'Master') !== false)
+                    <input type="checkbox" id="chkMaster" name="chkAuthor[]" value="Master" checked >
                     @else
-                    <input type="checkbox" id="chkMaster" name="chkAuthor[]" value="16">
+                    <input type="checkbox" id="chkMaster" name="chkAuthor[]" value="Master">
                     @endif
                     <label for="chkMaster">マスタ</label>
-                    @if ($editUser->UserAuth >= 32)
-                    <input type="checkbox" id="chkPayment" name="chkAuthor[]" value="32" checked >
+                    @if (strpos($editUser->UserAuthString,'Payment') !== false)
+                    <input type="checkbox" id="chkPayment" name="chkAuthor[]" value="Payment" checked >
                     @else
-                    <input type="checkbox" id="chkPayment" name="chkAuthor[]" value="32" >
+                    <input type="checkbox" id="chkPayment" name="chkAuthor[]" value="Payment" >
                     @endif
                     <label for="chkPayment">支払</label>
                 </fieldset>

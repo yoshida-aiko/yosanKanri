@@ -58,9 +58,10 @@ jQuery (function ($)
         return deferred;
     }
 
-    $("input[name=searchFormTab]").val([1]);
+    //$("input[name=searchFormTab]").val([1]);
     $("input[name=tabCart]").val([$("input[name=searchFormTab]:checked").val()]);
     $("input[name=tabFavorite]").val([$("input[name=searchFormTab]:checked").val()]);
+
 
     /*ウィンドウの高さを取得して、グリッドの高さを指定*/
     settingGridHeight();
@@ -184,6 +185,9 @@ jQuery (function ($)
         $(this).addClass("table-fixed-selectRow");
     });
 
+
+
+
     /*$("#chkShared").change(function() {
         console.log("chkShared:" + $("#chkShared").val());
         if ($("#chkShared:checked").val() === '共用') {
@@ -198,4 +202,59 @@ jQuery (function ($)
         $("#chkShared:checked").val($("#submit_chkSharedKey").val());
     });*/
 
+    /*function checkOrderRequest(btn){*/
+    $("input[name=btnCart]").click(function() {
+        var id = $(this).parent('form').children('.hidUpdateId').val();
+        var myform =  $(this).parent('form');
+        var ret = checkOrderRequest(id);
+        var deferred = ret.deferred;
+        deferred.done(function(){
+            $.unblockUI();
+            console.log(ret.result);
+            if (ret.result) {
+                myform.submit();
+            }
+        });  
+    });
+
+    function checkOrderRequest(id) {
+        var ret = new Object();
+        processing();
+        var deferred = new $.Deferred();
+        var result = true;
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: 'SearchPage/checkOrderRequest',
+            type: 'GET',
+            datatype: 'json',
+            data : {'update_id' : id}
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if (data['status'] === 'Duplicate') {
+                if (!confirm("同じ商品が既に発注依頼されています。登録しますか？")){
+                    result = false;
+                }
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            alert('データチェックに失敗しました' + data['status']);
+            result = false;
+        })
+        .always(function(data) {
+            deferred.resolve();
+        });
+        
+        ret.result = result;
+        ret.deferred = deferred;
+
+        return ret;
+
+    }
+
 })
+
+

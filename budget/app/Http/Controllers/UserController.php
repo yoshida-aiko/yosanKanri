@@ -57,11 +57,14 @@ class UserController extends Controller
             $isUpdate = true;
         }
 
-        $calc = 0;
+        $auth = '';
         if (is_array($request->chkAuthor)) {
             foreach($request->chkAuthor as $chkAuth)
             {
-                $calc = $calc + $chkAuth;
+                if ($auth <> '') {
+                    $auth = $auth.',';
+                }
+                $auth = $auth.$chkAuth;
             }
         }
         if ($isUpdate){
@@ -98,7 +101,7 @@ class UserController extends Controller
         $User->email = $request->email;
         //$encrypted= Crypt::encrypt($request->password);
         //$User->password = $encrypted;
-        $User->UserAuth = $calc;
+        $User->UserAuthString = $auth;
         $User->BuiltinUser = false;
         $User->Signature = $request->Signature;
 
@@ -121,11 +124,14 @@ class UserController extends Controller
         ];
         $this->validate($request, $rules);
 
-        $calc = 0;
+        $auth = '';
         if (is_array($request->chkAuthor)) {
             foreach($request->chkAuthor as $chkAuth)
             {
-                $calc = $calc + $chkAuth;
+                if ($auth <> '') {
+                    $auth = $auth.',';
+                }
+                $auth = $auth.$chkAuth;
             }
         }
 
@@ -134,7 +140,7 @@ class UserController extends Controller
         $User->UserNameJp = $request->UserNameJp;
         $User->Tel = $request->Tel;
         $User->email = $request->email;
-        $User->UserAuth = $calc;
+        $User->UserAuthString = $auth;
         $User->Signature = $request->Signature;
         $User->save();
 
