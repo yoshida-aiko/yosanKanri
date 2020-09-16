@@ -725,7 +725,11 @@ label.required:after {
 	content:"\f1f8";
 }
 
+
 /*マスタテーブル 3列*/
+.master3columnList {
+	min-width:720px;
+}
 .master3column {
 	width:700px !important;
 }
@@ -741,6 +745,7 @@ label.required:after {
 /* 発注先マスタ　フォーム */
 .frmSupplierMasterInput {
 	padding-top:10px;
+	min-width:600px;
 }
 .frmSupplierMasterInput >div.form-group > label {
 	width:150px;
@@ -756,6 +761,7 @@ label.required:after {
 /* メーカーマスタ　フォーム */
 .frmMakerMasterInput {
 	padding-top:10px;
+	min-width:600px;
 }
 .frmMakerMasterInput >div.form-group > label {
 	width:150px;

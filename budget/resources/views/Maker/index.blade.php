@@ -5,7 +5,7 @@
 <div class="container">
 <h5 class="master-title">メーカーマスタ</h5>
 <div class="wrapper">
-    <div class="divMasterList">
+    <div class="divMasterList master3columnList">
         <table id="tblMakerMasterList" class="table table-fixed table-masterFixed master3column table-striped">
             <thead>
                 <th></th>
@@ -20,7 +20,7 @@
                         @csrf
                         @method('DELETE')
                         <input type="submit" value="&#xf1f8;" 
-                            onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="fa btn-delete-icon">
+                            onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="btn-delete-icon resetLinkOff">
                     </form>
                 </td>
                 <td><a href="{{ route('Maker.edit', $Maker->id) }}">{{$Maker->MakerNameJp}}</a></td>

@@ -20,7 +20,6 @@ class MakerController extends Controller
 
         $editMaker = new Maker();
         //発注先取得
-        // $SupplierNameJpList = $Maker->supplier->SupplierNameJp;
         $Suppliers = Supplier::where('Status','=', 1)->select('id','SupplierNameJp')->get();
         return view('Maker/index',compact('Makers','editMaker','Suppliers'));
     }
@@ -79,17 +78,6 @@ class MakerController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -98,9 +86,7 @@ class MakerController extends Controller
     public function edit($id)
     {
         $Makers = Maker::where('Status','=', 1)->get();
-
         $editMaker = Maker::findOrFail($id);
-
         $Suppliers = Supplier::where('Status','=', 1)->get();
         
         return view('Maker/index',compact('Makers','editMaker','Suppliers'));
@@ -122,12 +108,10 @@ class MakerController extends Controller
 
         $Maker = Maker::findOrFail($id);
         $Maker->MakerNameJp = $request->MakerNameJp;
-        //TODO MainSupplierId
         $Maker->MainSupplierId = $request->MainSupplierId;
         $Maker->save();
  
         $editMaker = new Maker();
-        // $Suppliers = Supplier::where('Status','=', 1)->get();
         $Suppliers = Supplier::where('Status','=', 1)->select('id','SupplierNameJp')->get();
 
         return view('Maker/index',compact('Makers','editMaker','Suppliers'));

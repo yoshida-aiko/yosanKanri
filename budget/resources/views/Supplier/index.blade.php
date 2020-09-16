@@ -5,7 +5,7 @@
 <div class="container">
 <h5 class="master-title">発注先マスタ</h5>
 <div class="wrapper">
-    <div class="divMasterList">
+    <div class="divMasterList master3columnList ">
         <table id="tblSupplierMasterList" class="table table-fixed table-masterFixed master3column table-striped">
             <thead>
                 <th></th>
