@@ -1,12 +1,8 @@
 jQuery (function ()
 {
-    // ページ読み込み時 一瞬の表示崩れの対応
-    $(window).load(function() {
-        $('#table-masterFixed').hide().fadeIn(0);
-    }); 
-
      /*ウィンドウの高さを取得して、グリッドの高さを指定*/
      settingGridHeight();
+     $(".table-masterFixed").css('display','none').fadeIn(0);
 
      $(window).resize(function () {
          settingGridHeight();

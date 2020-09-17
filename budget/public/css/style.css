@@ -336,6 +336,7 @@ h5{
 
 /*マスタテーブル user*/
 .table-masterFixed {
+	display:none;
 	margin-top:10px;
 	width:520px;
 	margin-left:auto;
