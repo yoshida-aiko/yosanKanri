@@ -210,7 +210,6 @@ jQuery (function ($)
         var deferred = ret.deferred;
         deferred.done(function(){
             $.unblockUI();
-            console.log(ret.result);
             if (ret.result) {
                 myform.submit();
             }

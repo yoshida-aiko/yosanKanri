@@ -117,9 +117,6 @@ function jsTreeCreate(jsondata,url,id,isToCartDisabled=true) {
                                             deferred.done(function(){
                                                 $.unblockUI();
                                             });
-                                            console.log("create  id = " + data.id  );
-                                            console.log("create  text = " + data.text );
-                                            console.log("parent  id = " + data.parent );
                                          });
                                         
                                     }catch(ex){
