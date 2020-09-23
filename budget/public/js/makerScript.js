@@ -1,6 +1,5 @@
 jQuery (function ()
-{
-    
+{   
     /*ウィンドウの高さを取得して、グリッドの高さを指定*/
     settingGridHeight();
     $(".table-masterFixed").css('display','none').fadeIn(0);

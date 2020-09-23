@@ -15,10 +15,11 @@ class BudgetController extends Controller
      */
     public function index()
     {
-        //
-        $Budgets = Budget::all();
-
-        return view('Budget/index',compact('Budgets'));
+        $Budgets = Budget::where('Status','=', 1)->get();
+        $editBudget = new Budget();
+        //本年度
+        
+        return view('Budget/index',compact('Budgets','editBudget'));
     }
 
     /**
@@ -28,7 +29,9 @@ class BudgetController extends Controller
      */
     public function create()
     {
-        //
+        $Budget = new Budget();
+
+        return view('Budget\create',compact('Budget'));
     }
 
     /**
@@ -39,7 +42,44 @@ class BudgetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($request->action === 'back') {
+            return redirect()->route('Budget.index');
+        }
+
+        $isUpdate = false;
+
+        if ($request->id != "")
+        {
+            $isUpdate = true;
+        }
+
+        $rules = [
+            'budgetNameJp' => ['required', 'string', 'max:50'],
+            'budgetAmount' => ['required', 'double'],
+            'useStartDate' => ['required','string', 'max:10'],
+            'useEndDate' => ['required','string', 'max:10'],
+            'displayOrder' => ['required', 'integer', 'max:11']
+        ];
+        $this->validate($request, $rules);
+
+        if ($isUpdate){
+            $Budget = Budget::findOrFail($request->id);
+        }
+        else {
+            $Budget = new Budget();
+        }
+        $Budget->fiscalYear = $request->fiscalYear;
+        $Budget->budgetNameJp = $request->budgetNameJp;
+        $Budget->budgetAmount = $request->budgetAmount;
+        $Budget->useStartDate = $request->useStartDate;
+        $Budget->useEndDate = $request->useEndDate;
+        $Budget->displayOrder = $request->displayOrder;
+
+        $Budget->save();
+        $Budgets = Budget::where('Status','=', 1)->get();
+        $editBudget = new Budget();
+
+        return view('Budget/index',compact('Budgets','editBudget'));
     }
 
     /**
@@ -61,7 +101,9 @@ class BudgetController extends Controller
      */
     public function edit($id)
     {
-        //
+        $Budgets = Budget::where('Status','=', 1)->get();
+        $editBudget = Budget::findOrFail($id);
+        return view('Budget/index',compact('Budgets','editBudget'));
     }
 
     /**
@@ -73,7 +115,27 @@ class BudgetController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $rules = [
+            'budgetNameJp' => ['required', 'string', 'max:50'],
+            'budgetAmount' => ['required', 'double'],
+            'useStartDate' => ['required','string', 'max:10'],
+            'useEndDate' => ['required','string', 'max:10'],
+            'displayOrder' => ['required', 'integer', 'max:11']
+        ];
+        $this->validate($request, $rules);
+
+        $Budget = Budget::findOrFail($id);
+        $Budget->fiscalYear = $request->fiscalYear;
+        $Budget->budgetNameJp = $request->budgetNameJp;
+        $Budget->budgetAmount = $request->budgetAmount;
+        $Budget->useStartDate = $request->useStartDate;
+        $Budget->useEndDate = $request->useEndDate;
+        $Budget->displayOrder = $request->displayOrder;
+        $Budget->save();
+ 
+        $editBudget = new Budget();
+
+        return view('Budget/index',compact('Budgets','editBudget'));
     }
 
     /**
@@ -84,6 +146,9 @@ class BudgetController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $Budget = Budget::lockForUpdate()->withTrashed()->find($id);
+        $Budget->delete();
+
+        return redirect()->route('Budget.index');
     }
 }
