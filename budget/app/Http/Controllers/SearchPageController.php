@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Response;
 use App\Http\Controllers\Controller;
+use App\Library\BaseClass;
 use App\CatalogItem;
+use App\OrderRequest;
+use App\Favorite;
 use App\Maker;
 use App\Cart;
-use App\Favorite;
 use App\Item;
 use Auth;
 use Illuminate\Support\Facades\Request as PostRequest;
@@ -29,7 +32,7 @@ class SearchPageController extends Controller
         $searchCatalogCode = '';
         $makerCheckbox = '';
 
-        $searchFormTab = $request->input('submit_key');
+        $searchFormTab = $request->searchFormTab;
         $searchReagentNameR = $request->input('searchReagentNameR');
         $searchStandardR = $request->input('searchStandardR');
         $searchCasNoR = $request->input('searchCasNoR');
@@ -39,7 +42,11 @@ class SearchPageController extends Controller
         $searchStandardA = $request->input('searchStandardA');
         $searchCatalogCodeA = $request->input('searchCatalogCodeA');
         $makerCheckboxA = $request->input('makerCheckboxA');
-
+        $page = $request->input('page');
+        if (!empty($page)){
+            $request->session()->put('searchPageCatalogItemWhere_page',$page);
+        }
+        
         /*試薬の場合*/
         if ($searchFormTab == '1') {
             $searchReagentName = $searchReagentNameR;
@@ -126,7 +133,8 @@ class SearchPageController extends Controller
             $request->session()->put('searchPageCatalogItemWhere_searchCatalogCode',$searchCatalogCode);
             $request->session()->put('searchPageCatalogItemWhere_makerCheckbox',$makerCheckbox);
 
-            $CatalogItems = $query->sortable()->paginate(25);;
+
+            $CatalogItems = $query->sortable()->paginate(25);
         }
         else {
             $CatalogItems = collect(new CatalogItem());
@@ -136,111 +144,102 @@ class SearchPageController extends Controller
         $Carts = Cart::where('UserId','=', Auth::id())->orderBy('id','asc')->get();
 
         /*お気に入りを取得*/
-        /*Favoritesを取得*/
-        $Favorites = Favorite::where('UserId','=', Auth::id())->orderBy('id','asc')->get();
+        list($jsonFavoriteTreeReagent,$jsonFavoriteTreeArticle) = BaseClass::getFavoriteTree();
 
-        return view('SearchPage/index',compact('CatalogItems','Makers','Carts','Favorites','searchFormTab','searchReagentNameR','searchStandardR','searchCasNoR','searchCatalogCodeR','makerCheckboxR','searchReagentNameA','searchStandardA','searchCatalogCodeA','makerCheckboxA'));
+        return view('SearchPage/index',compact('CatalogItems','Makers','Carts','jsonFavoriteTreeReagent','jsonFavoriteTreeArticle','searchFormTab','searchReagentNameR','searchStandardR','searchCasNoR','searchCatalogCodeR','makerCheckboxR','searchReagentNameA','searchStandardA','searchCatalogCodeA','makerCheckboxA'));
     }
+
+    public function checkOrderRequest(Request $request) {
+
+        $response = array();
+        $response['status'] = 'OK';
+        try{
+            $id = $request->update_id;
+            //Cartに追加しようとしている商品
+            $CatalogItem = CatalogItem::findOrFail($id);
+            //OrderRequestされている商品
+            $OrderRequests = OrderRequest::all();
+            foreach($OrderRequests as $OrderRequest) {
+                if( $OrderRequest->item->MakerId == $CatalogItem->MakerId &&
+                    $OrderRequest->item->CatalogCode == $CatalogItem->CatalogCode &&
+                    $OrderRequest->item->ItemNameJp == $CatalogItem->ItemNameJp &&
+                    $OrderRequest->item->AmountUnit == $CatalogItem->AmountUnit &&
+                    $OrderRequest->item->Standard == $CatalogItem->Standard
+                ) {
+                    $response['status'] = 'Duplicate';
+                    break;
+                }
+            }
+
+        }
+        catch(Exception $e){
+            $response['status'] = $e->getMessage();
+        }
+        return Response::json($response);
+    }
+
 
     /*発注依頼カート、お気に入りに追加*/
     public function update($id) {
         $submitkey = PostRequest::input('cartFavorite_submit_key');
+        /*ページの引き継のため*/
+        $page = PostRequest::session()->get('searchPageCatalogItemWhere_page');
+
         if ($submitkey == 'btnCart') {
-            $this->cartAdd($id);
+            BaseClass::cartAdd($id);
         }
         elseif($submitkey == 'btnFavorite'){
-            $this->favoriteAdd($id);
+            BaseClass::favoriteAdd($id);
         }
-        return redirect()->route('SearchPage.index');
+        else{
+            $ItemClass = PostRequest::input('tabSelectFolder');
+            if ($ItemClass === null) {
+                $ItemClass = 1;
+            }
+            $FolderName = PostRequest::input('FolderName');
+            BaseClass::folderAdd($ItemClass,$FolderName);
+        }
+        
+        return redirect()->route('SearchPage.index',['page' => $page]);
     }
 
-    public function cartAdd($id) {
-
-        $where = [
-            'CatalogItemId' => $id,
-            'UserId' => Auth::id()];
-       
-        $Cart = Cart::where($where)->first();
-        if($Cart == NULL){
-            //登録
-            $CatalogItem = CatalogItem::findOrFail($id);
-
-            $Cart = new Cart();
-            $Cart->UserId = Auth::id();
-            $Cart->CatalogItemId = $id;
-            $Cart->ItemClass = $CatalogItem->ItemClass;
-            $Cart->MakerId = $CatalogItem->MakerId;
-            $Cart->CatalogCode = $CatalogItem->CatalogCode;
-            $Cart->MakerNameJp = $CatalogItem->maker->MakerNameJp;
-            $Cart->MakerNameEn = $CatalogItem->maker->MakerNameEn;
-            $Cart->ItemNameJp = $CatalogItem->ItemNameJp;
-            $Cart->ItemNameEn = $CatalogItem->ItemNameEn;
-            $Cart->AmountUnit = $CatalogItem->AmountUnit;
-            $Cart->Standard = $CatalogItem->Standard;
-            $Cart->CASNo = $CatalogItem->CASNo;
-            $Cart->UnitPrice = $CatalogItem->UnitPrice;
-            $Cart->Remark1 = $CatalogItem->Remark1;
-            $Cart->Remark2 = $CatalogItem->Remark2;
-            $Cart->OrderRequestNumber = 1;
-        }
-        else {
-            //更新カウントアップ
-            $Cart->OrderRequestNumber = $Cart->OrderRequestNumber + 1;
-        }
-
-        $Cart->save();
-
-    }
-
-    public function favoriteAdd($id) {
-
-        $CatalogItem = CatalogItem::findOrFail($id);
-
-        $where = [
-            'MakerId'       => $CatalogItem->MakerId,
-            'CatalogCode'   => $CatalogItem->CatalogCode,
-            'ItemNameJp'    => $CatalogItem->ItemNameJp,
-            'AmountUnit'    => $CatalogItem->AmountUnit,
-            'Standard'      => $CatalogItem->Standard
-        ];
-        $Item = Item::where($where)->first();
-        if($Item == NULL){
-            /*Items登録*/
-            $Item = new Item();
-            $Item->ItemClass = $CatalogItem->ItemClass;
-            $Item->MakerId = $CatalogItem->MakerId;
-            $Item->MakerNameJp = $CatalogItem->maker->MakerNameJp;
-            $Item->MakerNameEn = $CatalogItem->maker->MakerNameEn;
-            $Item->CatalogCode = $CatalogItem->CatalogCode;
-            $Item->ItemNameJp = $CatalogItem->ItemNameJp;
-            $Item->ItemNameEn = $CatalogItem->ItemNameEn;
-            $Item->AmountUnit = $CatalogItem->AmountUnit;
-            $Item->Standard = $CatalogItem->Standard;
-            $Item->CASNo = $CatalogItem->CASNo;
-            $Item->UnitPrice = $CatalogItem->UnitPrice;
-            $Item->save();
-        }       
-
-        /*Favorites登録*/
-        $Favorite = new Favorite();
-        $Favorite->UserId = Auth::id();
-        $Favorite->ItemId = $Item->id;/*追加したデータのidを取得*/
-        $Favorite->ItemClass = $CatalogItem->ItemClass;
-        $Favorite->save();
-    }
-
-    /*発注依頼　お気に入り削除*/
+    /*発注依頼削除*/
     public function destroy(Request $request,$id) {
         $delType = $request->deleteType;
         if ($delType == 'delCartReagent' || $delType == 'delCartArticle') {
             $Cart = Cart::findOrFail($id);
             $Cart->delete();                
         }
-        elseif($delType == 'delFavoriteReagent' || $delType == 'delFavoriteArticle') {
-            $Favorite = Favorite::findOrFail($id);
-            $Favorite->delete();
-        }
         return redirect()->route('SearchPage.index');
     }
 
+    /*カート発注数を更新する*/
+    public function updateCartOrderRequestNum(Request $request) {
+
+        $response = array();
+        $response['status'] = 'OK';
+        try{
+            $this->updateCartNumber($request->update_id,$request->order_number);
+        }
+        catch(Exception $e){
+            $response['status'] = $e->getMessage();
+        }
+        return Response::json($response);
+    }
+
+    /*カートの数を更新する*/
+    public function updateCartNumber($id,$number) {
+        $response = array();
+        $response['status'] = 'OK';
+        try{
+            $Cart = Cart::findOrFail($id);
+            if ($Cart->OrderRequestNumber != $number){
+                $Cart->OrderRequestNumber = $number;
+                $Cart->save();
+            }
+        }
+        catch(Exception $e){
+            throw $e;
+        }
+    }    
 }
