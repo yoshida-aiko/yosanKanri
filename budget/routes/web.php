@@ -25,11 +25,16 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/SearchPage/updateCartOrderRequestNum', 'SearchPageController@updateCartOrderRequestNum');
     Route::get('/SearchPage/updateFavorite', 'FavoriteController@updateFavorite');
     Route::get('/SearchPage/createFavoriteFolder', 'FavoriteController@createFavoriteFolder');
+    Route::get('/SearchPage/checkOrderRequest', 'SearchPageController@checkOrderRequest');
     Route::resource('/OrderRequest', 'OrderRequestController',['only' => ['index', 'update', 'destroy']]);
-    Route::get('/OrderRequest/updateListData', 'OrderRequestController@updateListData');
+    Route::get('/OrderRequest/updateListPrice', 'OrderRequestController@updateListPrice');
+    Route::get('/OrderRequest/moveToCart', 'OrderRequestController@moveToCart');
     Route::get('/OrderRequest/updateFavorite', 'FavoriteController@updateFavorite');
     Route::get('/OrderRequest/createFavoriteFolder', 'FavoriteController@createFavoriteFolder');
-    
+    Route::post('/OrderRequest/newProductStore', 'OrderRequestController@newProductStore');
+    Route::get('/OrderRequest/orderRequest', 'OrderRequestController@orderRequest');
+    Route::resource('/Order', 'OrderController',['only' => ['index', 'update', 'destroy']]);
+
     /*Route::get('/SearchPage/cartnumadd', 'SearchPageController@updateCartNumber');*/
     //Route::resource('/SearchPage', 'SearchPageController');
     //Route::post('/SearchPage', 'SearchPageController@folderAdd');
@@ -39,6 +44,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('/Maker','MakerController');
     Route::resource('/Budget','BudgetController');
 
+    Route::get('lang/{lang}', ['as'=>'lang.switch', 'uses'=>'LanguageController@switchLang']);
+    
 });
 
 Auth::routes();
