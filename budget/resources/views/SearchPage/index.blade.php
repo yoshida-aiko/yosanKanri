@@ -2,7 +2,6 @@
 
 @section('content')
 <script src="{{ asset('js/searchPageScript.js') }}" defer></script>
-
 <div class="container">
 <div class="wrapper">
 
@@ -12,11 +11,7 @@
         @csrf
         <div class="searchFormArea">
             @if (!empty($searchFormTab))
-                @if ($searchFormTab == 1)
-                <input type="radio" name="searchFormTab" id="tabReagent" value="1" checked >
-                @else
-                <input type="radio" name="searchFormTab" id="tabReagent" value="1" >
-                @endif
+                <input type="radio" name="searchFormTab" id="tabReagent" value="1" {{ $searchFormTab === '1' ? 'checked' : ''}} >
             @else
                 <input type="radio" name="searchFormTab" id="tabReagent" value="1" checked>
             @endif
@@ -47,11 +42,7 @@
                     @foreach ($Makers as $Maker)
                         <label for="Maker{{ $loop->iteration }}R" >
                         @if (!empty($makerCheckboxR))
-                            @if (in_array( $Maker->id ,$makerCheckboxR))
-                                <input type="checkbox" name="makerCheckboxR[]" id="Maker{{ $loop->iteration }}R" value="{{ $Maker->id }}" checked />
-                            @else
-                                <input type="checkbox" name="makerCheckboxR[]" id="Maker{{ $loop->iteration }}R" value="{{ $Maker->id }}" />
-                            @endif
+                            <input type="checkbox" name="makerCheckboxR[]" id="Maker{{ $loop->iteration }}R" value="{{ $Maker->id }}" {{ in_array( $Maker->id ,$makerCheckboxR) ? 'checked' : ''}} />
                         @else
                             <input type="checkbox" name="makerCheckboxR[]" id="Maker{{ $loop->iteration }}R" value="{{ $Maker->id }}"  />
                         @endif
@@ -65,11 +56,7 @@
                 </div>
             </div>
             @if (!empty($searchFormTab))
-                @if ($searchFormTab == 2)
-                <input type="radio" name="searchFormTab" id="tabArticle" value="2" checked >
-                @else
-                <input type="radio" name="searchFormTab" id="tabArticle" value="2" >
-                @endif
+                <input type="radio" name="searchFormTab" id="tabArticle" value="2" {{ $searchFormTab === '2' ? 'checked' : ''}}>
             @else
                 <input type="radio" name="searchFormTab" id="tabArticle" value="2" >
             @endif
@@ -95,11 +82,7 @@
                     @foreach ($Makers as $Maker)
                         <label for="Maker{{ $loop->iteration }}A" >
                         @if (!empty($makerCheckboxA))
-                            @if (in_array( $Maker->id ,$makerCheckboxA, true))
-                                <input type="checkbox" name="makerCheckboxA[]" id="Maker{{ $loop->iteration }}A" value="{{ $Maker->id }}" checked />
-                            @else
-                                <input type="checkbox" name="makerCheckboxA[]" id="Maker{{ $loop->iteration }}A" value="{{ $Maker->id }}" />
-                            @endif
+                            <input type="checkbox" name="makerCheckboxA[]" id="Maker{{ $loop->iteration }}A" value="{{ $Maker->id }}" {{ in_array( $Maker->id ,$makerCheckboxA) ? 'checked' : ''}} />
                         @else
                             <input type="checkbox" name="makerCheckboxA[]" id="Maker{{ $loop->iteration }}A" value="{{ $Maker->id }}" />
                         @endif
@@ -171,12 +154,13 @@
                         <form style="display:inline-block;" action="{{ route('SearchPage.update', $CatalogItem->id) }}" method="POST" >
                             @csrf
                             @method('PUT')
-                            <input type="submit" value="&#xf217;" name="btnCart" class="fa btn-cart-icon">
+                            <input type="button" value="&#xf217;" name="btnCart" class="fa btn-cart-icon">
                             <input type="submit" value="&#xf005;" name="btnFavorite" class="fa btn-favorite-icon">
                             <input type="hidden" value="" name="cartFavorite_submit_key">
+                            <input type="hidden" value="{{$CatalogItem->id}}" name="update_id" class="hidUpdateId">
                         </form>
                     </td>
-                    <td style="display:none;">{{$CatalogItem->maker->supllier->SupplierNameJp}}</td>
+                    <td style="display:none;">{{$CatalogItem->maker->supplier->SupplierNameJp}}</td>
                 </tr>
             @endforeach
             </tbody>
@@ -199,7 +183,7 @@
                     <table class="modal-detail-table">
                         <tbody>
                             <tr>
-                                <td>商品名：</td><td id="detailProductName"></td><td></td><td></td>
+                                <td>商品名：</td><td id="detailProductName" colspan="3"></td>
                             </tr>
                             <tr>
                                 <td>容量：</td><td id="detailAmount"></td><td>規格：</td><td id="detailStandard"></td>

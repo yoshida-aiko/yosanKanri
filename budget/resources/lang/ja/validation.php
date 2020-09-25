@@ -165,7 +165,11 @@ return [
         'ChargeUserJp' => '担当者名',
         'SupplierTel' => '電話番号', //発注先マスタの電話番号
         'Fax' => 'ファックス番号',
-        'MakerNameJp'  => 'メーカー名'
+        'MakerNameJp'  => 'メーカー名',
+        'budgetNameJp' => '予算名',
+        'budgetAmount' => '予算額',
+        'useStartDate' => '執行期間の開始日', 
+        'useEndDate' => '執行期間の終了日'
     ],
 
 ];

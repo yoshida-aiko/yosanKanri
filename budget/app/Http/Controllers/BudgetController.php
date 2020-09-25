@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Budget;
+use Carbon\Carbon;
 
 class BudgetController extends Controller
 {
@@ -13,13 +14,46 @@ class BudgetController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $Budgets = Budget::where('Status','=', 1)->get();
+        $Nendo = 0;
+        // 年度受け取り
+        if ($request->has('fiscalYear')){
+            $Nendo = $request->fiscalYear;
+        }
+        else {
+            $today = Carbon::today();
+
+            $Nendo = $today->year;
+            if ($Nendo < 4) {
+                $Nendo = $Nendo - 1;
+            }
+        }
+        $query = Budget::where('Status','=', 1);
+        $query->where('fiscalYear','=', $Nendo);
+        $Budgets = $query->get();
+
         $editBudget = new Budget();
-        //本年度
+
+        /*$thisYear = date('Y');       //本年度
+        $fiscalYears = array();
+        for ($year=2000; $year <= 2100 ; $year++) { 
+            array_push($fiscalYears,$year);
+        }
         
-        return view('Budget/index',compact('Budgets','editBudget'));
+        if (!empty($Nendo)) {
+            $query->where('fiscalYear','=', $Nendo);
+            $thisYear = $Nendo;
+        }else{
+            $query->where('fiscalYear','=', '2020');
+        }*/
+
+        
+        
+        
+        /*return view('Budget/index',compact('Budgets','editBudget','thisYear','fiscalYears'));*/
+
+        return view('Budget/index',compact('Budgets','editBudget','Nendo'));
     }
 
     /**
@@ -34,6 +68,21 @@ class BudgetController extends Controller
         return view('Budget\create',compact('Budget'));
     }
 
+   /*  public function select($fiscalYear)
+    {
+        $Budgets = Budget::where('Status','=', 1)
+        ->where('fiscalYear','=', $fiscalYear)
+        ->get();
+
+        $editBudget = new Budget();
+        $thisYear = date('Y');       //本年度
+        $fiscalYears = array();
+        for ($year=2000; $year <= 2100 ; $year++) { 
+            array_push($fiscalYears,$year);
+        }
+        
+        return view('Budget/index',compact('Budgets','editBudget','thisYear','fiscalYears'));
+    } */
     /**
      * Store a newly created resource in storage.
      *
@@ -99,11 +148,18 @@ class BudgetController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id,Request $request)
     {
-        $Budgets = Budget::where('Status','=', 1)->get();
+        $Budgets = Budget::where('Status','=', 1)
+        // ->where('fiscalYear','=', $request->fiscalYear)
+        ->get();
         $editBudget = Budget::findOrFail($id);
-        return view('Budget/index',compact('Budgets','editBudget'));
+        $thisYear = date('Y');       //本年度
+        $fiscalYears = array();
+        for ($year=2000; $year <= 2100 ; $year++) { 
+            array_push($fiscalYears,$year);
+        }
+        return view('Budget/index',compact('Budgets','editBudget','thisYear','fiscalYears'));
     }
 
     /**

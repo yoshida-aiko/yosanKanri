@@ -814,4 +814,7 @@ label.required:after {
 .frmBudgetMasterInput > div.form-group > select{
 	width:400px;
 }
+#useStartDate, #useEndDate{
+	width:150px;
+}
 

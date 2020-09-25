@@ -17,10 +17,14 @@ jQuery (function ()
         tblwidth = tblwidth - 120;
     }
 
+    // datepicker
+    $('#useStartDate').datepicker();
+    $('#useEndDate').datepicker();
+
     /*マスタ　クリアボタンクリック時*/
-  /*  $("#btn_Budget_clear").click(function() {
+   $("#btn_Budget_clear").click(function() {
        $("#frmBudgetMaster > div.form-group > input[type=text]").val("");
        $("#frmBudgetMaster > div.form-group > input[type=hidden]").val("");
        $("#frmBudgetMaster > div.form-group > select > option").prop('selected',false);
-   }); */
+   });
 })

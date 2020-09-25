@@ -29,11 +29,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.2/themes/default/style.min.css">
     
     <!-- jQuery UI -->
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous" defer></script>
+     <script src="{{ asset('js/jquery-ui.js') }}" defer></script>
+     <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet">
+     <link href="{{ asset('css/structure.css') }}" rel="stylesheet">
+     <link href="{{ asset('css/theme.css') }}" rel="stylesheet">
 
     <!--BlockUI-->
     <script type="text/javascript" src="{{ asset('js/jquery.blockUI.js') }}" defer></script>
-
+    
+    <!--datepicker-->
+    <script src="{{ asset('js/datepicker-ja.js') }}" defer></script>
+    
     <!--contextmenu-->
     <script type="text/javascript" src="{{ asset('js/popmenu.js') }}" defer></script>
     <link href="{{ asset('css/popmenu.css') }}" rel="stylesheet">

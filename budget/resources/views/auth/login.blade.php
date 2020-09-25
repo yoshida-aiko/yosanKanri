@@ -10,18 +10,26 @@
                 <div class="login-area-body col-md-7" style="margin-top:15%;">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
-
                         <div class="form-group row">
-                            <label for="userid" class="col-md-4 col-form-label text-md-right">{{ __('ログインID') }}</label>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-6">
+                                {{-- エラーメッセージ --}}
+                                @if ($errors->any())
+                                <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="userid" class="col-md-4 col-form-label text-md-right">{{ __('ユーザーID') }}</label>
 
                             <div class="col-md-6">
                                 <input id="userid" type="text" class="form-control" name="LoginAccount" value="{{ old('LoginAccount') }}" required autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
                             </div>
                         </div>
 
@@ -30,12 +38,6 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
                             </div>
                         </div>
 
@@ -59,7 +61,7 @@
 
                                 @if (Route::has('password.request'))
                                     <a class="btn" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
+                                        {{ __('パスワードを忘れた場合') }}
                                     </a>
                                 @endif
                             </div>

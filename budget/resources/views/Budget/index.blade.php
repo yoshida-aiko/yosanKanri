@@ -1,11 +1,19 @@
 @extends('layouts.app')
 
 @section('content')
+
 <script src="{{ asset('js/budgetScript.js') }}" defer></script>
 <div class="container">
 <h5 class="master-title">予算マスタ</h5>
 <div class="wrapper">
     <div class="divMasterList master5columnList">
+        <form  action="{{action('BudgetController@index')}}" method="get">
+        @csrf
+        <div class="form-group text-right">
+            <label for="fiscalYear">年度</label>
+            <input type="number" id="fiscalYear" name="fiscalYear" min="2001" max="2100" value="{{$Nendo}}" onchange="submit(this.form)">
+        </div>
+        </form>
         <table id="tblBudgetMasterList" class="table table-fixed table-masterFixed master5column table-striped">
             <thead>
                 <th></th>
@@ -56,6 +64,7 @@
                 ?>
             @endif
 
+            
             @csrf
             <div class="form-group">
                 <label for="budgetNameJp" class="required">予算名</label>
@@ -66,9 +75,9 @@
                 <input type="text" id="budgetAmount" name="ChargeUserJp" value="{{ $editBudget->budgetAmount }}" >
             </div>
             <div class="form-group">
-                <label for="Tel" class="required">執行期間</label>
-                <input type="date" id="useStartDate" name="useStartDate" value="{{ $editBudget->useStartDate }}">~
-                <input type="date" id="useEndDate" name="useEndDate" value="{{ $editBudget->useEndDate }}">
+                <label for="useDate" class="required">執行期間</label>
+                <input type="text" id="useStartDate" name="useStartDate" value="{{ $editBudget->useStartDate }}">~
+                <input type="text" id="useEndDate" name="useEndDate" value="{{ $editBudget->useEndDate }}">
             </div>
             <div class="form-group">
                 <label for="Fax">表示順</label>
