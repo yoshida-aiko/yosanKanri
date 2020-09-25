@@ -17,9 +17,15 @@ jQuery (function ()
         tblwidth = tblwidth - 120;
     }
 
-    // datepicker
+    // 執行期間　datepicker
     $('#useStartDate').datepicker();
     $('#useEndDate').datepicker();
+
+    // 年度が変更された場合　hidden項目に設定
+    $('[name=’fiscalYear’]').change(function() {
+		var year = $(this).val();
+        $('input:hidden[name="year"]').val("year");
+	});
 
     /*マスタ　クリアボタンクリック時*/
    $("#btn_Budget_clear").click(function() {

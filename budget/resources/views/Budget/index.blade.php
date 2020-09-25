@@ -72,7 +72,7 @@
            </div>
             <div class="form-group">
                 <label for="budgetAmount" class="required">予算額</label>
-                <input type="text" id="budgetAmount" name="ChargeUserJp" value="{{ $editBudget->budgetAmount }}" >
+                <input type="text" id="budgetAmount" name="budgetAmount" value="{{ $editBudget->budgetAmount }}" >
             </div>
             <div class="form-group">
                 <label for="useDate" class="required">執行期間</label>
@@ -87,6 +87,7 @@
                 <button id="submit_Budget_regist" name="submit_Budget_regist" class="btn btn-primary" >保存</button>
                 <input id="btn_Budget_clear" type="button" class="btn btn-secondary" value="クリア">
                 <input type="hidden" id="id" name="id" value="{{ $editBudget->id }}" >
+                <input type="hidden" id="year" name="year" value="{{$Nendo}}" >
             </div>
 
         </form>
