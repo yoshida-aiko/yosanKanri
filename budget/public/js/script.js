@@ -31,6 +31,23 @@ jQuery (function ()
         $(this).addClass("table-fixed-selectRow");
     });
 
+    $.fn.budgetAccordion = function() {
+        this.on('click', function(event) {
+            event.preventDefault();
+            if($(this).next('ul').length){
+                if ($(this).next('ul').css('display')=='none') {
+                    $(this).children('span').eq(0).removeClass('fa-caret-right').addClass('fa-caret-down');
+                    $(this).children('span').eq(1).removeClass('fa-folder').addClass('fa-folder-open');
+                }
+                else {
+                    $(this).children('span').eq(0).removeClass('fa-caret-down').addClass('fa-caret-right');
+                    $(this).children('span').eq(1).removeClass('fa-folder-open').addClass('fa-folder');
+                }
+                $(this).next('ul').slideToggle();
+            }
+        });
+    };
+
 
 })
 
@@ -39,6 +56,14 @@ function getToday(splitchar) {
     return today.getFullYear() + splitchar + 
         ( "0"+( today.getMonth()+1 ) ).slice(-2) + splitchar +
         ( "0"+today.getDate() ).slice(-2);
+}
+function getNendo() {
+    var today = new Date();
+    var nendo = today.getFullYear();
+    if(today.getMonth()+1 < 4){
+        nendo = nendo - 1;
+    }
+    return nendo;
 }
 function processing()
 {

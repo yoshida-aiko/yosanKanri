@@ -31,8 +31,8 @@
     <!-- jQuery UI -->
      <script src="{{ asset('js/jquery-ui.js') }}" defer></script>
      <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet">
-     <link href="{{ asset('css/structure.css') }}" rel="stylesheet">
-     <link href="{{ asset('css/theme.css') }}" rel="stylesheet">
+     <link href="{{ asset('css/jquery-ui.structure.css') }}" rel="stylesheet">
+     <link href="{{ asset('css/jquery-ui.theme.css') }}" rel="stylesheet">
 
     <!--BlockUI-->
     <script type="text/javascript" src="{{ asset('js/jquery.blockUI.js') }}" defer></script>

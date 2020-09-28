@@ -65,14 +65,6 @@
                                 @endforeach
                             </ul>
                             </div>
-                            <?php
-                            $editUser->LoginAccount = old('LoginAccount');
-                            $editUser->UserNameJp = old('UserNameJp');
-                            $editUser->Tel = old('Tel');
-                            $editUser->email = old('email');
-                            $editUser->Signature = old('Signature');
-                            $editUser->UseAuth = old('UserAuth');
-                            ?>
                         @endif
                     </section>
                 </div>
