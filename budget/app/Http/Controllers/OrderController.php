@@ -16,8 +16,10 @@ use App\Favorite;
 use App\Maker;
 use App\User;
 use App\Delivery;
+use App\Supplier;
 use Auth;
 use Carbon\Carbon;
+use PDF;
 
 class OrderController extends Controller
 {
@@ -162,10 +164,10 @@ class OrderController extends Controller
             }
         }
 
-        foreach($orderRequest_Orders as $orderRequest_Order){
+        //発注先
+        $Suppliers = Supplier::all();
 
-        }
-        return view('Order/index',compact('OrderRequests','arrayBudgetTree','orderRequest_Orders','arrayBudgetList','arrayBudgetForContext','itemclass'));
+        return view('Order/index',compact('OrderRequests','arrayBudgetTree','orderRequest_Orders','arrayBudgetList','arrayBudgetForContext','Suppliers','itemclass'));
     }
 
     /*削除*/
@@ -221,5 +223,43 @@ class OrderController extends Controller
         }
         return Response::json($response);
     }    
+    /*発注先の更新*/
+    public function updateSupplier(Request $request) {
+        
+        $response = array();
+        $response['status'] = 'OK';
+        
+        try{
+            $id = $request->id;
+            $supplierId = $request->supplierid;
+
+            $OrderRequest = OrderRequest::findOrFail($id);
+            if ($supplierId <> '') {
+                $OrderRequest->SupplierId = $supplierId;
+            }
+            $OrderRequest->save();
+        }
+        catch(Exception $e) {
+            $response['status'] = $e->getMessage();
+        }
+        return Response::json($response);
+    }
+
+    public function createPDF(Request $request) {
+        
+        $response = array();
+        $response['status'] = 'OK';
+        
+        try{
+
+            $id = $request->id;
+            $pdf = PDF::loadHTML('<h1>Hello World</h1>');
+        }
+        catch(Exception $e) {
+            $response['status'] = $e->getMessage();
+        }
+
+        return $pdf->inline();
+    }
 
 }
