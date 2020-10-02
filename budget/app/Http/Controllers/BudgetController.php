@@ -29,11 +29,11 @@ class BudgetController extends Controller
                 $Nendo = $Nendo - 1;
             }
         }
-        $query = Budget::where('Status','=', 1);
-        $query->where('fiscalYear','=', $Nendo)
-              ->orderByRaw('displayOrder IS NULL ASC')
-              ->orderBy('displayOrder', 'asc');
-        $Budgets = $query->get();
+
+        $Budgets = Budget::where('fiscalYear','=', $Nendo)
+                ->orderByRaw('displayOrder IS NULL ASC')
+                ->orderBy('displayOrder', 'asc')
+                ->get();
 
         foreach ($Budgets as $Budget) {
             $Budget->budgetAmount = number_format($Budget->budgetAmount);
@@ -99,8 +99,7 @@ class BudgetController extends Controller
         $Budget->displayOrder = $request->displayOrder;
 
         $Budget->save();
-        $Budgets = Budget::where('Status','=', 1)
-                ->where('fiscalYear','=', $Nendo)
+        $Budgets = Budget::where('fiscalYear','=', $Nendo)
                 ->orderByRaw('displayOrder IS NULL ASC')
                 ->orderBy('displayOrder', 'asc')
                 ->get();
@@ -130,11 +129,10 @@ class BudgetController extends Controller
         // Budgetテーブル情報取得
         $editBudget = Budget::findOrFail($id);  
         $Nendo = $editBudget->fiscalYear;
-        $query = Budget::where('Status','=', 1);
-        $query->where('fiscalYear','=', $Nendo)
-            ->orderByRaw('displayOrder IS NULL ASC')
-            ->orderBy('displayOrder', 'asc');
-        $Budgets = $query->get();
+        $Budgets = Budget::where('fiscalYear','=', $Nendo)
+                ->orderByRaw('displayOrder IS NULL ASC')
+                ->orderBy('displayOrder', 'asc')
+                ->get();
 
         foreach ($Budgets as $Budget) {
             $Budget->budgetAmount = number_format($Budget->budgetAmount);

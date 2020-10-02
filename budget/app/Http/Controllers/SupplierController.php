@@ -15,7 +15,7 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $Suppliers = Supplier::where('Status','=', 1)->get();
+        $Suppliers = Supplier::all();
         $editSupplier = new Supplier();
 
         return view('Supplier/index',compact('Suppliers','editSupplier'));
@@ -74,7 +74,7 @@ class SupplierController extends Controller
         $Supplier->EMail = $request->email;
 
         $Supplier->save();
-        $Suppliers = Supplier::where('Status','=', 1)->get();
+        $Suppliers = Supplier::all();
         $editSupplier = new Supplier();
 
         return view('Supplier/index',compact('Suppliers','editSupplier'));
@@ -88,7 +88,7 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
-        $Suppliers = Supplier::where('Status','=', 1)->get();
+        $Suppliers = Supplier::all();
         $editSupplier = Supplier::findOrFail($id);
         return view('Supplier/index',compact('Suppliers','editSupplier'));
     }

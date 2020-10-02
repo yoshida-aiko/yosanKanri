@@ -24,7 +24,7 @@ class SearchPageController extends Controller
         $isFirst = false;
 
         /*メーカーマスタを取得*/
-        $Makers = Maker::where('Status','=', 1)->get();
+        $Makers = Maker::all();
 
         $searchReagentName = '';
         $searchStandard = '';

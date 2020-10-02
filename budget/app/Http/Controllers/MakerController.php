@@ -16,11 +16,11 @@ class MakerController extends Controller
      */
     public function index()
     {
-        $Makers = Maker::where('Status','=', 1)->get();
+        $Makers = Maker::all();
 
         $editMaker = new Maker();
         //発注先取得
-        $Suppliers = Supplier::where('Status','=', 1)->select('id','SupplierNameJp')->get();
+        $Suppliers = Supplier::select('id','SupplierNameJp')->get();
         return view('Maker/index',compact('Makers','editMaker','Suppliers'));
     }
 
@@ -70,9 +70,9 @@ class MakerController extends Controller
         $Maker->MainSupplierId = $request->MainSupplierId;
 
         $Maker->save();
-        $Makers = Maker::where('Status','=', 1)->get();
+        $Makers = Maker::all();
         $editMaker = new Maker();
-        $Suppliers = Supplier::where('Status','=', 1)->select('id','SupplierNameJp')->get();
+        $Suppliers = Supplier::select('id','SupplierNameJp')->get();
 
         return view('Maker/index',compact('Makers','editMaker','Suppliers'));
     }
@@ -85,7 +85,7 @@ class MakerController extends Controller
      */
     public function edit($id)
     {
-        $Makers = Maker::where('Status','=', 1)->get();
+        $Makers = Maker::all();
         $editMaker = Maker::findOrFail($id);
         $Suppliers = Supplier::where('Status','=', 1)->get();
         
@@ -112,7 +112,7 @@ class MakerController extends Controller
         $Maker->save();
  
         $editMaker = new Maker();
-        $Suppliers = Supplier::where('Status','=', 1)->select('id','SupplierNameJp')->get();
+        $Suppliers = Supplier::select('id','SupplierNameJp')->get();
 
         return view('Maker/index',compact('Makers','editMaker','Suppliers'));
     }

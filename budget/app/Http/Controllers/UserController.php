@@ -23,14 +23,14 @@ class UserController extends Controller
 
     public function index()
     {
-        $Users = User::where('Status','=', 1)->get();
+        $Users = User::all();
         $editUser = new User();
 
         return view('User/index',compact('Users','editUser'));
     }
     public function edit($id)
     {
-        $Users = User::where('Status','=', 1)->get();
+        $Users = User::all();
         $editUser = User::findOrFail($id);
         $editUser->password = 'resetLink';
         return view('User/index',compact('Users','editUser'));
@@ -107,7 +107,7 @@ class UserController extends Controller
 
         $User->save();
 
-        $Users = User::where('Status','=', 1)->get();
+        $Users = User::all();
         $editUser = new User();
 
         return view('User/index',compact('Users','editUser'));
