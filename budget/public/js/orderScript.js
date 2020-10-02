@@ -36,7 +36,7 @@ jQuery (function ()
         if ($(".table-orderProcessingFixed").length > 0) {
             $(".table-orderProcessingFixed tbody").css('height', h - 400 + yosan + 'px');
             var tblwidth = parseInt($(".table-orderProcessingFixed").css('width').replace('px',''));
-            console.log(tblwidth);
+            
             tblwidth = tblwidth - 850;
             $(".table-orderProcessingFixed thead th:nth-child(4)").css('width',tblwidth + 'px');
             $(".table-orderProcessingFixed tbody td:nth-child(4)").css('width',tblwidth + 'px');
@@ -207,6 +207,69 @@ jQuery (function ()
         $('.spnOrderInputNumber').css('display','inline-block');
     });
 
+    $('.selOrderSelectSupplier').on({
+        "keypress":function(e) {
+            if (e.which == 13) {
+                var id=$(this).parent().parent().find('input[name=orderreqId]').val();
+                var selval = $(this).val();
+                var prevval = $(this).parent().children('.spnSupplierId').html();
+                var seltext = $(this).children('option:selected').text();
+                $(this).parent().children('.spnSupplierId').html(selval);
+                $(this).parent().children('.spnOrderSelectSupplier').html(seltext);
+                $(this).css('display','none');
+                $(this).parent().children('.spnOrderSelectSupplier').css('display','inline-block');
+                if (prevval != selval){
+                    var deferred = updateSupplier(id,selval);
+                    deferred.done(function(){
+                        $.unblockUI();
+                    });
+                }
+            }
+        },
+        "blur":function() {
+            var id=$(this).parent().parent().find('input[name=orderreqId]').val();
+            var selval = $(this).val();
+            var prevval = $(this).parent().children('.spnSupplierId').html();
+            var seltext = $(this).children('option:selected').text();
+            $(this).parent().children('.spnSupplierId').html(selval);
+            $(this).parent().children('.spnOrderSelectSupplier').html(seltext);
+            $(this).css('display','none');
+            $(this).parent().children('.spnOrderSelectSupplier').css('display','inline-block');
+            if (prevval != selval){
+                var deferred = updateSupplier(id,selval);
+                deferred.done(function(){
+                    $.unblockUI();
+                });
+            }
+        }
+    });    
+    $(".tdOrderSelectSupplier").click(function () {
+        if ($(this).children('.spnOrderSelectSupplier').css('display')!='none') {
+            $('.selOrderSelectSupplier').css('display','none');
+            $('.spnOrderSelectSupplier').css('display','inline-block');
+            $(this).children('.spnOrderSelectSupplier').css('display','none');
+            $(this).children('.selOrderSelectSupplier').css('display','inline-block');
+            console.log($(this).children('.spnSupplierId').html());
+            $('.selOrderSelectSupplier').val($(this).children('.spnSupplierId').html());
+            $(this).children('.selOrderSelectSupplier').focus();
+        }
+    });    
+
+    $(".table-orderProcessingFixed-t > td:not(.tdOrderSelectSupplier)").click(function() {
+        $('.spnOrderSelectSupplier').css('display','inline-block');
+    });
+
+    $("#btnCircle_Email").click(function() {
+
+    });
+    $("#btnCircle_PDF").click(function() {
+    
+    });
+    $("#btnCircle_Other").click(function() {
+        
+    });
+
+
     function updateOrder(id,price,ordernum) {
         processing();
         var deferred = new $.Deferred();
@@ -235,6 +298,35 @@ jQuery (function ()
         
         return deferred;
     }
+    function updateSupplier(id,supplierid) {
+        processing();
+        var deferred = new $.Deferred();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: 'Order/updateSupplier',
+            type: 'GET',
+            datatype: 'json',
+            data : {'id' : id, 'supplierid' : supplierid}
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if (data['status'] !== 'OK') {
+                alert('データ更新に失敗しました' + data['status']);
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            alert('データ更新に失敗しました' + data['status']);
+        })
+        .always(function(data) {
+            deferred.resolve();           
+        });
+        
+        return deferred;
+    }
+
 
 })
 
