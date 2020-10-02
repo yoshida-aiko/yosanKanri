@@ -365,6 +365,10 @@ button.ui-button::-moz-focus-inner {
 .ui-datepicker select.ui-datepicker-month,
 .ui-datepicker select.ui-datepicker-year {
 	width: 45%;
+	/* 年プルダウンの変更 */
+	height: 2em!important;      /* 高さ調整 */
+	margin-right:5px!important; /* 「年」との余白設定 */
+	width:70px!important;       /* 幅調整 */
 }
 .ui-datepicker table {
 	width: 100%;

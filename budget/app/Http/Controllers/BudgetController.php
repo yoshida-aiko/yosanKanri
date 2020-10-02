@@ -30,9 +30,15 @@ class BudgetController extends Controller
             }
         }
         $query = Budget::where('Status','=', 1);
-        $query->where('fiscalYear','=', $Nendo);
+        $query->where('fiscalYear','=', $Nendo)
+              ->orderByRaw('displayOrder IS NULL ASC')
+              ->orderBy('displayOrder', 'asc');
         $Budgets = $query->get();
 
+        foreach ($Budgets as $Budget) {
+            $Budget->budgetAmount = number_format($Budget->budgetAmount);
+        }
+        
         $editBudget = new Budget();
 
         return view('Budget/index',compact('Budgets','editBudget','Nendo'));
@@ -72,9 +78,9 @@ class BudgetController extends Controller
         $rules = [
             'budgetNameJp' => ['required', 'string', 'max:50'],
             'budgetAmount' => ['required', 'numeric'],
-            'useStartDate' => ['required','string', 'max:10'],
-            'useEndDate' => ['required','string', 'max:10'],
-            'displayOrder' => ['nullable', 'integer', 'max:11']
+            'useStartDate' => ['required','date', 'date_format:Y/m/d','max:10'],
+            'useEndDate' =>  ['required','date', 'date_format:Y/m/d','after:yesterday','max:10'],
+            'displayOrder' => ['nullable', 'integer']
         ];
         $this->validate($request, $rules);
 
@@ -95,21 +101,16 @@ class BudgetController extends Controller
         $Budget->save();
         $Budgets = Budget::where('Status','=', 1)
                 ->where('fiscalYear','=', $Nendo)
+                ->orderByRaw('displayOrder IS NULL ASC')
+                ->orderBy('displayOrder', 'asc')
                 ->get();
+        foreach ($Budgets as $Budget) {
+            $Budget->budgetAmount = number_format($Budget->budgetAmount);
+        }
+        
         $editBudget = new Budget();
 
         return view('Budget/index',compact('Budgets','editBudget','Nendo'));
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -120,24 +121,24 @@ class BudgetController extends Controller
      */
     public function edit($id,Request $request)
     {
-        $Nendo = 0;
-        // 年度受け取り
-        if ($request->has('fiscalYear')){
-            $Nendo = $request->fiscalYear;
+        // 年度　初期値設定
+        $today = Carbon::today();
+        $Nendo = $today->year;
+        if ($Nendo < 4) {
+            $Nendo = $Nendo - 1;
         }
-        else {
-            $today = Carbon::today();
-
-            $Nendo = $today->year;
-            if ($Nendo < 4) {
-                $Nendo = $Nendo - 1;
-            }
-        }
+        // Budgetテーブル情報取得
+        $editBudget = Budget::findOrFail($id);  
+        $Nendo = $editBudget->fiscalYear;
         $query = Budget::where('Status','=', 1);
-        $query->where('fiscalYear','=', $Nendo);
+        $query->where('fiscalYear','=', $Nendo)
+            ->orderByRaw('displayOrder IS NULL ASC')
+            ->orderBy('displayOrder', 'asc');
         $Budgets = $query->get();
 
-        $editBudget = Budget::findOrFail($id);
+        foreach ($Budgets as $Budget) {
+            $Budget->budgetAmount = number_format($Budget->budgetAmount);
+        }
 
         return view('Budget/index',compact('Budgets','editBudget','Nendo'));
     }
@@ -153,10 +154,10 @@ class BudgetController extends Controller
     {
         $rules = [
             'budgetNameJp' => ['required', 'string', 'max:50'],
-            'budgetAmount' => ['required', 'double'],
-            'useStartDate' => ['required','string', 'max:10'],
-            'useEndDate' => ['required','string', 'max:10'],
-            'displayOrder' => ['required', 'integer', 'max:11']
+            'budgetAmount' => ['required', 'numeric'],
+            'useStartDate' => ['required','date', 'date_format:Y/m/d','max:10'],
+            'useEndDate' =>  ['required','date', 'date_format:Y/m/d','after:yesterday','max:10'],
+            'displayOrder' => ['nullable', 'integer']
         ];
         $this->validate($request, $rules);
 
@@ -187,4 +188,5 @@ class BudgetController extends Controller
 
         return redirect()->route('Budget.index');
     }
+
 }

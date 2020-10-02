@@ -169,7 +169,8 @@ return [
         'budgetNameJp' => '予算名',
         'budgetAmount' => '予算額',
         'useStartDate' => '執行期間の開始日', 
-        'useEndDate' => '執行期間の終了日'
+        'useEndDate' => '執行期間の終了日', 
+        'displayOrder' => '表示順',
     ],
 
 ];

@@ -39,7 +39,8 @@ datepicker.regional.ja = {
 	isRTL: false,
 	showMonthAfterYear: true,
 	yearSuffix: "年",
-	showButtonPanel: true // "今日"ボタン, "閉じる"ボタンを表示する
+	showButtonPanel: true, // "今日"ボタン, "閉じる"ボタンを表示する
+	changeYear: true
 };
 datepicker.setDefaults( datepicker.regional.ja );
 

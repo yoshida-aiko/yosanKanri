@@ -752,16 +752,16 @@ label.required:after {
 }
 .master5column thead th:nth-child(2),
 .master5column tbody td:nth-child(2) {
-    width:290px !important;
+    width:250px !important;
 }
 .master5column thead th:nth-child(3),
 .master5column tbody td:nth-child(3) {
-    width:90px !important;
+    width:110px !important;
 }
 
 .master5column thead th:nth-child(4),
 .master5column tbody td:nth-child(4) {
-    width:160px !important;
+    width:180px !important;
 }
 .master5column thead th:nth-child(5),
 .master5column tbody td:nth-child(5) {
@@ -801,7 +801,8 @@ label.required:after {
 }
 /* 予算マスタ　フォーム */
 .frmBudgetMasterInput {
-	padding-top:10px;
+	margin-top:40px;
+	padding-top:6px;
 	min-width:600px;
 }
 .frmBudgetMasterInput >div.form-group > label {
@@ -810,11 +811,33 @@ label.required:after {
 	padding-right:10px;
 	vertical-align: top;
 }
-.frmBudgetMasterInput > div.form-group > input[type=text],
-.frmBudgetMasterInput > div.form-group > select{
+.frmBudgetMasterInput > div.form-group > input[type=text]{
 	width:400px;
 }
+.frmBudgetMasterInput #displayOrder{
+	width:100px;
+}
+/* スピンボタン 非表示 */
+/* Chrome、Safari Edge*/
+.frmBudgetMasterInput > div.form-group > input[type=number]::-webkit-outer-spin-button,
+.frmBudgetMasterInput > div.form-group > input[type=number]::-webkit-inner-spin-button
+{
+	-webkit-appearance: none;
+    margin: 0;
+}
+/* Firefox、IE */
+.frmBudgetMasterInput > div.form-group > input[type=number]{
+	-moz-appearance:textfield;
+}
+
 #useStartDate, #useEndDate{
 	width:150px;
 }
+.prev-masterTable {
+	margin-right: 20px;
+}
+#frmBudgetNendo >  div.form-group > input[type=number]{
+	width: 5em;
+}
+
 
