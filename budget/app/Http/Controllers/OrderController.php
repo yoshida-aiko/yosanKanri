@@ -8,6 +8,7 @@ use Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Library\BaseClass;
+use App\Mail\OrderEmail;
 use App\OrderRequest;
 use App\Order;
 use App\Budget;
@@ -17,9 +18,12 @@ use App\Maker;
 use App\User;
 use App\Delivery;
 use App\Supplier;
+use App\Sequence;
+use App\OrderSlip;
 use Auth;
 use Carbon\Carbon;
 use PDF;
+use Mail;
 
 class OrderController extends Controller
 {
@@ -173,7 +177,7 @@ class OrderController extends Controller
     /*削除*/
     public function destroy($id){
 
-        $OrderRequest = OrderRequest::findOrFail($id);
+       $OrderRequest = OrderRequest::findOrFail($id);
         $OrderRequest->delete();
 
         return redirect()->route('Order.index');
@@ -245,21 +249,189 @@ class OrderController extends Controller
         return Response::json($response);
     }
 
-    public function createPDF(Request $request) {
-        
+    public function orderExec(Request $request){
+
         $response = array();
         $response['status'] = 'OK';
+
+        try{
+            $arrayOrderRequestIds = $request->arrayOrderRequestIds;
+            $howToOrder = $request->howToOrderFlag;/*0:Mail 1:PDF 9:Other*/
+            $arrayOrderInformation = $this->orderProcessing($arrayOrderRequestIds,$howToOrder);
+            if ($arrayOrderInformation != null){
+                switch ($howToOrder)
+                {
+                    case 0: //Mail
+                        $this->orderSendMail($arrayOrderInformation);
+                        break;
+                    
+                    case 1: //PDF
+                        $this->createPDF($arrayOrderInformation);
+                        break;
+
+                    default: //Other
+                        break;
+                }
+            }
+
+        }
+        catch(Exception $e){
+            $response['status'] = $e->getMessage();
+        }
+        return Response::json($response);
+    }
+
+    public function orderProcessing($arrayOrderRequestIds,$howToOrder){
+        
+        $ret = "";
+        $today = Carbon::now();
+        $reqDt = $today->format('ymd');
+        $orderDt = $today->format('Y/m/d');
+        $arrayOrderInformation = [];
+        $arraychild = [];
+
+        DB::beginTransaction();
+        try{
+            /*１．発注依頼データを発注済に更新*/
+            $targetOrderRequests = OrderRequest::select(['order_requests.*','budgets.budgetNameJp as BudgetNameJp','budgets.budgetNameEn as BudgetNameEn'])
+            ->leftjoin('budgets', function($join) {
+                $join->on('order_requests.BudgetId','=','budgets.id');
+            })->whereIn('order_requests.id',$arrayOrderRequestIds)->get();
+            foreach($targetOrderRequests as $target){
+                $target->RequestProgress = 1;/*発注済*/
+                $target->OrderDate = $orderDt;
+                $target->save();
+            }
+            /*２．発注伝票テーブルの作成*/
+            /*1)発注伝票番号の取得 */
+            $Sequence = DB::table('sequences')->where('name','=','ORDER_SLIP_NO')->lockForUpdate()->first();
+            $currentNo = $Sequence->CurrentNo;
+
+            /*2)取得日付が当日以上だった場合、発注伝票番号をカウントアップして連番(Sequences)を更新*/
+            if($currentNo >= (float)($reqDt.'000001')){
+                $currentNo++;
+            }
+            else {
+                $currentNo = (float)($reqDt.'000001');
+            }
+
+            DB::table('sequences')->where('name','=','ORDER_SLIP_NO')->update(['CurrentNo' => $currentNo]);
+
+            /*1)発注伝票エンティティを作成 */
+            $groupBySuppliers = $targetOrderRequests->groupBy('SupplierId')->toArray();
+
+            foreach($groupBySuppliers as $groupBySupplier ){
+
+                $group = $groupBySupplier[0];
+
+                $OrderSlip = new OrderSlip();
+                $OrderSlip->OrderSlipNo = $currentNo;
+                $OrderSlip->OrderDate = $orderDt;
+                $OrderSlip->SupplierId = $group['SupplierId'];
+                $OrderSlip->UserId = Auth::id();
+                $OrderSlip->OrderMethod = $howToOrder;
+                $OrderSlip->save();
+
+                /*３．発注テーブル登録*/
+                $forOrders = $targetOrderRequests->where('SupplierId',$group['SupplierId']);
+                $authUser = Auth::user();
+                $supplierNameJp = '';
+                $supplierChargeUserJp = '';
+                $SupplierMailAddress = '';
+                foreach($forOrders as $forOrder){
+                    $Order = new Order();
+                    $Order->OrderSlipId = $OrderSlip->id;
+                    $Order->OrderRequestId = $forOrder->id;
+                    $Order->BudgetId = $forOrder->BudgetId;
+                    $Order->ItemId = $forOrder->ItemId;
+                    $Order->ItemClass = $forOrder->ItemClass;
+                    $Order->OrderDate = $orderDt;
+                    $Order->UnitPrice = $forOrder->UnitPrice;
+                    $Order->OrderNumber = $forOrder->RequestNumber;
+                    $Order->DeliveryNumber = 0;
+                    $Order->DeliveryProgress = 0;//0：未納
+                    $Order->save();
+
+                    $item_c = [
+                        'OrderItemNameJp' => $forOrder->item->ItemNameJp,
+                        'OrderItemNameEn' => $forOrder->item->ItemNameEn,
+                        'OrderStandard' => $forOrder->item->Standard,
+                        'OrderAmountUnit' => $forOrder->item->AmountUnit,
+                        'OrderCatalogCode' => $forOrder->item->CatalogCode,
+                        'OrderMakerNameJp' => $forOrder->item->MakerNameJp,
+                        'OrderNumber' => $forOrder->RequestNumber,
+                        'OrderRequestUserNameJp' => $authUser->UserNameJp,
+                        'OrderBudgetNameJp' => $forOrder->BudgetNameJp,
+                        'OrderRemark' => $forOrder->OrderRemark,
+                    ];
+                    array_push($arraychild,$item_c);
+
+                }
+
+                $supplierNameJp = $forOrders[0]->supplier->SupplierNameJp;
+                $supplierChargeUserJp = $forOrders[0]->supplier->ChargeUserJp;
+                $SupplierMailAddress = $forOrders[0]->supplier->EMail;
+
+                $arrayOrderInformation = [
+                    'OrderSlipNo' => $currentNo,
+                    'OrderDate' => $orderDt,
+                    'OrderMailTitle' => '発注のご依頼',
+                    'SupplierNameJp' => $supplierNameJp,
+                    'SupplierChargeUserJp' => $supplierChargeUserJp,
+                    'SupplierMailAddress' => $SupplierMailAddress,
+                    'FromUserNameJp' => $authUser->UserNameJp,
+                    'FromUserMailAddress' => $authUser->email,
+                    'FromUserSignature' => $authUser->Signature,
+                    'OrderRequests' => $arraychild,
+                ];
+                
+            }
+            
+            DB::rollback();
+            //DB::commit();
+            $ret = $arrayOrderInformation;
+        }
+        catch(Exception $e) {
+            DB::rollback();
+            throw $e;
+            $ret = "";
+        }
+
+        return $ret;
+    }
+
+
+    public function createPDF($arrayOrderInformation) {
         
         try{
-
             $id = $request->id;
             $pdf = PDF::loadHTML('<h1>Hello World</h1>');
         }
         catch(Exception $e) {
-            $response['status'] = $e->getMessage();
+            throw $e;
         }
 
         return $pdf->inline();
+        /*return Response::json($response);*/
+    }
+
+    public function orderSendMail($arrayOrderInformation){
+
+        $arrayMailAddress = explode(",", $arrayOrderInformation['SupplierMailAddress']);
+        $arrayMailAddress = array_map('trim', $arrayMailAddress);
+        $strMailAddress = implode(",",$arrayMailAddress);
+        $to = [
+            [
+                'name' => $arrayOrderInformation['SupplierNameJp'],
+                'email' => $strMailAddress
+            ]
+        ];
+        $cc = [
+            $arrayOrderInformation['FromUserMailAddress']
+        ];
+        Mail::to($to)->cc($cc)->send(new OrderEmail($arrayOrderInformation));
+        session()->flash('success', '送信いたしました！');
+        return back();
     }
 
 }
