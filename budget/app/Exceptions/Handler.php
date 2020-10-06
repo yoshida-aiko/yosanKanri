@@ -50,8 +50,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        // CSRFトークンのエラーの場合
+        if (get_class($exception) == 'Illuminate\Session\TokenMismatchException') {
+            return redirect()->to(url()->previous());
+          }
         return parent::render($request, $exception);
     }
-
-    
+   
 }
