@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Supplier;
+use App\Maker;
 use App\Rules\Exists;
 use App\Exceptions\ExclusiveLockException;
 
@@ -143,6 +144,11 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
+        //メーカーマスタの優先する発注先に登録されていれば、メッセージを出力
+        $exists = Maker::where('MainSupplierId',$id)->exists();
+        if ($exists) {
+            return redirect()->back()->with('MainSupplierIdError', '優先する発注先に指定しているメーカーがある為、削除できません');
+        }
         $Supplier = Supplier::lockForUpdate()->withTrashed()->find($id);
         $Supplier->delete();
 

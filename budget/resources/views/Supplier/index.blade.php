@@ -58,6 +58,13 @@
                 </ul>
             </div>
             @endif
+            @if (session('MainSupplierIdError'))
+            <div class="alert alert-danger">
+                <ul>
+                    <li>{{ session('MainSupplierIdError') }}</li>
+                </ul>
+            </div>
+            @endif
 
             @csrf
             <div class="form-group">
