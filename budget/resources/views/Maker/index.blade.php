@@ -24,7 +24,7 @@
                     </form>
                 </td>
                 <td><a href="{{ route('Maker.edit', $Maker->id) }}">{{$Maker->MakerNameJp}}</a></td>
-                <td>{{$Maker->supplier->SupplierNameJp}}</td>
+                <td>{{$Maker->supplier['SupplierNameJp'] ?? '' }}</td>
             </tr>
             @endforeach
             </tbody>

@@ -16,7 +16,7 @@ class MakerController extends Controller
      */
     public function index()
     {
-        $Makers = Maker::all();
+        $Makers = Maker::with(['supplier'])->get();
 
         $editMaker = new Maker();
         //発注先取得
@@ -70,7 +70,7 @@ class MakerController extends Controller
         $Maker->MainSupplierId = $request->MainSupplierId;
 
         $Maker->save();
-        $Makers = Maker::all();
+        $Makers = Maker::with(['supplier'])->get();
         $editMaker = new Maker();
         $Suppliers = Supplier::select('id','SupplierNameJp')->get();
 
@@ -85,7 +85,7 @@ class MakerController extends Controller
      */
     public function edit($id)
     {
-        $Makers = Maker::all();
+        $Makers = Maker::with(['supplier'])->get();
         $editMaker = Maker::findOrFail($id);
         $Suppliers = Supplier::where('Status','=', 1)->get();
         

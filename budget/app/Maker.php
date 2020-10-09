@@ -9,7 +9,7 @@ class Maker extends Model
 {
     //makers hasOne
     public function supplier() {
-        return $this->hasOne('App\Supplier','id','MainSupplierId');
+        return $this->belongsTo('App\Supplier','MainSupplierId','id');
     }
     
     //論理削除
