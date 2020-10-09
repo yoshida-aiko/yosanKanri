@@ -200,9 +200,9 @@ h5{
 .table-fixed tbody td::after,
 .table-fixed tbody th::after,
 .table-fixed thead > tr > th::after {
-	content: '';
+	/*content: '';
 	clear: both;
-	display: inline-block;
+	display: inline-block;*/
 }
 .table-fixed thead > tr > th {
 	white-space:nowrap;

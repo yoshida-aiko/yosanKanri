@@ -3,7 +3,7 @@ nav ul.navbar-nav{
     /*margin: 0 auto;*/
     padding: 0 ;
     /*width: 80%;*/
-    text-align: center;
+    /*text-align: center;*/
 }
 nav ul.navbar-nav li{
     width:100%;
@@ -31,6 +31,16 @@ nav ul.navbar-nav li:hover{
     color:#fff;
     margin:0;
     padding:0;
+}
+.navbar-top a {
+    text-decoration: none;
+}
+.dropdown-menu {
+    min-width:80px !important;
+}
+.dropdown-menu > li > a{
+    color:#000 !important;
+    padding:0 5px;
 }
 .navbar-login a {
     color:#fff;
@@ -96,9 +106,13 @@ nav ul.navbar-nav li:hover{
 	padding-right:3px;
 	color:#fff;    
 }
-#myNavbar {
-    min-width:740px;        
+.nav-menu-logout::before {
+	font-family: 'FontAwesome';
+	content:"\f08b";
+	padding-right:3px;
+	color:#154170;        
 }
+
 /*
     #myNavbar > li:before {
         position:absolute;
@@ -121,14 +135,18 @@ nav ul.navbar-nav li:hover{
     }*/
 
 @media (min-width:768px) {
+    nav ul.navbar-nav {
+        min-width:780px;  
+    }
     nav ul.navbar-nav li{
         display: table-cell;
-        width: 100px;        
+        width: 100px; 
+        text-align: center;       
         }
     nav ul.navbar-nav > li:not(.dropdown) > a:hover {
         color:#acb8ca !important;
     }
     .navbar-login {
-        width:150px;
+        width:130px;
     }
 }
