@@ -50,7 +50,14 @@
                 $editUser->UseAuth = old('UserAuth');
                 ?>
             @endif
-
+            @if (session('exclusiveError'))
+            <div class="alert alert-danger">
+                <ul>
+                    <li>{{ session('exclusiveError') }}</li>
+                </ul>
+            </div>
+            @endif
+            
             @csrf
             <div class="form-group">
                 <label for="LoginAccount" class="required">ユーザーID</label>

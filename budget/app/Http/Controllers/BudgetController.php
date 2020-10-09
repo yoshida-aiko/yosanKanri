@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Budget;
 use Carbon\Carbon;
+use App\Rules\Exists;
+use App\Exceptions\ExclusiveLockException;
 
 class BudgetController extends Controller
 {
@@ -120,25 +122,34 @@ class BudgetController extends Controller
      */
     public function edit($id,Request $request)
     {
-        // 年度　初期値設定
-        $today = Carbon::today();
-        $Nendo = $today->year;
-        if ($Nendo < 4) {
-            $Nendo = $Nendo - 1;
-        }
-        // Budgetテーブル情報取得
-        $editBudget = Budget::findOrFail($id);  
-        $Nendo = $editBudget->fiscalYear;
-        $Budgets = Budget::where('fiscalYear','=', $Nendo)
-                ->orderByRaw('displayOrder IS NULL ASC')
-                ->orderBy('displayOrder', 'asc')
-                ->get();
+        try {
+            $exists  = Budget::where('id',$id)->exists();
+            if (!$exists) {
+                throw new ExclusiveLockException;
+            }
+            // 年度　初期値設定
+            $today = Carbon::today();
+            $Nendo = $today->year;
+            if ($Nendo < 4) {
+                $Nendo = $Nendo - 1;
+            }
+            // Budgetテーブル情報取得
+            $editBudget = Budget::findOrFail($id);  
+            $Nendo = $editBudget->fiscalYear;
+            $Budgets = Budget::where('fiscalYear','=', $Nendo)
+                    ->orderByRaw('displayOrder IS NULL ASC')
+                    ->orderBy('displayOrder', 'asc')
+                    ->get();
 
-        foreach ($Budgets as $Budget) {
-            $Budget->budgetAmount = number_format($Budget->budgetAmount);
-        }
+            foreach ($Budgets as $Budget) {
+                $Budget->budgetAmount = number_format($Budget->budgetAmount);
+            }
 
-        return view('Budget/index',compact('Budgets','editBudget','Nendo'));
+            return view('Budget/index',compact('Budgets','editBudget','Nendo'));
+        } catch (ExclusiveLockException $e) {
+            throw $e;
+        }  
+        
     }
 
     /**

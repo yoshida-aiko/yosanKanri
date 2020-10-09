@@ -51,6 +51,13 @@
                 $editSupplier->EMail = old('EMail');
                 ?>
             @endif
+            @if (session('exclusiveError'))
+            <div class="alert alert-danger">
+                <ul>
+                    <li>{{ session('exclusiveError') }}</li>
+                </ul>
+            </div>
+            @endif
 
             @csrf
             <div class="form-group">

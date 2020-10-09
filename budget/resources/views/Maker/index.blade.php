@@ -48,7 +48,14 @@
                 $editMaker->MakerNameJp = old('MakerNameJp');
                 ?>
             @endif
-
+            @if (session('exclusiveError'))
+            <div class="alert alert-danger">
+                <ul>
+                    <li>{{ session('exclusiveError') }}</li>
+                </ul>
+            </div>
+            @endif
+            
             @csrf
             <div class="form-group">
                 <label for="MakerNameJp" class="required">メーカー名</label>

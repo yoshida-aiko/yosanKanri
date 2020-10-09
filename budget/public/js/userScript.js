@@ -39,5 +39,6 @@ jQuery (function ()
         $("#passwordLabel").addClass('resetLinkOn');
         $("#resetLinkInput").addClass('resetLinkOn');
 
+        $(".alert-danger").css('display','none');
     });
 })

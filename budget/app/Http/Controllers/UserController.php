@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 //use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\User;// as Authenticatable;;
+use App\Rules\Exists;
+use App\Exceptions\ExclusiveLockException;
 
 class UserController extends Controller
 {
@@ -30,10 +32,18 @@ class UserController extends Controller
     }
     public function edit($id)
     {
-        $Users = User::all();
-        $editUser = User::findOrFail($id);
-        $editUser->password = 'resetLink';
-        return view('User/index',compact('Users','editUser'));
+        try {
+            $Users = User::all();
+            $exists  = User::where('id',$id)->exists();
+            if (!$exists) {
+                throw new ExclusiveLockException;
+            }
+            $editUser = User::findOrFail($id);
+            $editUser->password = 'resetLink';
+            return view('User/index',compact('Users','editUser'));
+        } catch (ExclusiveLockException $e) {
+            throw $e;
+        }       
     }
 
     public function create()

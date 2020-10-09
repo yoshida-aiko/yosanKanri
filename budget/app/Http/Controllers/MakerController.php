@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Maker;
 use App\Supplier;
+use App\Rules\Exists;
+use App\Exceptions\ExclusiveLockException;
 
 class MakerController extends Controller
 {
@@ -85,11 +87,20 @@ class MakerController extends Controller
      */
     public function edit($id)
     {
-        $Makers = Maker::with(['supplier'])->get();
-        $editMaker = Maker::findOrFail($id);
-        $Suppliers = Supplier::where('Status','=', 1)->get();
+        try {
+            $Makers = Maker::with(['supplier'])->get();
+            $exists  = Maker::where('id',$id)->exists();
+            if (!$exists) {
+                throw new ExclusiveLockException;
+            }
+            $editMaker = Maker::findOrFail($id);
+            $Suppliers = Supplier::select('id','SupplierNameJp')->get();
         
-        return view('Maker/index',compact('Makers','editMaker','Suppliers'));
+            return view('Maker/index',compact('Makers','editMaker','Suppliers'));
+        } catch (ExclusiveLockException $e) {
+            throw $e;
+        }  
+        
     }
 
     /**

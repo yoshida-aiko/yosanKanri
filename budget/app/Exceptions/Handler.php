@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use App\Exceptions\ExclusiveLockException;
 
 class Handler extends ExceptionHandler
 {
@@ -53,7 +54,13 @@ class Handler extends ExceptionHandler
         // CSRFトークンのエラーの場合
         if (get_class($exception) == 'Illuminate\Session\TokenMismatchException') {
             return redirect()->to(url()->previous());
-          }
+        }
+        // 排他エラー
+        if($exception instanceof ExclusiveLockException) {
+            return redirect()->back()->with('exclusiveError', '他のユーザーから削除されたデータです。');
+        } 
+
+        
         return parent::render($request, $exception);
     }
    

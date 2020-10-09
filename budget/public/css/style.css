@@ -342,6 +342,13 @@ h5{
 	margin-left:auto;
 	margin-right:20px;
 }
+.table-masterFixed tbody td::after,
+.table-masterFixed tbody th::after,
+.table-masterFixed thead > tr > th::after {
+	content: '';
+	clear: both;
+	display: inline-block;
+}
 /*削除ボタン*/
 .table-masterFixed thead th:nth-child(1),
 .table-masterFixed tbody td:nth-child(1) {

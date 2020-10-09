@@ -23,6 +23,7 @@ jQuery (function ()
         $("#frmSupplierMaster > div.form-group > input[type=tel]").val("");
         $("#frmSupplierMaster > div.form-group > input[type=email]").val("");
         $("#frmSupplierMaster > div.form-group > input[type=hidden]").val("");
+        $(".alert-danger").css('display','none');
     });
 
 })

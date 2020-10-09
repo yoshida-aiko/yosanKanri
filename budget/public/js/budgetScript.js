@@ -61,5 +61,6 @@ jQuery (function ()
         $("#frmBudgetMaster > div.form-group > input[type=text]").val("");
         $("#frmBudgetMaster > div.form-group > input[type=number]").val("");
         $("#frmBudgetMaster > div.form-group > input[type=hidden]").val("");
+        $(".alert-danger").css('display','none');
     });
 })

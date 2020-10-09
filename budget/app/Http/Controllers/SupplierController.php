@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Supplier;
+use App\Rules\Exists;
+use App\Exceptions\ExclusiveLockException;
 
 class SupplierController extends Controller
 {
@@ -86,11 +88,20 @@ class SupplierController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        $Suppliers = Supplier::all();
-        $editSupplier = Supplier::findOrFail($id);
-        return view('Supplier/index',compact('Suppliers','editSupplier'));
+        try {
+            $Suppliers = Supplier::all();
+            $exists  = Supplier::where('id',$id)->exists();
+            if (!$exists) {
+                throw new ExclusiveLockException;
+            }
+               
+            $editSupplier = Supplier::findOrFail($id);    
+            return view('Supplier/index',compact('Suppliers','editSupplier'));
+        } catch (ExclusiveLockException $e) {
+            throw $e;
+        }     
     }
 
     /**
