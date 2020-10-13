@@ -70,6 +70,7 @@ class MakerController extends Controller
         }
         $Maker->MakerNameJp = $request->MakerNameJp;
         $Maker->MainSupplierId = $request->MainSupplierId;
+        $Maker->CatalogUseFlag= 0;
 
         $Maker->save();
         $Makers = Maker::with(['supplier'])->get();

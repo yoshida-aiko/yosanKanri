@@ -19,8 +19,13 @@
                     <form id="frmMakerDelete" action="{{ route('Maker.destroy', $Maker->id) }}" method='post'>
                         @csrf
                         @method('DELETE')
-                        <input type="submit" value="&#xf1f8;" 
-                            onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="btn-delete-icon resetLinkOff">
+                        @if ($Maker->CatalogUseFlag == "0")
+                            <input type="submit" value="&#xf1f8;" 
+                                onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="fa btn-delete-icon">
+                        @else
+                            <input type="submit" value="&#xf1f8;" 
+                                onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="btn-delete-icon resetLinkOff">
+                        @endif
                     </form>
                 </td>
                 <td><a href="{{ route('Maker.edit', $Maker->id) }}">{{$Maker->MakerNameJp}}</a></td>
