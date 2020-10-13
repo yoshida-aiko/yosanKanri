@@ -4,6 +4,7 @@
 <script src="{{ asset('js/budgetStatusScript.js') }}" defer></script>
 
 <div class="container">
+<div class="loading"><div class="loadingwrapper"><div class="ball-grid-pulse"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div><div class="loadingtext">loading...</div></div></div>
 <div class="wrapper" style="flex-direction:column;">
 
         <div class="flexmain">

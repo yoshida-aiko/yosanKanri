@@ -5,7 +5,7 @@
 
 
 <div class="container">
-<div class="loading"><div class="loadingwrapper"><div class="ball-grid-pulse"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>loading...</div></div>
+<div class="loading"><div class="loadingwrapper"><div class="ball-grid-pulse"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div><div class="loadingtext">loading...</div></div></div>
 <div id="divOrderRequestList" class="wrapper" style="padding-bottom: 0px;display:none;">
 
     <div class="leftside-fixed-400">
