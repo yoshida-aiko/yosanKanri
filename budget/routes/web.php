@@ -48,7 +48,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('/Delivery', 'DeliveryController', ['only' => ['index', 'update', 'destroy']]); 
     Route::get('/Delivery/insertDelivery', 'DeliveryController@insertDelivery');
     
-    Route::get('/BudgetStatus/index', 'BudgetStatusController@index')->name('BudgetStatus.index');
+    Route::resource('/BudgetStatus', 'BudgetStatusController', ['only' => ['index']]); 
+    Route::get('/BudgetStatus/getDetail', 'BudgetStatusController@getDetail');
 
     Route::get('/Purchase/index', 'PurchaseController@index')->name('Purchase.index');
 
