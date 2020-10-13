@@ -86,7 +86,7 @@
                                     <a class="dropdown-item" href="{{ route('Supplier.index') }}">{{ __('screenwords.master_supplier') }}</a>
                                     <a class="dropdown-item" href="{{ route('Maker.index') }}">{{ __('screenwords.master_maker') }}</a>
                                     <a class="dropdown-item" href="{{ route('Budget.index') }}">{{ __('screenwords.master_budget') }}</a>
-                                    <a class="dropdown-item" href="#">{{ __('screenwords.master_setting') }}</a>
+                                    <a class="dropdown-item" href="{{ route('Condition.index') }}">{{ __('screenwords.master_setting') }}</a>
                                 </div>
                             </li>
                             @endif
