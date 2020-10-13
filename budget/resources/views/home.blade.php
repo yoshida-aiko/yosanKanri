@@ -7,9 +7,9 @@
 <div class="wrapper">
 
     <div class="leftside-fixed-280">
-        <h6 class="h6-title">掲示板</h6>
+        <h6 class="h6-title">{{ __('screenwords.bulletinBoard') }}</h6>
         
-        <button type="button" id="btnModalBulletinBoad" class="btn btn-primary" >新規登録</button>
+        <button type="button" id="btnModalBulletinBoad" class="btn btn-primary" >{{ __('screenwords.newRegister') }}</button>
         <section class="info">
         @foreach($BulletinBoards as $BulletinBoard)
             <article class="bulletinArticle">
@@ -28,7 +28,7 @@
         <div  class="modal-dialog modal-sm100" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="Modal">掲示板</h5>
+                    <h5 class="modal-title" id="Modal">{{ __('screenwords.bulletinBoard') }}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -41,20 +41,20 @@
                         <input type="hidden" id="RegistUserId" name="RegistUserId" >
                         <input type="hidden" id="DeleteFlag" name="DeleteFlag" >
                         <div class="form-group" style="margin-top:10px;">
-                            <label for="RegistDate">登録日</label>
+                            <label for="RegistDate">{{ __('screenwords.registerDate') }}</label>
                             <input type="text" id="RegistDate" name="RegistDate" value="{{old('RegistDate')}}" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="Title" class="required">タイトル</label>
+                            <label for="Title" class="required">{{ __('screenwords.title') }}</label>
                             <input type="text" id="Title" name="Title" value="{{old('Title')}}" required="required" size="50">
                         </div>
                         <div class="form-group">
-                            <label for="Contents" class="required">内容</label>
+                            <label for="Contents" class="required">{{ __('screenwords.content') }}</label>
                             <textarea id="Contents" name="Contents" value="{{old('Contents')}}" rows="10" required="required" size="500"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="LimitDate" class="required">表示期限</label>
-                            <input type="date" id="LimitDate" name="LimitDate" value="{{old('LimitDate')}}"  required="required">
+                            <label for="LimitDate" class="required">{{ __('screenwords.displayLimit') }}</label>
+                            <input type="text" id="LimitDate" name="LimitDate" value="{{old('LimitDate')}}"  required="required">
                         </div>
                         {{-- エラーメッセージ --}}
                         @if ($errors->any())
@@ -69,11 +69,11 @@
                     </section>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" id="submit_bulletinboad_save" name="submit_bulletinboad" class="btn btn-primary" value="保存" />
-                    <input type="submit" id="submit_bulletinboad_delete" name="submit_bulletinboad" class="btn btn-primary" value="削除" 
-                            onClick="if (!confirm('削除しますか？')){ return false;} document.getElementById('DeleteFlag').value = '1'; return true;"  />
-                    <input type="button" id="btnBulletinBoadClear" class="btn btn-secondary" value="クリア">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                    <input type="submit" id="submit_bulletinboad_save" name="submit_bulletinboad" class="btn btn-primary" value="{{ __('screenwords.save') }}" />
+                    <input type="submit" id="submit_bulletinboad_delete" name="submit_bulletinboad" class="btn btn-primary" value="{{ __('screenwords.delete') }}" 
+                            onClick="if (!confirm('{{ __('messages.confirmDelete') }}')){ return false;} document.getElementById('DeleteFlag').value = '1'; return true;"  />
+                    <input type="button" id="btnBulletinBoadClear" class="btn btn-secondary" value="{{ __('screenwords.clear') }}">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('screenwords.close') }}</button>
                </div>
                </form>
             </div>
@@ -82,7 +82,7 @@
 
     </div>
     <div class="flexmain">
-    <h6 class="h6-title">進捗状況</h6>
+    <h6 class="h6-title">{{ __('screenwords.progressReport') }}</h6>
     <div class="pagenationStyle">{{$OrderRequests->links()}}</div>
     <div class="table-responsive">
     <table class="table table-fixed table-progressFixed table-striped" ><!--table-sm table-hover table-striped table-bordered progressTable-->

@@ -1,5 +1,18 @@
 jQuery (function ()
 {
+
+    if (sessionStorage.getItem('orderFavoriteIsVisible') !== null){
+        if (sessionStorage.getItem('orderFavoriteIsVisible')=='true'){
+            $(".leftside-fixed-240").show();
+        }
+        else {
+            $(".leftside-fixed-240").hide();
+        }
+    }
+    else {
+        $(".leftside-fixed-240").hide();
+    }
+    
     /*ウィンドウの高さを取得して、グリッドの高さを指定*/
     settingGridHeight();
 
@@ -21,12 +34,16 @@ jQuery (function ()
         }
     }
 
+    
     $("input[name=tabFavorite]").val([1]);
 
     /*絞込検索　表示・非表示ボタン*/
     $("#toggle-button-favorite").click(function() {
         $(".leftside-fixed-240").animate( { width: 'toggle', opacity: "toggle"},
-            { complete: function() {settingGridHeight();},
+            { complete: function() {
+                settingGridHeight();
+                sessionStorage.setItem('orderFavoriteIsVisible', $(".leftside-fixed-240").is(':visible'));
+            },
         }, 1000 );
         
     });
@@ -182,13 +199,8 @@ jQuery (function ()
         }
     });    
 
-    var jdataReagent = $.parseJSON($("#hidFavoriteTreeReagent").val());
-    var isToCartDisabled = false;
-    jsTreeCreate(jdataReagent,'OrderRequest','favoriteTreeReagent',isToCartDisabled);
-
-    var jdataArticle = $.parseJSON($("#hidFavoriteTreeArticle").val());
-    jsTreeCreate(jdataArticle,'OrderRequest','favoriteTreeArticle',isToCartDisabled);
-
+    jsTreeCreate('SearchPage','favoriteTree',isToCartDisabled);
+    
     function updateOrder(id,price,ordernum,remark) {
         processing();
         var deferred = new $.Deferred();
@@ -248,3 +260,11 @@ jQuery (function ()
     }
 
 })
+$(window).on("load", function(){
+    processing();
+    setTimeout('init()',1000);
+});
+
+function init() {
+    $.unblockUI();
+}

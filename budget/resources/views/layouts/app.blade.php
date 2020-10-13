@@ -60,44 +60,45 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <!-- Left Side Of Navbar -->
                         <ul id="myNavbar" class="navbar-nav mr-auto">
-                            <li class="current"><a href="{{ route('home') }}" class="nav-menu-home">トップ</a></li>
-                            <li><a href="{{ route('SearchPage.index') }}" class="nav-menu-search">検索</a></li>
-                            <li><a href="{{ route('OrderRequest.index') }}" class="nav-menu-orderrequest">発注依頼</a></li>
+                            <li class="current"><a href="{{ route('home') }}" class="nav-menu-home">{{ __('screenwords.top') }}</a></li>
+                            <li><a href="{{ route('SearchPage.index') }}" class="nav-menu-search">{{ __('screenwords.search') }}</a></li>
+                            <li><a href="{{ route('OrderRequest.index') }}" class="nav-menu-orderrequest">{{ __('screenwords.orderRequest') }}</a></li>
                             @if (strpos(Auth::user()->UserAuthString,'Order') !== false)
-                            <li><a href="{{ route('Order.index') }}" class="nav-menu-order">発注</a></li>
+                            <li><a href="{{ route('Order.index') }}" class="nav-menu-order">{{ __('screenwords.order') }}</a></li>
                             @endif
                             @if (strpos(Auth::user()->UserAuthString,'Delivery') !== false)
-                            <li><a href class="nav-menu-delivery">納品</a></li>
+                            <li><a href="{{ route('Delivery.index') }}" class="nav-menu-delivery">{{ __('screenwords.delivery') }}</a></li>
                             @endif
                             @if (strpos(Auth::user()->UserAuthString,'Payment') !== false)
-                            <li><a href="#" class="nav-menu-payment">支払</a></li>
+                            <li><a href="#" class="nav-menu-payment">{{ __('screenwords.payment') }}</a></li>
                             @endif
                             @if (strpos(Auth::user()->UserAuthString,'Budget') !== false)
-                            <li><a href="#" class="nav-menu-budget">予算状況</a></li>
+                            <li><a href="{{ route('BudgetStatus.index') }}" class="nav-menu-budget">{{ __('screenwords.budgetStatus') }}</a></li>
                             @endif
                             @if (strpos(Auth::user()->UserAuthString,'Purchase') !== false)
-                            <li><a href="#" class="nav-menu-purchase">購入履歴</a></li>
+                            <li><a href="{{ route('Purchase.index') }}" class="nav-menu-purchase">{{ __('screenwords.buyingHistory') }}</a></li>
                             @endif
                             @if (strpos(Auth::user()->UserAuthString,'Master') !== false) 
                             <li class="dropdown">
-                                <a class="dropdown-toggle nav-menu-master" href="#" data-toggle="dropdown" >マスタ</a>
+                                <a class="dropdown-toggle nav-menu-master" href="#" data-toggle="dropdown" >{{ __('screenwords.master') }}</a>
                                 <div class="dropdown-menu dropdown-menu-originalcolor" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('User.index') }}">ユーザー</a>
-                                    <a class="dropdown-item" href="{{ route('Supplier.index') }}">発注先</a>
-                                    <a class="dropdown-item" href="{{ route('Maker.index') }}">メーカーマスタ</a>
-                                    <a class="dropdown-item" href="{{ route('Budget.index') }}">予算マスタ</a>
-                                    <a class="dropdown-item" href="#">設定</a>
+                                    <a class="dropdown-item" href="{{ route('User.index') }}">{{ __('screenwords.master_user') }}</a>
+                                    <a class="dropdown-item" href="{{ route('Supplier.index') }}">{{ __('screenwords.master_supplier') }}</a>
+                                    <a class="dropdown-item" href="{{ route('Maker.index') }}">{{ __('screenwords.master_maker') }}</a>
+                                    <a class="dropdown-item" href="{{ route('Budget.index') }}">{{ __('screenwords.master_budget') }}</a>
+                                    <a class="dropdown-item" href="#">{{ __('screenwords.master_setting') }}</a>
                                 </div>
                             </li>
                             @endif
                         </ul>
 
                         <!-- Right Side Of Navbar -->
-                        <ul class="navbar-login">
+                        <!--<ul class="navbar-login">-->
+
+                            <ul class="navbar-login navbar-top">
                             <li class="nav-item dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                {{ Config::get('languages')[App::getLocale()] }}
-                            <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                {{ Config::get('languages')[App::getLocale()] }}<span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 @foreach (Config::get('languages') as $lang => $language)
                                     @if ($lang != App::getLocale())
@@ -108,6 +109,7 @@
                                 @endforeach
                             </ul>
                             </li>
+                            </ul>
                             <!-- Authentication Links -->
                             @guest
                                 <!--<li class="nav-item">
@@ -119,12 +121,24 @@
                                     </li> -->
                                 @endif
                             @else
+                            <ul class="navbar-login navbar-top">
                                 <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                    <a id="navbarDropdown" class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         {{ Auth::user()->UserNameJp }} <span class="caret"></span>
                                     </a>
-
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="{{ route('logout') }}"  class="nav-menu-logout"
+                                            onclick="event.preventDefault();
+                                                            document.getElementById('logout-form').submit();">
+                                                {{ __('Logout') }}
+                                            </a>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                                @csrf
+                                            </form>
+                                        </li>
+                                    </ul>
+                                    <!--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                         <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                                         document.getElementById('logout-form').submit();">
@@ -133,10 +147,11 @@
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                             @csrf
                                         </form>
-                                    </div>
+                                    </div>-->
                                 </li>
+                            </ul>
                             @endguest
-                        </ul>
+                        <!--</ul>-->
                     </div>
                 </div>
             </div>

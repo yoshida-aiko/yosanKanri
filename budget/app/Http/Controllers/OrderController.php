@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use App\Library\BaseClass;
 use App\Mail\OrderEmail;
 use App\OrderRequest;
@@ -39,9 +40,51 @@ class OrderController extends Controller
         }
 
         $useridlist = array(Auth::id(),'-1');
+
         /*OrderRequest*/
-        $OrderRequests = OrderRequest::whereIn('ReceiveUserId',$useridlist)->whereIn('ItemClass',$itemclassList)
+        if ($request->sort <> 'SupplierNameJp' &&
+            $request->sort <> 'OrderPrice' &&
+            $request->sort <> 'BudgetNameJp'
+        ){
+            $OrderRequests = OrderRequest::select([
+                'order_requests.*',
+                'order_requests.ItemClass as ItemClass',
+                'items.ItemNameJp as ItemNameJp',
+                'items.AmountUnit as AmountUnit',
+                'items.Standard as Standard',
+                'items.CatalogCode as CatalogCode',
+                'items.MakerNameJp as MakerNameJp',
+                'users.UserNameJp as RequestUserNameJp',
+            ])
+            ->leftjoin('items', function($join) {
+                $join->on('order_requests.ItemId','=','items.id');
+            })
+            ->leftjoin('users', function($join) {
+                $join->on('order_requests.RequestUserId','=','users.id');
+            })
+            ->whereIn('ReceiveUserId',$useridlist)->whereIn('order_requests.ItemClass',$itemclassList)
             ->where('RequestProgress','=',0)->where('BudgetId','=',-1)->sortable()->paginate(25);
+        }
+        else{
+            $OrderRequests = OrderRequest::select([
+                'order_requests.*',
+                'order_requests.ItemClass as ItemClass',
+                'items.ItemNameJp as ItemNameJp',
+                'items.AmountUnit as AmountUnit',
+                'items.Standard as Standard',
+                'items.CatalogCode as CatalogCode',
+                'items.MakerNameJp as MakerNameJp',
+                'users.UserNameJp as RequestUserNameJp',
+            ])
+            ->leftjoin('items', function($join) {
+                $join->on('order_requests.ItemId','=','items.id');
+            })
+            ->leftjoin('users', function($join) {
+                $join->on('order_requests.RequestUserId','=','users.id');
+            })
+            ->whereIn('ReceiveUserId',$useridlist)->whereIn('order_requests.ItemClass',$itemclassList)
+            ->where('RequestProgress','=',0)->where('BudgetId','=',-1)->paginate(25);            
+        }
         $parentTree = array();
         $childTree = array();
         /*予算リスト*/
@@ -54,10 +97,29 @@ class OrderController extends Controller
         /*Budget*/
         $parentBudgets = Budget::all();
         /*OrderRequest*/
-        $orderRequest_Orders = OrderRequest::select(['order_requests.*','budgets.budgetNameJp as BudgetNameJp','budgets.budgetNameEn as BudgetNameEn'])
+        $orderRequest_Orders = OrderRequest::select([
+            'order_requests.*',
+            'budgets.budgetNameJp as BudgetNameJp',
+            'budgets.budgetNameEn as BudgetNameEn',
+            'items.ItemNameJp as ItemNameJp',
+            'suppliers.SupplierNameJp as SupplierNameJp',
+            'users.UserNameJp as RequestUserNameJp',
+            'items.UnitPrice as UnitPrice',
+            DB::raw('order_requests.UnitPrice * order_requests.RequestNumber as OrderPrice')
+        ])
         ->leftjoin('budgets', function($join) {
             $join->on('order_requests.BudgetId','=','budgets.id');
-        })->whereIn('ReceiveUserId',$useridlist)->where('RequestProgress','=',0)->where('BudgetId','<>',-1)->sortable()->paginate(25);
+        })
+        ->leftjoin('suppliers', function($join) {
+            $join->on('order_requests.SupplierId','=','suppliers.id');
+        })
+        ->leftjoin('users', function($join) {
+            $join->on('order_requests.RequestUserId','=','users.id');
+        })
+        ->leftjoin('items', function($join) {
+            $join->on('order_requests.ItemId','=','items.id');
+        })
+        ->whereIn('ReceiveUserId',$useridlist)->where('RequestProgress','=',0)->where('BudgetId','<>',-1)->sortable()->paginate(25);
 
         /*$orderRequest_Orders = OrderRequest::whereIn('ReceiveUserId',$useridlist)
             ->where('RequestProgress','=',0)->where('BudgetId','<>',-1)->get();*/
@@ -253,32 +315,48 @@ class OrderController extends Controller
 
         $response = array();
         $response['status'] = 'OK';
-
+        $response['errorMsg'] = '';
+        $msg = '';
         try{
             $arrayOrderRequestIds = $request->arrayOrderRequestIds;
             $howToOrder = $request->howToOrderFlag;/*0:Mail 1:PDF 9:Other*/
             $arrayOrderInformation = $this->orderProcessing($arrayOrderRequestIds,$howToOrder);
-            if ($arrayOrderInformation != null){
+            if (is_array($arrayOrderInformation)){
                 switch ($howToOrder)
                 {
                     case 0: //Mail
-                        $this->orderSendMail($arrayOrderInformation);
+                        $msg = $this->orderSendMail($arrayOrderInformation);
                         break;
                     
-                    case 1: //PDF
-                        $this->createPDF($arrayOrderInformation);
-                        break;
-
+                    //case 1:
+                    //    $filename = $this->createPDF($arrayOrderInformation);
+                        /*$headers = [['Content-Type' => 'application/pdf']];
+                        $ret = Response::download($fileinfo[0],$fileinfo[1],$headers);
+                        return $pdf->download('order.pdf');*/
+                   //     $response['filename'] = $filename;
+                    //    break;
+                    
                     default: //Other
                         break;
                 }
             }
-
+            else {
+                $response['status'] = 'NG';
+                $response['errorMsg'] = $arrayOrderInformation;
+                
+            }
+            if ($msg!=""){
+                $response['status'] = 'NG';
+                $response['errorMsg'] = $msg;
+            }
         }
         catch(Exception $e){
-            $response['status'] = $e->getMessage();
+            $response['status'] = 'NG';
+            $response['errorMsg'] = $e->getMessage();
         }
+
         return Response::json($response);
+        
     }
 
     public function orderProcessing($arrayOrderRequestIds,$howToOrder){
@@ -319,26 +397,24 @@ class OrderController extends Controller
 
             /*1)発注伝票エンティティを作成 */
             $groupBySuppliers = $targetOrderRequests->groupBy('SupplierId')->toArray();
-
-            foreach($groupBySuppliers as $groupBySupplier ){
-
-                $group = $groupBySupplier[0];
+            foreach(array_keys($groupBySuppliers) as $groupBySupplier ){
 
                 $OrderSlip = new OrderSlip();
                 $OrderSlip->OrderSlipNo = $currentNo;
                 $OrderSlip->OrderDate = $orderDt;
-                $OrderSlip->SupplierId = $group['SupplierId'];
+                $OrderSlip->SupplierId = $groupBySupplier;
                 $OrderSlip->UserId = Auth::id();
                 $OrderSlip->OrderMethod = $howToOrder;
                 $OrderSlip->save();
 
                 /*３．発注テーブル登録*/
-                $forOrders = $targetOrderRequests->where('SupplierId',$group['SupplierId']);
+                $forOrders = $targetOrderRequests->where('SupplierId','=',$groupBySupplier);
                 $authUser = Auth::user();
                 $supplierNameJp = '';
                 $supplierChargeUserJp = '';
                 $SupplierMailAddress = '';
                 foreach($forOrders as $forOrder){
+
                     $Order = new Order();
                     $Order->OrderSlipId = $OrderSlip->id;
                     $Order->OrderRequestId = $forOrder->id;
@@ -366,13 +442,13 @@ class OrderController extends Controller
                     ];
                     array_push($arraychild,$item_c);
 
+                    $supplierNameJp = $forOrder->supplier->SupplierNameJp;
+                    $supplierChargeUserJp = $forOrder->supplier->ChargeUserJp;
+                    $SupplierMailAddress = $forOrder->supplier->EMail;
                 }
 
-                $supplierNameJp = $forOrders[0]->supplier->SupplierNameJp;
-                $supplierChargeUserJp = $forOrders[0]->supplier->ChargeUserJp;
-                $SupplierMailAddress = $forOrders[0]->supplier->EMail;
 
-                $arrayOrderInformation = [
+                $item_p = [
                     'OrderSlipNo' => $currentNo,
                     'OrderDate' => $orderDt,
                     'OrderMailTitle' => '発注のご依頼',
@@ -384,54 +460,113 @@ class OrderController extends Controller
                     'FromUserSignature' => $authUser->Signature,
                     'OrderRequests' => $arraychild,
                 ];
-                
+                $arraychild = [];
+                array_push($arrayOrderInformation,$item_p);
             }
             
-            DB::rollback();
-            //DB::commit();
+            DB::commit();
             $ret = $arrayOrderInformation;
         }
         catch(Exception $e) {
             DB::rollback();
             throw $e;
-            $ret = "";
+            $ret = $e->getMessage();
         }
 
         return $ret;
     }
 
 
-    public function createPDF($arrayOrderInformation) {
-        
+    //public function createPDF($arrayOrderRequestIds) {
+    public function createPDF(Request $request) {    
         try{
-            $id = $request->id;
-            $pdf = PDF::loadHTML('<h1>Hello World</h1>');
+            
+            $arrayOrderRequestIds = explode(",",$request->arrayOrderRequestIds);
+
+            $arrayOrderInformation = $this->orderProcessing($arrayOrderRequestIds,1);
+
+            if(is_array($arrayOrderInformation)){
+                $pdf = PDF::loadView('orderpdf',compact('arrayOrderInformation'))
+                    ->setPaper('A4')
+                    ->setOption('encoding','utf-8')
+                    ->setOption('margin-top', 10)
+                    ->setOption('margin-left', 10)
+                    ->setOption('margin-right', 10)
+                    ->setOption('orientation', 'Landscape')
+                    ->setOption('footer-font-size', 9)
+                    ->setOption('footer-center', '[page] ページ')
+                    ->setOption('footer-font-name', 'IPAexMincho');
+            }
         }
         catch(Exception $e) {
             throw $e;
         }
 
-        return $pdf->inline();
+        /*$now = Carbon::now();
+        $timesmp = $now->format('YmdHis');
+        $path = storage_path('pdf/');
+        $headers = array(
+            "Content-Type"=> "application/pdf"
+        );
+        $filename = 'order_'.Auth::id().'_'.$timesmp.'.pdf';
+        $fullpath = $path.$filename;
+        $pdf->save($fullpath);*/
+        //return Response::download($path,$filename,$headers);
+        //return $filename;
+
         /*return Response::json($response);*/
+
+        return $pdf->download('order.pdf');
     }
 
     public function orderSendMail($arrayOrderInformation){
 
-        $arrayMailAddress = explode(",", $arrayOrderInformation['SupplierMailAddress']);
-        $arrayMailAddress = array_map('trim', $arrayMailAddress);
-        $strMailAddress = implode(",",$arrayMailAddress);
-        $to = [
-            [
-                'name' => $arrayOrderInformation['SupplierNameJp'],
-                'email' => $strMailAddress
-            ]
-        ];
-        $cc = [
-            $arrayOrderInformation['FromUserMailAddress']
-        ];
-        Mail::to($to)->cc($cc)->send(new OrderEmail($arrayOrderInformation));
-        session()->flash('success', '送信いたしました！');
-        return back();
+        $retMessage = "";
+        foreach($arrayOrderInformation as $orderInformation){
+            $arrayMailAddress = explode(",", $orderInformation['SupplierMailAddress']);
+            $arrayMailAddress = array_map('trim', $arrayMailAddress);
+            $strMailAddress = implode(",",$arrayMailAddress);
+            $to = [];
+            foreach($arrayMailAddress as $emailaddr){
+                $item =[
+                    'email' => $emailaddr
+                ];
+                array_push($to,$item);
+            }
+            $cc = [
+                $orderInformation['FromUserMailAddress']
+            ];
+            Mail::to($to)->cc($cc)->send(new OrderEmail($orderInformation));
+        }
+        if(count(Mail::failures()) > 0){
+            $retMessage = "メール送信エラーアドレス：".Mail::failures();
+        }
+        return $retMessage;
     }
+
+    public function passwordHash(Request $request){
+
+        $Users = DB::connection('mysql_kobe')->select('select * from users where id=2');
+        
+        dd($Users[0]->LoginAccount.' '.Hash::check($Users[0]->name,$Users[0]->password));
+
+
+        //$User = User::findOrFail(1);;
+        //dd(Hash::check('info1180',$User->password));
+        
+        /*$Users = DB::connection('mysql_kobe')->select('select * from users');
+        foreach($Users as $item){
+            
+            $param = [
+                'id' => $item->id,
+                'password' => Hash::make($item->name)
+            ];
+            DB::connection('mysql_kobe')->update('UPDATE users set password = :password where id = :id',$param);
+            
+        }*/
+
+
+    }   
+
 
 }

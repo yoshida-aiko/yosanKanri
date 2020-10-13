@@ -3,8 +3,10 @@
 @section('content')
 <script src="{{ asset('js/orderScript.js') }}" defer></script>
 
+
 <div class="container">
-<div id="divOrderRequestList" class="wrapper" style="padding-bottom: 0px;">
+<div class="loading"><div class="loadingwrapper"><div class="ball-grid-pulse"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>loading...</div></div>
+<div id="divOrderRequestList" class="wrapper" style="padding-bottom: 0px;display:none;">
 
     <div class="leftside-fixed-400">
         <h6 class="h6-title">予算リスト</h6>
@@ -14,8 +16,13 @@
         <div id="budgetTree" class="budgetTree">
             @foreach ($arrayBudgetTree as $arrBudget)
             <div class="parentBudget">
+                @if ($arrBudget['children'] <> null)
                 <span class="fa fa-caret-down"></span>
                 <span class="fa fa-folder-open"></span>
+                @else
+                <span>&nbsp;</span>
+                <span class="fa fa-folder"></span>
+                @endif
                 <span>{{$arrBudget['BudgetNameJp']}}</span>
                 <span class="smalllabel">発注額:</span>
                 <span>{{$arrBudget['orderFee']}}</span>
@@ -63,15 +70,15 @@
                     <tr>
                         <th>&nbsp;</th>
                         <th class="align-center ">@sortablelink('ItemClass','種類')</th>
-                        <th>@sortablelink('item.ItemNameJp','商品名')</th>
-                        <th class="align-center ">@sortablelink('item.AmountUnit','容量')</th>
-                        <th class="align-center ">@sortablelink('item.Standard','カタログコード')</th>
-                        <th class="align-center ">@sortablelink('item.CatalogCode','カタログコード')</th>
-                        <th>@sortablelink('item.MakerNameJp','メーカー名')</th>
-                        <th class="align-center ">@sortablelink('item.UnitPrice','単価')</th>
+                        <th>@sortablelink('ItemNameJp','商品名')</th>
+                        <th class="align-center ">@sortablelink('AmountUnit','容量')</th>
+                        <th class="align-center ">@sortablelink('Standard','規格')</th>
+                        <th class="align-center ">@sortablelink('CatalogCode','カタログコード')</th>
+                        <th>@sortablelink('MakerNameJp','メーカー名')</th>
+                        <th class="align-center ">@sortablelink('UnitPrice','単価')</th>
                         <th class="align-center ">@sortablelink('RequestNumber','数量')</th>
-                        <th class="align-center ">@sortablelink('UnitPrice','金額')</th>
-                        <th class="align-center ">@sortablelink('user.UserNameJp','依頼者')</th>
+                        <th class="align-center ">金額</th>
+                        <th>@sortablelink('RequestUserNameJp','依頼者')</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -93,10 +100,10 @@
                                 物品
                             @endif
                         </td>
-                        <td>{{ $OrderRequest->item->ItemNameJp }}</td>
-                        <td class="align-center">{{ $OrderRequest->item->AmountUnit }}</td>
-                        <td class="align-center">{{ $OrderRequest->item->Standard }}</td>
-                        <td class="align-center">{{ $OrderRequest->item->CatalogCode }}</td>
+                        <td>{{ $OrderRequest->ItemNameJp }}</td>
+                        <td class="align-center">{{ $OrderRequest->AmountUnit }}</td>
+                        <td class="align-center">{{ $OrderRequest->Standard }}</td>
+                        <td class="align-center">{{ $OrderRequest->CatalogCode }}</td>
                         <td>{{ $OrderRequest->item->MakerNameJp }}</td>
                         <td class="align-right tdOrderInputNumber">
                         <?php
@@ -120,7 +127,7 @@
                             ?>
                             {{$TotalFee}}
                         </td>
-                        <td>{{ $OrderRequest->user->UserNameJp }}</td>
+                        <td>{{ $OrderRequest->RequestUserNameJp }}</td>
                         <td style="display:none;">
                             {{$OrderRequest->id}}
                         </td>
@@ -176,6 +183,7 @@
         <div class="divOrderHeaderButton">
             <input type="button" id="btnHowToOrder" class="btn btn-primary" value="発注" >
             <input type="button" id="btnReturnOrderRequestList" class="btn btn-secondary" value="戻る">
+            <input type="button" id="btnHash" class="btn btn-primary" value="Hash">
         </div>
         @if(!$orderRequest_Orders->isEmpty())
         <div class="pagenationStyle">
@@ -188,31 +196,39 @@
                     <tr>
                         <th>&nbsp;</th>
                         <th class="align-center"><input type="checkbox" name="chkTargetAll" checked ></th>
-                        <th>@sortablelink('item.AmountUnit','発注先')</th>
-                        <th>@sortablelink('item.Standard','商品名・容量・規格・カタログコード・メーカー')</th>
-                        <th class="align-center ">@sortablelink('item.CatalogCode','発注額')</th>
-                        <th>@sortablelink('item.UnitPrice','予算科目')</th>
-                        <th class="align-center ">@sortablelink('RequestNumber','備考')</th>
-                        <th>@sortablelink('user.UserNameJp','依頼者')</th>
+                        <th>@sortablelink('SupplierNameJp','発注先')</th>
+                        <th>@sortablelink('ItemNameJp','商品名・容量・規格・カタログコード・メーカー')</th>
+                        <th class="align-center ">@sortablelink('OrderPrice','発注額')</th>
+                        <th>@sortablelink('BudgetNameJp','予算科目')</th>
+                        <th class="align-center ">@sortablelink('OrderRemark','備考')</th>
+                        <th>@sortablelink('RequestUserNameJp','依頼者')</th>
                     </tr>
                 </thead>
                 <tbody>
                 @foreach ($orderRequest_Orders as $orderRequest_Order)
-                    <tr class="table-orderProcessingFixedtr">
+                    <tr class="table-orderProcessingFixed-tr">
                         <td>
-                            <form action="{{ route('Order.orderDestroy', $orderRequest_Order->id) }}" method='post'>
+                            <form action="{{ route('Order.destroy', $orderRequest_Order->id) }}" method='post'>
                                 @csrf
                                 @method('DELETE')
                                 <input type="submit" value="&#xf1f8;" 
                                     onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="fa btn-delete-icon">
                                 <input type="hidden" name="orderreqId" value="{{$orderRequest_Order->id}}">
-                            </form>
+                           </form>
                         </td>
                         <td class="align-center"><input type="checkbox" name="chkTarget[]" checked ></td>
-                        <td>{{ $orderRequest_Order->supplier->SupplierNameJp }}</td>
+                        <td class="tdOrderSelectSupplier">
+                            <span class="spnOrderSelectSupplier">{{ $orderRequest_Order->supplier->SupplierNameJp }}</span>
+                            <select class="selOrderSelectSupplier">
+                                @foreach ($Suppliers as $supplier)
+                                <option value="{{$supplier->id}}">{{$supplier->SupplierNameJp}}</option>
+                                @endforeach
+                            </select>
+                            <span class="spnSupplierId">{{ $orderRequest_Order->SupplierId }}</span>
+                        </td>
                         <td><p>{{ $orderRequest_Order->item->ItemNameJp }}</p><p>容量：{{$orderRequest_Order->item->AmountUnit}} 規格：{{$orderRequest_Order->item->Standard}} カタログコード：{{$orderRequest_Order->item->CatalogCode}} メーカー：{{$orderRequest_Order->item->MakerNameJp}}</p></td>
                         <?php
-                            $ordersum = number_format($orderRequest_Order->UnitPrice * $orderRequest_Order->OrderNumber)
+                            $ordersum = number_format($orderRequest_Order->UnitPrice * $orderRequest_Order->RequestNumber)
                         ?>
                         <td class="align-right">{{ $ordersum }}</td>
                         <td>{{ $orderRequest_Order->BudgetNameJp }}</td>
@@ -243,9 +259,12 @@
                     </div>
                     <div class="modal-body">
                         <div class="divCircleWrapper" >
-                            <div class="btnCircle"><span class="fa fa-envelope-o"></span></div>
-                            <div class="btnCircle"><span class="fa fa-file-pdf-o"></span></div>
-                            <div class="btnCircle"><span class="fa fa-pencil-square-o"></span></div>
+                            <div id="btnCircle_Email" class="btnCircle" title="e-Mailで発注"><span class="fa fa-envelope-o"></span><span>e-mail</span></div>
+                            <div id="btnCircle_PDF" class="btnCircle" title="注文書PDFを作成"  data-dismiss="modal"><span class="fa fa-file-pdf-o"></span><span>pdf</span></div>
+                            <form id="frmPdfOutput" action="{{action('OrderController@createPDF')}}" method="get">
+                                <input type="hidden" name="arrayOrderRequestIds" >
+                            </form>
+                            <div id="btnCircle_Other" class="btnCircle" title="その他の方法"><span class="fa fa-pencil-square-o"></span><span>other</span></div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -259,7 +278,7 @@
 <div class="toggle-fixed-40">
     <div id="toggle-button-order"></div>
 </div>
-<div class="bottom-fixed-200">
+<div class="bottom-fixed-200" style="display:none;">
     <table class="table table-fixed table-yosan-under-list table-striped">
         <thead>
             <tr>

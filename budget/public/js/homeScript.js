@@ -1,9 +1,9 @@
 jQuery (function ()
 {
 
-
     /*ウィンドウの高さを取得して、グリッドの高さを指定*/
     settingGridHeight();
+    
 
     $(window).resize(function () {
         settingGridHeight();
@@ -13,13 +13,15 @@ jQuery (function ()
         /*ウィンドウの高さを取得して、グリッドの高さを指定*/
         var h = window.innerHeight ? window.innerHeight : $(window).height();
         var w = window.innerWidth ? window.innerWidth : $(window).width();
-        $(".leftside-fixed-280").children(".info").css('height', h - 174 + 'px');
-        $(".table-progressFixed tbody").css('height', h - 222 + 'px');
+        $(".leftside-fixed-280").children(".info").css('height', h - 194 + 'px');
+        $(".table-progressFixed tbody").css('height', h - 242 + 'px');
         var tblwidth = parseInt($(".table-progressFixed").css('width').replace('px',''));
         tblwidth = tblwidth - 1100;
         $(".table-progressFixed thead th:nth-child(4)").css('width',tblwidth + 'px');
         $(".table-progressFixed tbody td:nth-child(4)").css('width',tblwidth + 'px');
     }
+
+    $('#LimitDate').datepicker();
 
     /*掲示板新規作成ボタンクリック時*/
     $("#btnModalBulletinBoad").click(function() {
@@ -71,3 +73,11 @@ jQuery (function ()
     });
     
 })
+$(window).on("load", function(){
+    processing();
+    setTimeout('init()',1000);
+});
+
+function init() {
+    $.unblockUI();
+}

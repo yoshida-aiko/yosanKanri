@@ -9,8 +9,6 @@
     <div class="leftside-fixed-240">
         @component('components.favorite')
             @slot('url','OrderRequest.update')
-            @slot('jsonFavoriteTreeReagent',$jsonFavoriteTreeReagent)
-            @slot('jsonFavoriteTreeArticle',$jsonFavoriteTreeArticle)
             @slot('itemClass',1)
         @endcomponent
     </div>
@@ -48,8 +46,8 @@
                         <th class="align-center ">@sortablelink('CatalogCode','カタログコード')</th>
                         <th>@sortablelink('MakerNameJp','メーカー名')</th>
                         <th class="align-center ">@sortablelink('UnitPrice','単価')</th>
-                        <th class="align-center ">@sortablelink('RequestNumber','数量')</th>
-                        <th class="align-center ">金額</th>
+                        <th class="align-center ">@sortablelink('OrderRequestNumber','数量')</th>
+                        <th class="align-center ">@sortablelink('OrderPrice','金額')</th>
                         <th>備考</th>
                     </tr>
                 </thead>

@@ -1,14 +1,24 @@
 jQuery (function ($)
 {  
-    /*$("#table-searchFixed-tr").draggable();
+    var itemClassSelected = 1;
+    if (sessionStorage.getItem('searchPageItemClasSelected') !== null){
+        itemClassSelected = sessionStorage.getItem('searchPageItemClasSelected');
+    }
+    $("input[name=searchFormTab]").val([itemClassSelected]);
+    $("input[name=tabCart]").val([itemClassSelected]);
+    $("input[name=tabFavorite]").val([itemClassSelected]);
 
-    $("#sectionOrderRequest").droppable({
-        accept : ".table-searchFixed-tr",
-        drop: function(event, ui) {
-            console.log("drop" + ui);
+    if (sessionStorage.getItem('searchPageNarrowDownSearchIsVisible') !== null){
+        if (sessionStorage.getItem('searchPageNarrowDownSearchIsVisible')==='true'){
+            $(".leftside-fixed-240").show();
         }
-    });*/
-
+        else {
+            $(".leftside-fixed-240").hide();
+        }
+    }
+    else {
+        $(".leftside-fixed-240").hide();
+    }
 
     $(".numCartOrderRequestNumber").on('input', function() {
         var cartid = $(this).parent("div").children("input[name=CartId]").val();
@@ -20,15 +30,8 @@ jQuery (function ($)
         }); 
     });
 
-    var jdataReagent = $.parseJSON($("#hidFavoriteTreeReagent").val());
-
-    jsTreeCreate(jdataReagent,'SearchPage','favoriteTreeReagent');
-
-    var jdataArticle = $.parseJSON($("#hidFavoriteTreeArticle").val());
-
-    jsTreeCreate(jdataArticle,'SearchPage','favoriteTreeArticle');
+    jsTreeCreate('SearchPage','favoriteTree');
     
-
     function updateOrderRequestNumber(cartid,ordernumber){
         processing();
         var deferred = new $.Deferred();
@@ -57,11 +60,6 @@ jQuery (function ($)
 
         return deferred;
     }
-
-    //$("input[name=searchFormTab]").val([1]);
-    $("input[name=tabCart]").val([$("input[name=searchFormTab]:checked").val()]);
-    $("input[name=tabFavorite]").val([$("input[name=searchFormTab]:checked").val()]);
-
 
     /*ウィンドウの高さを取得して、グリッドの高さを指定*/
     settingGridHeight();
@@ -100,7 +98,10 @@ jQuery (function ($)
     /*絞込検索　表示・非表示ボタン*/
     $("#toggle-button-searchpage").click(function() {
         $(".leftside-fixed-240").animate( { width: 'toggle', opacity: "toggle"},
-            { complete: function() {settingGridHeight();},
+            { complete: function() {
+                settingGridHeight();
+                sessionStorage.setItem('searchPageNarrowDownSearchIsVisible', $(".leftside-fixed-240").is(':visible'));
+            },
         }, 1000 );
         
     });
@@ -140,40 +141,31 @@ jQuery (function ($)
         }
     });
 
-    /*試薬　検索ボタンクリック*/
-    $("#submitReagent").click(function() {
-        $("#submit_key").val("1");
-    });
-
-    /*物品　検索ボタンクリック */
-    $("#submitArticle").click(function() {
-        $("#submit_key").val("2");
-    });
-
     /*カート追加ボタンクリック*/
-    $("input[name=btnCart]").click(function() {
+    /*$("input[name=btnCart]").click(function() {
         $("input[name=cartFavorite_submit_key]").val('btnCart');
-        $("#submit_key").val("btnCart");
-    });
+    });*/
 
     /*お気に入り追加ボタンクリック*/
-    $("input[name=btnFavorite]").click(function() {
+    /*$("input[name=btnFavorite]").click(function() {
         $("input[name=cartFavorite_submit_key]").val('btnFavorite');
-        $("#submit_key").val("btnFavorite");
-    });
+    });*/
 
     /*検索、発注依頼、お気に入りのタブ（試薬・物品）をを共通でセットする*/
     $("input[name=searchFormTab]").change(function() {
+        sessionStorage.setItem('searchPageItemClasSelected',$(this).val());
         $("input[name=tabCart]").val([$(this).val()]);
         $("input[name=tabFavorite]").val([$(this).val()]);
         $("input[name=tabSelectFolder]").val($(this).val());
     });
     $("input[name=tabCart]").change(function() {
+        sessionStorage.setItem('searchPageItemClasSelected',$(this).val());
         $("input[name=searchFormTab]").val([$(this).val()]);
         $("input[name=tabFavorite]").val([$(this).val()]);
         $("input[name=tabSelectFolder]").val($(this).val());
     });
     $("input[name=tabFavorite]").change(function() {
+        sessionStorage.setItem('searchPageItemClasSelected',$(this).val());
         $("input[name=tabCart]").val([$(this).val()]);
         $("input[name=searchFormTab]").val([$(this).val()]);
         $("input[name=tabSelectFolder]").val($(this).val());
@@ -185,36 +177,58 @@ jQuery (function ($)
         $(this).addClass("table-fixed-selectRow");
     });
 
-
-
-
-    /*$("#chkShared").change(function() {
-        console.log("chkShared:" + $("#chkShared").val());
-        if ($("#chkShared:checked").val() === '共用') {
-            $("#submit_chkSharedKey").val($("#chkShared:checked").val());
-            $(".searchConditionForm").submit();
-        }else{
-            $("#submit_chkSharedKey").val('');
-        }
-    });
-    $("#submit_chkSharedKey").change(function() {
-        console.log("submit_chkSharedKey:" + $("#submit_chkSharedKey").val());
-        $("#chkShared:checked").val($("#submit_chkSharedKey").val());
-    });*/
-
-    /*function checkOrderRequest(btn){*/
     $("input[name=btnCart]").click(function() {
-        var id = $(this).parent('form').children('.hidUpdateId').val();
-        var myform =  $(this).parent('form');
+        var id = $(this).parent('td').children('.hidUpdateId').val();
         var ret = checkOrderRequest(id);
         var deferred = ret.deferred;
         deferred.done(function(){
             $.unblockUI();
             if (ret.result) {
-                myform.submit();
+                cartAdd(id);
             }
         });  
     });
+
+    $("input[name=btnFavorite]").click(function() {
+        var id = $(this).parent('td').children('.hidUpdateId').val();
+        var deferred = favoriteAddAjax(id);
+        deferred.done(function(){
+            $.unblockUI();
+            location.reload();
+        });
+    });
+
+    function favoriteAddAjax(id) {
+        
+        processing();
+        var deferred = new $.Deferred();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: 'SearchPage/favoriteAddProcess',
+            type: 'GET',
+            datatype: 'json',
+            data : {'update_id' : id}
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if(data['status'] == 'NG'){
+                alert('データ更新に失敗しました');
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            alert('データ更新に失敗しました' + data['status']);
+            result = false;
+        })
+        .always(function(data) {
+            deferred.resolve();
+        });
+    
+        return deferred.promise();
+
+    }
 
     function checkOrderRequest(id) {
         var ret = new Object();
@@ -232,10 +246,13 @@ jQuery (function ($)
         })
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
-            if (data['status'] === 'Duplicate') {
+            if (data['status'] == 'Duplicate') {
                 if (!confirm("同じ商品が既に発注依頼されています。登録しますか？")){
                     result = false;
                 }
+            }
+            else if(data['status'] == 'NG'){
+                alert('データ更新に失敗しました');
             }
         })
         // Ajaxリクエスト失敗時の処理
@@ -254,6 +271,50 @@ jQuery (function ($)
 
     }
 
+    
+    function cartAdd(id){
+        var ret = cartAddAjax(id);
+        var deferred = ret.deferred;
+        deferred.done(function(){
+            $.unblockUI();
+            location.reload();
+        });  
+    }
+
+    function cartAddAjax(id) {
+        var ret = new Object();
+        processing();
+        var deferred = new $.Deferred();
+        var result = true;
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: 'SearchPage/cartAddProcess',
+            type: 'GET',
+            datatype: 'json',
+            data : {'update_id' : id}
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if(data['status'] == 'NG'){
+                alert('データ更新に失敗しました');
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            alert('データ更新に失敗しました' + data['status']);
+            result = false;
+        })
+        .always(function(data) {
+            deferred.resolve();
+        });
+        
+        ret.result = result;
+        ret.deferred = deferred;
+
+        return ret;
+
+    }
+
 })
-
-

@@ -144,9 +144,22 @@ class SearchPageController extends Controller
         $Carts = Cart::where('UserId','=', Auth::id())->orderBy('id','asc')->get();
 
         /*お気に入りを取得*/
-        list($jsonFavoriteTreeReagent,$jsonFavoriteTreeArticle) = BaseClass::getFavoriteTree();
+        return view('SearchPage/index',compact('CatalogItems','Makers','Carts','searchFormTab','searchReagentNameR','searchStandardR','searchCasNoR','searchCatalogCodeR','makerCheckboxR','searchReagentNameA','searchStandardA','searchCatalogCodeA','makerCheckboxA'));
+    }
 
-        return view('SearchPage/index',compact('CatalogItems','Makers','Carts','jsonFavoriteTreeReagent','jsonFavoriteTreeArticle','searchFormTab','searchReagentNameR','searchStandardR','searchCasNoR','searchCatalogCodeR','makerCheckboxR','searchReagentNameA','searchStandardA','searchCatalogCodeA','makerCheckboxA'));
+    public function getData_Favorite(Request $request){
+
+        $response = array();
+        $response['status'] = 'OK';
+        try{
+            list($jsonFavoriteTreeReagent,$jsonFavoriteTreeArticle) = BaseClass::getFavoriteTree();
+            $response['jsonFavoriteTreeReagent'] = $jsonFavoriteTreeReagent;
+            $response['jsonFavoriteTreeArticle'] = $jsonFavoriteTreeArticle;
+        }
+        catch(Exception $e){
+            $response['status'] = 'NG';
+        }
+        return Response::json($response);
     }
 
     public function checkOrderRequest(Request $request) {
@@ -154,7 +167,7 @@ class SearchPageController extends Controller
         $response = array();
         $response['status'] = 'OK';
         try{
-            $id = $request->update_id;
+           $id = $request->update_id;
             //Cartに追加しようとしている商品
             $CatalogItem = CatalogItem::findOrFail($id);
             //OrderRequestされている商品
@@ -181,16 +194,18 @@ class SearchPageController extends Controller
 
     /*発注依頼カート、お気に入りに追加*/
     public function update($id) {
-        $submitkey = PostRequest::input('cartFavorite_submit_key');
+        //$submitkey = PostRequest::input('cartFavorite_submit_key');
         /*ページの引き継のため*/
         $page = PostRequest::session()->get('searchPageCatalogItemWhere_page');
-
-        if ($submitkey == 'btnCart') {
+        /*if ($submitkey == 'btnCart') {
             BaseClass::cartAdd($id);
         }
-        elseif($submitkey == 'btnFavorite'){
+        else*/
+
+        
+        //if($submitkey == 'btnFavorite'){
             BaseClass::favoriteAdd($id);
-        }
+        /*}
         else{
             $ItemClass = PostRequest::input('tabSelectFolder');
             if ($ItemClass === null) {
@@ -198,9 +213,43 @@ class SearchPageController extends Controller
             }
             $FolderName = PostRequest::input('FolderName');
             BaseClass::folderAdd($ItemClass,$FolderName);
-        }
+        }*/
         
         return redirect()->route('SearchPage.index',['page' => $page]);
+    }
+
+    public function favoriteAddProcess(Request $request){
+
+        $response = array();
+        $response['status'] = 'OK';
+        
+        try{
+            $page = PostRequest::session()->get('searchPageCatalogItemWhere_page');
+            $id = $request->update_id;
+            BaseClass::favoriteAdd($id);
+        }
+        catch(Exception $e){
+            $response['status'] = $e->getMessage();
+        }
+        return Response::json($response);
+               
+    }
+
+    public function cartAddProcess(Request $request){
+
+        $response = array();
+        $response['status'] = 'OK';
+        
+        try{
+            $page = PostRequest::session()->get('searchPageCatalogItemWhere_page');
+            $id = $request->update_id;
+            BaseClass::cartAdd($id);
+        }
+        catch(Exception $e){
+            $response['status'] = $e->getMessage();
+        }
+        return Response::json($response);
+               
     }
 
     /*発注依頼削除*/

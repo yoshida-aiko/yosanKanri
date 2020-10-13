@@ -21,7 +21,11 @@ class OrderRequestController extends Controller
     public function index(Request $request){
 
         /*Cart*/
-        $Carts = Cart::select(['carts.*','suppliers.SupplierNameJp as SupplierName'])
+        $Carts = Cart::select([
+            'carts.*',
+            DB::raw('carts.UnitPrice * carts.OrderRequestNumber as OrderPrice'),
+            'suppliers.SupplierNameJp as SupplierName'
+        ])
         ->leftjoin('suppliers', function($join) {
             $join->on('carts.SupplierId','=','suppliers.id');
         })->where('UserId','=',Auth::id())->sortable()->paginate(25);
@@ -32,12 +36,24 @@ class OrderRequestController extends Controller
         /*Users*/
         $Users = User::where('UserAuthString','like', '%Order%')->get();
 
-        /*お気に入りを取得*/
-        list($jsonFavoriteTreeReagent,$jsonFavoriteTreeArticle) = BaseClass::getFavoriteTree();
-
-        return view('OrderRequest/index',compact('Carts','Makers','Users','jsonFavoriteTreeReagent','jsonFavoriteTreeArticle'));
+        return view('OrderRequest/index',compact('Carts','Makers','Users'));
     }
 
+    public function getData_Favorite(Request $request){
+
+        $response = array();
+        $response['status'] = 'OK';
+        try{
+            list($jsonFavoriteTreeReagent,$jsonFavoriteTreeArticle) = BaseClass::getFavoriteTree();
+            $response['jsonFavoriteTreeReagent'] = $jsonFavoriteTreeReagent;
+            $response['jsonFavoriteTreeArticle'] = $jsonFavoriteTreeArticle;
+        }
+        catch(Exception $e){
+            $response['status'] = 'NG';
+        }
+        return Response::json($response);
+    }
+    
     /*お気に入りから発注依頼リストへ*/
     public function moveToCart(Request $request) {
         

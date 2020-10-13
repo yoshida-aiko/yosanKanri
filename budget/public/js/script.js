@@ -68,7 +68,7 @@ function getNendo() {
 function processing()
 {
 	$.blockUI({
-		message: '処理中です。お待ち下さい...',
+		message: '<div class="loadingtext"><div class="ball-grid-pulse"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>loading...</div>',
 	    fadeIn: 200,
 	    fadeOut: 0,
 	    overlayCSS:  {
@@ -77,20 +77,54 @@ function processing()
 	         cursor: 'wait'
 	    },
 	    css: {
-	        padding: '5px 15px 5px 15px',
+	        padding: '5px 5px 5px 15px',
 	        margin: 0,
-	        height: '40px',
+	        height: '60px',
 	        width: '200px',
 	        border: '1px solid #aaa',
             color: '#666666',
-            fontSize: '12px',
+            fontSize: '16px',
 			textAlign:'center',
 			boxShadow: '10px 10px 10px 10px rgba(0,0,0,0.8)'
 	    }
 	});
 }
 
-function jsTreeCreate(jsondata,url,id,isToCartDisabled=true) {
+function jsTreeCreate(url,id,isToCartDisabled=true) {
+
+    processing();
+    var deferred = new $.Deferred();
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: 'SearchPage/getData_Favorite',
+        type: 'GET',
+        datatype: 'json',
+    })
+    // Ajaxリクエスト成功時の処理
+    .done(function(data) {
+        if (data['status'] == 'OK') {
+            var id_Reagent = id + 'Reagent';
+            var id_Article = id + 'Article';
+            jsTreeCreate_sub($.parseJSON(data['jsonFavoriteTreeReagent']),url,id_Reagent,isToCartDisabled);
+            jsTreeCreate_sub($.parseJSON(data['jsonFavoriteTreeArticle']),url,id_Article,isToCartDisabled);
+        }
+        else {
+            alert('データ取得に失敗しました' + data['status']);
+        }
+    })
+    // Ajaxリクエスト失敗時の処理
+    .fail(function(data) {
+        alert('データ更新に失敗しました5555' + data['status']);
+    })
+    .always(function(data) {
+        $.unblockUI();
+        deferred.resolve();
+    });
+}
+
+function jsTreeCreate_sub(jsondata,url,id,isToCartDisabled) {
 
     $('#' + id).jstree({
         "core":{
@@ -108,12 +142,14 @@ function jsTreeCreate(jsondata,url,id,isToCartDisabled=true) {
         "contextmenu":{
             "items": function($node) {
                 var tree = $('#' + id).jstree(true);
+                var isNodata = $node.original.key<=-100 ? true : false;
                 return {
                     "Delete": {
                         "separator_before": false,
                         "separator_after": false,
                         "label": "削除",
                         "icon": "contextmenu_deleteicon",
+                        "_disabled" : isNodata,
                         "action": function (obj) {
                             if (confirm('削除しますか？')){
                                 deletekey = $node.original.key;
@@ -141,6 +177,7 @@ function jsTreeCreate(jsondata,url,id,isToCartDisabled=true) {
                                             var deferred = createFolderTreeAjax(url,data.text,itemclass);
                                             deferred.done(function(){
                                                 $.unblockUI();
+                                                location.reload();
                                             });
                                          });
                                         
@@ -155,7 +192,7 @@ function jsTreeCreate(jsondata,url,id,isToCartDisabled=true) {
                         "separator_after": false,
                         "label": "リストに追加",
                         "icon": "contextmenu_movetocarticon",
-                        "_disabled": isToCartDisabled,
+                        "_disabled": isToCartDisabled || isNodata,
                         "action": function (obj) {
                             itemkey = $node.original.key;
                             var deferred = moveToCartTreeAjax(url,itemkey);
