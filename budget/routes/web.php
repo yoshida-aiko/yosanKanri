@@ -26,6 +26,10 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/SearchPage/updateFavorite', 'FavoriteController@updateFavorite');
     Route::get('/SearchPage/createFavoriteFolder', 'FavoriteController@createFavoriteFolder');
     Route::get('/SearchPage/checkOrderRequest', 'SearchPageController@checkOrderRequest');
+    Route::get('/SearchPage/cartAddProcess', 'SearchPageController@cartAddProcess');
+    Route::get('/SearchPage/favoriteAddProcess', 'SearchPageController@favoriteAddProcess');
+    Route::get('/SearchPage/getData_Favorite', 'SearchPageController@getData_Favorite');
+
     Route::resource('/OrderRequest', 'OrderRequestController',['only' => ['index', 'update', 'destroy']]);
     Route::get('/OrderRequest/updateListPrice', 'OrderRequestController@updateListPrice');
     Route::get('/OrderRequest/moveToCart', 'OrderRequestController@moveToCart');
@@ -33,17 +37,28 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/OrderRequest/createFavoriteFolder', 'FavoriteController@createFavoriteFolder');
     Route::post('/OrderRequest/newProductStore', 'OrderRequestController@newProductStore');
     Route::get('/OrderRequest/orderRequest', 'OrderRequestController@orderRequest');
-    Route::resource('/Order', 'OrderController',['only' => ['index', 'update', 'destroy']]);
+    Route::get('/OrderRequest/getData_Favorite', 'SearchPageController@getData_Favorite');
 
-    /*Route::get('/SearchPage/cartnumadd', 'SearchPageController@updateCartNumber');*/
-    //Route::resource('/SearchPage', 'SearchPageController');
-    //Route::post('/SearchPage', 'SearchPageController@folderAdd');
-    //Route::get('/SearchPage','SearchPageController@treeFavorite')->name('SearchPage.treeFavorite');
+    Route::resource('/Order', 'OrderController',['only' => ['index', 'update', 'destroy']]);
+    Route::get('/Order/updateListPrice', 'OrderController@updateListPrice');
+    Route::get('/Order/updateSupplier', 'OrderController@updateSupplier');
+    Route::get('/Order/updateOrderRequestGiveBudget', 'OrderController@updateOrderRequestGiveBudget');
+    Route::get('/Order/orderExec', 'OrderController@orderExec');
+    Route::get('/Order/createPDF', 'OrderController@createPDF');
+    Route::resource('/Delivery', 'DeliveryController', ['only' => ['index', 'update', 'destroy']]); 
+    Route::get('/Delivery/insertDelivery', 'DeliveryController@insertDelivery');
+    
+    Route::get('/BudgetStatus/index', 'BudgetStatusController@index')->name('BudgetStatus.index');
+
+    Route::get('/Purchase/index', 'PurchaseController@index')->name('Purchase.index');
+
     Route::resource('/User','UserController');
+    Route::get('/Order/passwordHash','OrderController@passwordHash');
     Route::resource('/Supplier','SupplierController');
     Route::resource('/Maker','MakerController');
     Route::resource('/Budget','BudgetController');
 
+    Route::get('pdf','PDFController@index');
     Route::get('lang/{lang}', ['as'=>'lang.switch', 'uses'=>'LanguageController@switchLang']);
     
 });
