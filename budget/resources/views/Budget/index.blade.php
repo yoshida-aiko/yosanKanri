@@ -16,7 +16,7 @@
         </form>
         <table id="tblBudgetMasterList" class="table table-fixed table-masterFixed master5column table-striped">
             <thead>
-                <th></th>
+                <th>&nbsp;</th>
                 <th>予算科目</th>
                 <th>予算額</th>
                 <th>執行期間</th>

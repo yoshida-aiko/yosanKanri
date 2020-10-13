@@ -8,7 +8,7 @@
     <div class="divMasterList">
         <table id="tblUserMasterList" class="table table-fixed table-masterFixed table-striped">
         <thead>
-            <th></th>
+            <th>&nbsp;</th>
             <th style="min-width:200px;">ユーザー名</th>
         </thead>
         <tbody>

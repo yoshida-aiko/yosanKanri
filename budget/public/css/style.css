@@ -345,9 +345,9 @@ h5{
 .table-masterFixed tbody td::after,
 .table-masterFixed tbody th::after,
 .table-masterFixed thead > tr > th::after {
-	content: '';
+/*	content: '';
 	clear: both;
-	display: inline-block;
+	display: inline-block;*/
 }
 /*削除ボタン*/
 .table-masterFixed thead th:nth-child(1),

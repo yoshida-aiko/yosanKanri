@@ -8,7 +8,7 @@
     <div class="divMasterList master3columnList">
         <table id="tblMakerMasterList" class="table table-fixed table-masterFixed master3column table-striped">
             <thead>
-                <th></th>
+                <th>&nbsp;</th>
                 <th>メーカー名</th>
                 <th>優先する発注先</th>
             </thead>
