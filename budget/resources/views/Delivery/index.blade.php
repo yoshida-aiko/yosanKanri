@@ -116,7 +116,9 @@
             </table>
         <!--</form>-->
         @else
-        <p>データがありません</p>
+        <div class="divNoData">
+            <p>データがありません</p>
+        </div>
         @endif
         <div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
             <!--以下modal-dialogのCSSの部分で modal-lgやmodal-smを追加するとモーダルのサイズを変更することができる-->

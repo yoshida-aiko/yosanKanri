@@ -74,10 +74,5 @@ jQuery (function ()
     
 })
 $(window).on("load", function(){
-    processing();
-    setTimeout('init()',1000);
+    loadingStart();
 });
-
-function init() {
-    $.unblockUI();
-}

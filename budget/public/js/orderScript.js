@@ -112,8 +112,8 @@ jQuery (function ()
         $("#detailCatalogCode").html($(this).children("td").eq(5).html());
         $("#detailMakerName").html($(this).children("td").eq(6).html());
         $("#detailUnitPrice").html($(this).children("td").eq(7).html());
-        $("#detailSupplierName").html("");
-
+        $("#detailSupplierName").html($(this).children("td").eq(12).html());
+        $("#detailRemark").html($(this).children("td").eq(13).html());
         $("#modal-detail").modal('show');
     });
     /*行のダブルクリックイベントをキャンセル*/
@@ -451,12 +451,8 @@ jQuery (function ()
 
 })
 $(window).on("load", function(){
-    setTimeout('init()',1000);
+    loadingStart();
 });
-
-function init() {
-    //$(".loading").css('display','none');
-}
 
 /*発注依頼に予算IDを付与する*/
 function updateOrderRequestGiveBudget(budgetid,orderrequestid){

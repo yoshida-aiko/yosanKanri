@@ -199,7 +199,7 @@ jQuery (function ()
         }
     });    
 
-    jsTreeCreate('SearchPage','favoriteTree',isToCartDisabled);
+    jsTreeCreate('OrderRequest','favoriteTree',true);
     
     function updateOrder(id,price,ordernum,remark) {
         processing();
@@ -261,10 +261,5 @@ jQuery (function ()
 
 })
 $(window).on("load", function(){
-    processing();
-    setTimeout('init()',1000);
+    loadingStart();
 });
-
-function init() {
-    $.unblockUI();
-}

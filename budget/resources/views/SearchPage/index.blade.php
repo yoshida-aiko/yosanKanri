@@ -3,6 +3,7 @@
 @section('content')
 <script src="{{ asset('js/searchPageScript.js') }}" defer></script>
 <div class="container">
+<div class="loading"><div class="loadingwrapper"><div class="ball-grid-pulse"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div><div class="loadingtext">loading...</div></div></div>
 <div class="wrapper">
 
     <div class="leftside-fixed-240">
@@ -143,12 +144,9 @@
                         {{ $CatalogItem->UnitPrice }}
                     </td>
                     <td>
-
                         <input type="button" value="&#xf217;" name="btnCart" class="fa btn-cart-icon">
                         <input type="button" value="&#xf005;" name="btnFavorite" class="fa btn-favorite-icon">
-                        
                         <input type="hidden" value="{{$CatalogItem->id}}" name="update_id" class="hidUpdateId">
-                    
                     </td>
                     <td style="display:none;">{{$CatalogItem->maker->supplier->SupplierNameJp}}</td>
                 </tr>

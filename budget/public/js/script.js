@@ -51,6 +51,16 @@ jQuery (function ()
 
 })
 
+function getDate(element) {
+    var date;
+    try {
+        date = $.datepicker.parseDate("yy/mm/dd", element.value);
+    } catch (error) {
+        date = null;
+    }
+    return date;
+}
+
 function getToday(splitchar) {
     var today = new Date();
     return today.getFullYear() + splitchar + 
@@ -64,6 +74,12 @@ function getNendo() {
         nendo = nendo - 1;
     }
     return nendo;
+}
+function loadingFinish() {
+    $(".loading").fadeOut();
+}
+function loadingStart() {
+    setTimeout('loadingFinish()',500);
 }
 function processing()
 {
@@ -92,13 +108,13 @@ function processing()
 
 function jsTreeCreate(url,id,isToCartDisabled=true) {
 
-    processing();
+    //processing();
     var deferred = new $.Deferred();
     $.ajax({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        url: 'SearchPage/getData_Favorite',
+        url: url+'/getData_Favorite',
         type: 'GET',
         datatype: 'json',
     })

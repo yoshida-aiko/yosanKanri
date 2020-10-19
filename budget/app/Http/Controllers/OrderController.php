@@ -55,9 +55,17 @@ class OrderController extends Controller
                 'items.CatalogCode as CatalogCode',
                 'items.MakerNameJp as MakerNameJp',
                 'users.UserNameJp as RequestUserNameJp',
+                'suppliers.SupplierNameJp',
+                'suppliers.SupplierNameEn'
             ])
             ->leftjoin('items', function($join) {
                 $join->on('order_requests.ItemId','=','items.id');
+            })
+            ->leftjoin('makers', function($join) {
+                $join->on('items.MakerId','=','makers.id');
+            })
+            ->leftjoin('suppliers', function($join) {
+                $join->on('makers.MainSupplierId','=','suppliers.id');
             })
             ->leftjoin('users', function($join) {
                 $join->on('order_requests.RequestUserId','=','users.id');
@@ -75,9 +83,17 @@ class OrderController extends Controller
                 'items.CatalogCode as CatalogCode',
                 'items.MakerNameJp as MakerNameJp',
                 'users.UserNameJp as RequestUserNameJp',
+                'suppliers.SupplierNameJp',
+                'suppliers.SupplierNameEn'
             ])
             ->leftjoin('items', function($join) {
                 $join->on('order_requests.ItemId','=','items.id');
+            })
+            ->leftjoin('makers', function($join) {
+                $join->on('items.MakerId','=','makers.id');
+            })
+            ->leftjoin('suppliers', function($join) {
+                $join->on('makers.MainSupplierId','=','suppliers.id');
             })
             ->leftjoin('users', function($join) {
                 $join->on('order_requests.RequestUserId','=','users.id');

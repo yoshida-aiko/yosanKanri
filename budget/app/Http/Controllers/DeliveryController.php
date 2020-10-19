@@ -20,8 +20,6 @@ class DeliveryController extends Controller
 {
     public function index(Request $request){
 
-        $Orders = Order::all();
-        
         $Orders = Order::select([
             'orders.*',
             'items.ItemNameJp as ItemNameJp',

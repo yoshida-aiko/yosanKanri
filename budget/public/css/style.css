@@ -145,8 +145,9 @@ h5{
 
 input[type="text"]:read-only {
     cursor: normal;
-    background-color: #f8f8f8;
-    color: #999;
+    /*background-color: #f8f8f8;
+	color: #999;Comment 2020.10.19*/
+	border:1px solid #666;
 }
 
 .searchPageTable,

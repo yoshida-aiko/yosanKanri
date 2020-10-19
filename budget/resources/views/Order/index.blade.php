@@ -131,6 +131,12 @@
                         <td style="display:none;">
                             {{$OrderRequest->id}}
                         </td>
+                        <td style="display:none;">
+                            {{$OrderRequest->SupplierNameJp}}
+                        </td>
+                        <td style="display:none;">
+                            {{$OrderRequest->OrderRemark}}
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>
@@ -164,6 +170,9 @@
                                 </tr>
                                 <tr>
                                     <td>メーカー：</td><td id="detailMakerName"></td><td>優先する発注先：</td><td id="detailSupplierName"></td>
+                                </tr>
+                                <tr>
+                                    <td>備考：</td><td id="detailRemark" colspan="3"></td>
                                 </tr>
                             </tbody>
                         </table>

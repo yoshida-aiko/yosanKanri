@@ -13,7 +13,7 @@ jQuery (function ()
         var h = window.innerHeight ? window.innerHeight : $(window).height();
 
         if ($(".table-deliveryFixed").length > 0) {
-            $(".table-deliveryFixed tbody").css('height', h - 240 + 'px');
+            $(".table-deliveryFixed tbody").css('height', h - 260 + 'px');
             var tblwidth = parseInt($(".table-deliveryFixed").css('width').replace('px',''));
             tblwidth = tblwidth - 1260;
             $(".table-deliveryFixed thead th:nth-child(3)").css('width',tblwidth + 'px');
@@ -235,11 +235,5 @@ console.log(arrayOrderList);
 
 })
 $(window).on("load", function(){
-    processing();
-    setTimeout('init()',1000);
+    loadingStart();
 });
-
-function init() {
-    $.unblockUI();
-}
-
