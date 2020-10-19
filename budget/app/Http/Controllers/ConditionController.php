@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+// use Illuminate\Support\Facades\Hash;
 use App\Condition;
 
 
@@ -16,7 +17,19 @@ class ConditionController extends Controller
      */
     public function index()
     {
-        return view('Condition/index');
+       $Condition = Condition::first();
+        if ($Condition == null) {
+            $Condition = new Condition();
+            $Condition->FiscalStartMonth = 4;
+            $Condition->NewBulletinTerm = 5;
+            $Condition->BulletinTerm = 30;
+            $Condition->bilingual = 0;
+            $Condition->SMTPServerPort = 25;
+            $Condition->SMTPAuthFlag = 0;
+            $Condition->ExecutionBasis = 1;
+        } 
+
+        return view('Condition/index',compact('Condition'));
     }
 
     /**
@@ -26,7 +39,9 @@ class ConditionController extends Controller
      */
     public function create()
     {
-        //
+        $Condition = new Condition();
+
+        return view('Condition\create',compact('Condition'));
     }
 
     /**
@@ -37,7 +52,69 @@ class ConditionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($request->action === 'back') {
+            return redirect()->route('Condition.index');
+        }
+
+        $isUpdate = false;
+
+        $Condition = Condition::first();
+        if ($Condition != null) {
+            $isUpdate = true;
+        }
+
+        if (!$isUpdate){
+            $Condition = new Condition(); 
+        }
+
+        $rules = [
+            'SystemNameJp' => ['required', 'string', 'max:50'],
+            'FiscalStartMonth' => ['required', 'integer'],
+            'BulletinTerm' => ['required', 'integer'],
+            'NewBulletinTerm' => ['required', 'integer'],
+            'EMail' => ['required', 'string', 'max:100'],
+            'SMTPServerId' => ['required', 'string', 'max:100'],
+            'SMTPServerPort' => ['required', 'integer'],
+        ];
+        if ($request->SMTPAuthFlag =="1") {
+            $rules = [
+                'SystemNameEn' => ['required', 'string', 'max:50']
+            ];
+        }
+        if ($request->bilingual =="1") {
+            $rules = [
+                'SMTPAccount' => ['required', 'string', 'max:100'],
+                'SMTPPassword' => ['required', 'string', 'min:50']
+            ];
+        }
+        $this->validate($request, $rules);
+
+        $Condition->VersionNo = 0;
+        $Condition->bilingual = $request->bilingual;
+        $Condition->SystemNameJp = $request->SystemNameJp;
+        $Condition->SystemNameEn = $request->SystemNameEn;
+        $Condition->FiscalStartMonth = $request->FiscalStartMonth;
+        $Condition->NewBulletinTerm = $request->NewBulletinTerm;
+        $Condition->BulletinTerm = $request->BulletinTerm;
+        $Condition->SMTPServerId = $request->SMTPServerId;
+        $Condition->SMTPServerPort = $request->SMTPServerPort;
+        $Condition->SMTPAccount = $request->SMTPAccount;
+        // $Condition->SMTPPassword = Hash::make($request->SMTPPassword);
+        $Condition->SMTPPassword = $request->SMTPPassword;
+        if ($request->SMTPAuthFlag =="") {
+            $Condition->SMTPAuthFlag = 0;
+        }else {
+            $Condition->SMTPAuthFlag = 1;
+        }
+        
+        $Condition->SMTPConnectMethod = 2;
+        $Condition->Organization = "インフォグラム";
+        $Condition->Department = "福岡本社";
+        $Condition->EMail = $request->EMail;
+       
+        $Condition->save();
+
+        return view('Condition/index',compact('Condition'));
     }
 
     /**
@@ -82,6 +159,18 @@ class ConditionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $Condition = Condition::first();
+        if ($Condition == null) {
+            $Condition = new Condition();
+            $Condition->FiscalStartMonth = 4;
+            $Condition->NewBulletinTerm = 5;
+            $Condition->BulletinTerm = 30;
+            $Condition->bilingual = 0;
+            $Condition->SMTPServerPort = 25;
+            $Condition->SMTPAuthFlag = 0;
+            $Condition->ExecutionBasis = 1;
+        } 
+
+        return view('Condition/index',compact('Condition'));
     }
 }

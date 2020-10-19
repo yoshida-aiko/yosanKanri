@@ -143,6 +143,11 @@ h5{
 	text-align: right;
 }
 
+input[type="text"]:read-only {
+    cursor: normal;
+    background-color: #f8f8f8;
+    color: #999;
+}
 
 .searchPageTable,
 .progressTable {
@@ -846,5 +851,40 @@ label.required:after {
 #frmBudgetNendo >  div.form-group > input[type=number]{
 	width: 5em;
 }
-
-
+/* 設定画面 */
+.divConditionInput {
+	margin: auto;
+	/*border:1px solid #444;*/
+	padding:2px 15px;
+	background-color: RGBA(255,255,255,1.0);
+}
+.frmConditionInput {
+	padding-top:10px;
+	min-width:600px;
+}
+.frmConditionInput > fieldset >div.form-group > label {
+	width:150px;
+	text-align: right;
+	padding-right:10px;
+	vertical-align: top;
+}
+.frmConditionInput >fieldset >div.form-group >label.radio1{
+	width: 6em;
+    text-align: left;
+}
+.frmConditionInput >fieldset >div.form-group >label.chk1{
+	width: 20em;
+	text-align: left;
+}
+.frmConditionInput > fieldset > legend {
+	font-size: 1.3em;
+}
+.frmConditionInput  > fieldset > div.form-group > input[type=text]{
+	width:400px;
+}
+.frmConditionInput  > fieldset > div.form-group > input[type=checkbox]{
+	margin-left: 154px;
+}
+.frmConditionInput > fieldset >div.form-group > span {
+	margin-left: 0.5em;
+}
