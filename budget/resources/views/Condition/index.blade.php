@@ -17,6 +17,7 @@
                 </ul>
                 </div>
                 <?php
+                $Condition->bilingual = old('bilingual');
                 $Condition->SystemNameJp = old('SystemNameJp');
                 $Condition->SystemNameEn = old('SystemNameEn');
                 $Condition->FiscalStartMonth = old('FiscalStartMonth');
@@ -27,6 +28,7 @@
                 $Condition->SMTPServerPort = old('SMTPServerPort');
                 $Condition->SMTPAccount = old('SMTPAccount');
                 $Condition->SMTPPassword = old('SMTPPassword');
+                $Condition->SMTPAuthFlag = old('SMTPAuthFlag');
                 ?>
             @endif
             @csrf
@@ -71,8 +73,8 @@
             <fieldset>
             <legend>発注</legend>
                 <div class="form-group">
-                    <label for="EMail" class="required">メールアドレス</label>
-                    <input type="text" id="EMail" name="EMail" value="{{ $Condition->EMail }}" >
+                    <label for="email" class="required">メールアドレス</label>
+                    <input type="text" id="EMail" name="email" value="{{ $Condition->EMail }}" >
                 </div>              
            </fieldset>
 
@@ -92,15 +94,15 @@
             <fieldset>
             <legend>SMTP認証</legend>
                 <div class="form-group">
-                    <label for="SMTPAccount" id="lblSMTPAccount">メールアカウント</label>
+                    <label for="SMTPAccount" id="lblSMTPAccount"  {{ $Condition->SMTPAuthFlag == 1 ? 'class=required' : '' }}>メールアカウント</label>
                     <input type="text" id="SMTPAccount" name="SMTPAccount" value="{{ $Condition->SMTPAccount }}" >
                 </div>
                 <div class="form-group">
-                    <label for="SMTPPassword"  id="lblSMTPPassword">パスワード</label>
+                    <label for="SMTPPassword"  id="lblSMTPPassword" {{ $Condition->SMTPAuthFlag == 1 ? 'class=required' : '' }}>パスワード</label>
                     <input type="password" id="SMTPPassword" name="SMTPPassword"  value="{{ $Condition->SMTPPassword }}">
                 </div>
                 <div class="form-group">
-                    <input type="checkbox" id="SMTPAuthFlag" name="SMTPAuthFlag" value="SMTPAuthFlag" {{ $Condition->SMTPAuthFlag == 1 ? 'checked' : '' }}>
+                    <input type="checkbox" id="SMTPAuthFlag" name="SMTPAuthFlag" value="{{ $Condition->SMTPAuthFlag }}" {{ $Condition->SMTPAuthFlag == 1 ? 'checked' : '' }}>
                     <label for="SMTPAuthFlag" class="chk1">メールアカウントとパスワードを使用する</label>
                 </div>
 
