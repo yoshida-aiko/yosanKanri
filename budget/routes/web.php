@@ -35,7 +35,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/OrderRequest/moveToCart', 'OrderRequestController@moveToCart');
     Route::get('/OrderRequest/updateFavorite', 'FavoriteController@updateFavorite');
     Route::get('/OrderRequest/createFavoriteFolder', 'FavoriteController@createFavoriteFolder');
-    Route::post('/OrderRequest/newProductStore', 'OrderRequestController@newProductStore');
+    Route::get('/OrderRequest/newProductStore', 'OrderRequestController@newProductStore');
     Route::get('/OrderRequest/orderRequest', 'OrderRequestController@orderRequest');
     Route::get('/OrderRequest/getData_Favorite', 'SearchPageController@getData_Favorite');
 
@@ -50,16 +50,20 @@ Route::group(['middleware' => 'auth'], function() {
     
     Route::resource('/BudgetStatus', 'BudgetStatusController', ['only' => ['index']]); 
     Route::get('/BudgetStatus/getDetail', 'BudgetStatusController@getDetail');
+    Route::get('/BudgetStatus/balanceAdjustment', 'BudgetStatusController@balanceAdjustment');
+    Route::get('/BudgetStatus/outputCSV', 'BudgetStatusController@outputCSV');
 
-    Route::get('/Purchase/index', 'PurchaseController@index')->name('Purchase.index');
+    Route::resource('/Purchase', 'PurchaseController', ['only' => ['index']]); 
+    Route::get('/Purchase/outputCSV', 'PurchaseController@outputCSV');
+    Route::get('/Purchase/insertOrderRequest', 'PurchaseController@insertOrderRequest');
 
     Route::resource('/User','UserController');
     Route::get('/Order/passwordHash','OrderController@passwordHash');
     Route::resource('/Supplier','SupplierController');
     Route::resource('/Maker','MakerController');
     Route::resource('/Budget','BudgetController');
-    Route::resource('/Condition','ConditionController');
-
+    Route::resource('/Condition', 'ConditionController'); 
+    
     Route::get('pdf','PDFController@index');
     Route::get('lang/{lang}', ['as'=>'lang.switch', 'uses'=>'LanguageController@switchLang']);
     
