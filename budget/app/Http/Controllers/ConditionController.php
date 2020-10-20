@@ -72,20 +72,16 @@ class ConditionController extends Controller
             'FiscalStartMonth' => ['required', 'integer'],
             'BulletinTerm' => ['required', 'integer'],
             'NewBulletinTerm' => ['required', 'integer'],
-            'EMail' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'string', 'max:100'],
             'SMTPServerId' => ['required', 'string', 'max:100'],
             'SMTPServerPort' => ['required', 'integer'],
         ];
-        if ($request->SMTPAuthFlag =="1") {
-            $rules = [
-                'SystemNameEn' => ['required', 'string', 'max:50']
-            ];
+        if ($request['bilingual'] == "1") {
+            $rules['SystemNameEn'] = ['required', 'string', 'max:50'];
         }
-        if ($request->bilingual =="1") {
-            $rules = [
-                'SMTPAccount' => ['required', 'string', 'max:100'],
-                'SMTPPassword' => ['required', 'string', 'min:50']
-            ];
+        if ($request['SMTPAuthFlag'] == "1") {
+            $rules['SMTPAccount'] = ['required', 'string', 'max:100'];
+            $rules['SMTPPassword'] = ['required', 'string', 'min:50'];
         }
         $this->validate($request, $rules);
 
@@ -110,7 +106,8 @@ class ConditionController extends Controller
         $Condition->SMTPConnectMethod = 2;
         $Condition->Organization = "インフォグラム";
         $Condition->Department = "福岡本社";
-        $Condition->EMail = $request->EMail;
+        $Condition->EMail = $request->email;
+        $Condition->ExecutionBasis = $request->ExecutionBasis;
        
         $Condition->save();
 
