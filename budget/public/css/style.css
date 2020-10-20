@@ -143,13 +143,6 @@ h5{
 	text-align: right;
 }
 
-input[type="text"]:read-only {
-    cursor: normal;
-    /*background-color: #f8f8f8;
-	color: #999;Comment 2020.10.19*/
-	border:1px solid #666;
-}
-
 .searchPageTable,
 .progressTable {
 	width:100%;
@@ -888,4 +881,22 @@ label.required:after {
 }
 .frmConditionInput > fieldset >div.form-group > span {
 	margin-left: 0.5em;
+}
+.frmConditionInput  > fieldset > div.form-group > input[type=text]:read-only {
+    cursor: normal;
+    background-color: #f8f8f8;
+	color: #999;
+	border:1px solid #666;
+}
+/* スピンボタン 非表示 */
+/* Chrome、Safari Edge*/
+.frmConditionInput  > fieldset > div.form-group > input[type=number]::-webkit-outer-spin-button,
+.frmConditionInput  > fieldset > div.form-group > input[type=number]::-webkit-inner-spin-button
+{
+	-webkit-appearance: none;
+    margin: 0;
+}
+/* Firefox、IE */
+.frmConditionInput > fieldset > div.form-group > input[type=number]{
+	-moz-appearance:textfield;
 }
