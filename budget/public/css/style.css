@@ -9,6 +9,9 @@
 
 .login-area-body {
 	color:#fff;
+	width:500px;
+	min-width:500px;
+	position:relative;
 }
 .divLogin {
 	margin:0 auto;
