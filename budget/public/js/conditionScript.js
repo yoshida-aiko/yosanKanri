@@ -19,10 +19,12 @@ jQuery (function ()
             //チェックされている場合  
             $("#lblSMTPAccount").addClass('required');
             $("#lblSMTPPassword").addClass('required');
+            $(this).val("1");
         } else {
             //チェックされていない場合
             $('#lblSMTPAccount').removeClass('required');
             $('#lblSMTPPassword').removeClass('required');
+            $(this).val("0");
         }
     });
 })
