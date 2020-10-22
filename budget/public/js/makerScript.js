@@ -1,5 +1,14 @@
 jQuery (function ()
 {   
+
+    /*入力エリアでのEnterkeyでsubmitされるのを防ぐ*/
+    $("input[type=text]").keypress(function(event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){//enter);
+            event.preventDefault();
+        }
+    });
+    
     /*ウィンドウの高さを取得して、グリッドの高さを指定*/
     settingGridHeight();
     $(".table-masterFixed").css('display','none').fadeIn(0);
