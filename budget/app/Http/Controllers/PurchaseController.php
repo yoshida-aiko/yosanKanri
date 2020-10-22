@@ -98,7 +98,7 @@ class PurchaseController extends Controller
             $startDate = $request->startDate;
         }
         else {
-            $startDate = $today->subMonthsNoOverflow(3)->format('Y').'/04/01';
+            $startDate = BaseClass::getKishuYMD();
         }
         
         if ($request->has('endDate')){

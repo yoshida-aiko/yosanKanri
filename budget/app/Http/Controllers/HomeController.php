@@ -6,19 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\BulletinBoard;
 use App\OrderRequest;
+use App\Condition;
+use Illuminate\Support\Facades\Config;
 use Auth;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Show the application dashboard.
@@ -29,12 +23,40 @@ class HomeController extends Controller
     {
         //掲示板
         $today = date("Y/m/d");
-        $BulletinBoards = BulletinBoard::where('LimitDate','>=', $today)->get();
+        $BulletinBoards = BulletinBoard::where('LimitDate','>=', $today)->orderBy('RegistDate','desc')->get();
+        $arrBulletin = array();
+
+        //設定
+        $Condition = Condition::first();
+        $newBulletinTerm = $Condition->NewBulletinTerm;
+
+        foreach($BulletinBoards as $BulletinBoard){
+            $isNew = false;
+            $today = new Carbon();
+            $regdate = new Carbon(str_replace('/','-',$BulletinBoard->RegistDate));
+            $newdate = $regdate->addDay($newBulletinTerm);
+            if ($today <= $newdate){
+                $isNew = true;
+            }
+           
+            $item = [
+                'id' => $BulletinBoard->id,
+                'Title' => $BulletinBoard->Title,
+                'Contents' => $BulletinBoard->Contents,
+                'UserNameJp' => $BulletinBoard->user->UserNameJp,
+                'UserNameEn' => $BulletinBoard->user->UserNameEn,
+                'RegistDate' => $BulletinBoard->RegistDate,
+                'LimitDate' => $BulletinBoard->LimitDate,
+                'UserId' => $BulletinBoard->user->id,
+                'newicon' => $isNew
+            ];
+            array_push($arrBulletin,$item);
+        }
 
         //進捗状況
         $OrderRequests = OrderRequest::sortable()->paginate(25);
 
-        return view('home',compact('BulletinBoards','OrderRequests'));
+        return view('home',compact('arrBulletin','OrderRequests'));
     }
 
 
@@ -78,7 +100,8 @@ class HomeController extends Controller
         $BulletinBoards = BulletinBoard::where('LimitDate','>=', $today)->get();
 
         //ビューの表示
-        return view('home', compact('BulletinBoards','OrderRequests'));
+        return redirect()->route('Home.index');
+        //return view('home', compact('BulletinBoards','OrderRequests'));
 
     }
 

@@ -104,13 +104,13 @@ class DeliveryController extends Controller
                 //Orderテーブル更新
                 $UpdateOrder->DeliveryNumber += $expectednum;//納品済み数の計算　[発注]納品済数 + [発注]予定納品数
                 
-                 if ( $UpdateOrder->DeliveryNumber >= $ordernum){
+                if ( $UpdateOrder->DeliveryNumber >= $ordernum){
                     $UpdateOrder->DeliveryProgress = 1;//完納
                     //OrderRequestテーブルの削除
                     $orderRequestDelete[] = $orderrequestid;
                 }
                 $UpdateOrder->save();
-
+                
                 //OrderRequestLogテーブル登録
                 $OrderRequest = OrderRequest::findOrFail($orderrequestid);
                 $OrderRequestLog = OrderRequestLog::where('id','=',$orderrequestid)->first();

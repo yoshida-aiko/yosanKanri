@@ -33,7 +33,7 @@ class BudgetStatusController extends Controller
             $endDate = $request->endDate;
         }
 
-        $Budgets = Budget::where('useStartDate','<=',$startDate)->where('useEndDate','>=',$endDate)->get();
+        $Budgets = Budget::where('useStartDate','>=',$startDate)->where('useEndDate','<=',$endDate)->get();
         
         $BudgetLists = array();
         foreach($Budgets as $Budget){

@@ -134,26 +134,34 @@ class OrderRequestController extends Controller
     /*新規商品入力*/
     public function newProductStore(Request $request) {
 
-        $Cart = new Cart();
-        $Cart->UserId = Auth::id();
-        $Cart->CatalogItemId = -1;
-        $Cart->ItemClass = $request->newItemClass;
-        $targetMaker = Maker::findOrFail($request->newMaker);
-        $Cart->MakerId =$request->newMaker;
-        $Cart->CatalogCode = $request->newCatalogCode;
-        $Cart->MakerNameJp = $targetMaker->MakerNameJp;
-        $Cart->MakerNameEn = $targetMaker->MakerNameEn;
-        $Cart->ItemNameJp = $request->newProductName;
-        $Cart->ItemNameEn = $request->newProductName;
-        $Cart->AmountUnit = $request->newAmountUnit;
-        $Cart->Standard = $request->newStandard;
-        $Cart->CASNo = '';
-        $Cart->UnitPrice = $request->newUnitPrice;
-        $Cart->OrderRequestNumber = 1;
-        $Cart->SupplierId = $targetMaker->MainSupplierId;
-        $Cart->save();
+        $response = array();
+        $response['status'] = 'OK';
 
-        return redirect()->route('OrderRequest.index');
+        try{
+            $Cart = new Cart();
+            $Cart->UserId = Auth::id();
+            $Cart->CatalogItemId = -1;
+            $Cart->ItemClass = $request->ItemClass;
+            $targetMaker = Maker::findOrFail($request->MakerId);
+            $Cart->MakerId =$request->MakerId;
+            $Cart->CatalogCode = $request->CatalogCode;
+            $Cart->MakerNameJp = $targetMaker->MakerNameJp;
+            $Cart->MakerNameEn = $targetMaker->MakerNameEn;
+            $Cart->ItemNameJp = $request->ItemNameJp;
+            $Cart->ItemNameEn = $request->ItemNameJp;
+            $Cart->AmountUnit = $request->AmountUnit;
+            $Cart->Standard = $request->Standard;
+            $Cart->CASNo = '';
+            $Cart->UnitPrice = $request->UnitPrice;
+            $Cart->OrderRequestNumber = 1;
+            $Cart->SupplierId = $targetMaker->MainSupplierId;
+            $Cart->save();
+        }
+        catch(Exception $e){
+            $response['status'] = 'NG';
+            $response['errorMsg'] = $e->getMessage();
+        }
+        return Response::json($response);
     }
 
     /* 発注依頼ボタンクリック時 */
