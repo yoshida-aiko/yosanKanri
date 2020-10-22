@@ -95,7 +95,7 @@
                         <!-- Right Side Of Navbar -->
                         <!--<ul class="navbar-login">-->
 
-                            <ul class="navbar-login navbar-top">
+                            <!--<ul class="navbar-login navbar-top">
                             <li class="nav-item dropdown">
                             <a href="#" class="dropdown-toggle"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                 {{ Config::get('languages')[App::getLocale()] }}<span class="caret"></span></a>
@@ -109,7 +109,7 @@
                                 @endforeach
                             </ul>
                             </li>
-                            </ul>
+                            </ul>-->
                             <!-- Authentication Links -->
                             @guest
                                 <!--<li class="nav-item">
@@ -121,6 +121,10 @@
                                     </li> -->
                                 @endif
                             @else
+                            <div class="navbar-login navbar-top navbar-language">
+                                <input type="radio" id="rdoLang_Ja" name="rdoLanguage" value="ja" onclick="location.href='{{ route('lang.switch', 'ja') }}'"  @if(App::getLocale()=='ja') checked='checked' @endif ><label for="rdoLang_Ja">日本語</label>
+                                <input type="radio" id="rdoLang_En" name="rdoLanguage" value="en" onclick="location.href='{{ route('lang.switch', 'en') }}'"  @if(App::getLocale()=='en') checked='checked' @endif ><label for="rdoLang_En">English</label>
+                            </div>
                             <ul class="navbar-login navbar-top">
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -151,6 +155,12 @@
                                 </li>
                             </ul>
                             @endguest
+                            <form action="{{url('/SearchPage')}}" method="GET">
+                                <div id="headerProductSearchArea">
+                                    <input type="text" name="txtHeaderProductSearch" class="txtHeaderProductSearch" placeholder="商品名またはカタログコードの一部で検索します">
+                                    <input type="submit" class="btn btn-width70 btn-primary" value="検索">
+                                </div>
+                            </form>
                         <!--</ul>-->
                     </div>
                 </div>

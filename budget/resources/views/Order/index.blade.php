@@ -25,9 +25,9 @@
                 @endif
                 <span>{{$arrBudget['BudgetNameJp']}}</span>
                 <span class="smalllabel">発注額:</span>
-                <span>{{$arrBudget['orderFee']}}</span>
+                <span>\{{$arrBudget['orderFee']}}</span>
                 <span class="smalllabel">残高:</span>
-                <span>{{$arrBudget['remainFee']}}</span>
+                <span>\{{$arrBudget['remainFee']}}</span>
             </div>
             @if ($arrBudget['children'] <> null)
             <ul class="childBudget">
@@ -39,9 +39,9 @@
                 ?>
                 <li>
                     <span data-toggle="tooltip" title="{{$tooltip}}">{{$arrChild['ProductNameJp']}}</span>
-                    <span>{{$arrChild['UnitPrice']}}</span>
+                    <span>\{{$arrChild['UnitPrice']}}</span>
                     <span>{{$arrChild['RequestNumber']}}</span>
-                    <span>{{$arrChild['SummaryPrice']}}</span>
+                    <span>\{{$arrChild['SummaryPrice']}}</span>
                     <span style="display:none;">{{$arrChild['OrderId']}}</span>
                 </li>
             @endforeach
@@ -59,7 +59,6 @@
                 <input type="radio" id="rdoArticle" name="rdoItemClass" value="2" @if($itemclass=='2') checked='checked' @endif onchange="submit(this.form)"><label for="rdoArticle">物品</label>
             </form>
         </div>
-        @if(!$OrderRequests->isEmpty())
         <div class="pagenationStyle">
         @if(!$OrderRequests->isEmpty())
             {{$OrderRequests->appends(request()->query())->links()}}    
@@ -82,6 +81,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                @if(!$OrderRequests->isEmpty())
                 @foreach ($OrderRequests as $OrderRequest)
                     <tr class="table-orderFixed-tr">
                         <td>
@@ -114,7 +114,7 @@
                                 $UnitPrice = '';
                             }
                             ?>
-                            <span class="spnOrderInputNumber">{{ $UnitPrice }}</span>
+                            <span class="spnOrderInputNumber">\{{ $UnitPrice }}</span>
                             <input type="text" class="inpOrderInputNumber inpOrderUnitPrice" pattern="[0-9]*" title="数字のみ" value="{{ $OrderRequest->UnitPrice }}" >
                         </td>
                         <td class="align-right tdOrderInputNumber">
@@ -125,7 +125,7 @@
                             <?php
                                 $TotalFee = number_format($OrderRequest->UnitPrice * $OrderRequest->RequestNumber);
                             ?>
-                            {{$TotalFee}}
+                            \{{$TotalFee}}
                         </td>
                         <td>{{ $OrderRequest->RequestUserNameJp }}</td>
                         <td style="display:none;">
@@ -139,50 +139,11 @@
                         </td>
                     </tr>
                 @endforeach
+                @endif
                 </tbody>
             </table>
-        @else
-        <div class="divNoData">
-            <p>データがありません</p>
-        </div>
-        @endif
-        <div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
-            <!--以下modal-dialogのCSSの部分で modal-lgやmodal-smを追加するとモーダルのサイズを変更することができる-->
-            <div  class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="Modal">商品詳細</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <table class="modal-detail-table">
-                            <tbody>
-                                <tr>
-                                    <td>商品名：</td><td id="detailProductName" colspan="3"></td>
-                                </tr>
-                                <tr>
-                                    <td>容量：</td><td id="detailAmount"></td><td>規格：</td><td id="detailStandard"></td>
-                                </tr>
-                                <tr>
-                                    <td>カタログコード：</td><td id="detailCatalogCode"></td><td>単価：</td><td id="detailUnitPrice"></td>
-                                </tr>
-                                <tr>
-                                    <td>メーカー：</td><td id="detailMakerName"></td><td>優先する発注先：</td><td id="detailSupplierName"></td>
-                                </tr>
-                                <tr>
-                                    <td>備考：</td><td id="detailRemark" colspan="3"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            @component('components.productDetail')
+            @endcomponent
     </div>
 </div>
 
@@ -194,7 +155,6 @@
             <input type="button" id="btnReturnOrderRequestList" class="btn btn-secondary" value="戻る">
             <input type="button" id="btnHash" class="btn btn-primary" value="Hash">
         </div>
-        @if(!$orderRequest_Orders->isEmpty())
         <div class="pagenationStyle">
         @if(!$orderRequest_Orders->isEmpty())
             {{$orderRequest_Orders->appends(request()->query())->links()}}    
@@ -214,6 +174,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                @if(!$orderRequest_Orders->isEmpty())
                 @foreach ($orderRequest_Orders as $orderRequest_Order)
                     <tr class="table-orderProcessingFixed-tr">
                         <td>
@@ -239,7 +200,7 @@
                         <?php
                             $ordersum = number_format($orderRequest_Order->UnitPrice * $orderRequest_Order->RequestNumber)
                         ?>
-                        <td class="align-right">{{ $ordersum }}</td>
+                        <td class="align-right">\{{ $ordersum }}</td>
                         <td>{{ $orderRequest_Order->BudgetNameJp }}</td>
                         <td>{{ $orderRequest_Order->OrderRemark }}</td>
                         <td>{{ $orderRequest_Order->user->UserNameJp }}</td>
@@ -248,13 +209,9 @@
                         </td>
                     </tr>
                 @endforeach
+                @endif
                 </tbody>
             </table>
-        @else
-        <div class="divNoData">
-            <p>データがありません</p>
-        </div>
-        @endif
     </div>
     <div id="modal-howto-order" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
             <!--以下modal-dialogのCSSの部分で modal-lgやmodal-smを追加するとモーダルのサイズを変更することができる-->
@@ -303,11 +260,11 @@
             @foreach($arrayBudgetList as $BudgetItem)
             <tr>
                 <td>{{$BudgetItem['BudgetNameJp']}}</td>
-                <td>{{$BudgetItem['BudgetAmount']}}</td>
-                <td>{{$BudgetItem['BudgetUsed']}}</td>
-                <td>{{$BudgetItem['BudgetScheduled']}}</td>
-                <td>{{$BudgetItem['BudgetRemainBal']}}</td>
-                <td>{{$BudgetItem['BudgetScheduledRemain']}}</td>
+                <td>\{{$BudgetItem['BudgetAmount']}}</td>
+                <td>\{{$BudgetItem['BudgetUsed']}}</td>
+                <td>\{{$BudgetItem['BudgetScheduled']}}</td>
+                <td>\{{$BudgetItem['BudgetRemainBal']}}</td>
+                <td>\{{$BudgetItem['BudgetScheduledRemain']}}</td>
             </tr>
             @endforeach
 
@@ -320,7 +277,7 @@
             <span class='fa fa-hand-o-left'></span>予算リストへ
         </li>
         @foreach($arrayBudgetForContext as $budgetitem)
-        <li id="BudgetId-{{ $budgetitem['BudgetId'] }}" name="{{$budgetitem['BudgetNameJp']}}" ><span class="fa fa-angle-double-left"></span>{{$budgetitem['BudgetNameJp']}}</li>
+        <li id="BudgetId-{{ $budgetitem['BudgetId'] }}" name="{{$budgetitem['BudgetNameJp']}}" ><span class="fa fa-folder"></span>{{$budgetitem['BudgetNameJp']}}</li>
         @endforeach
     </ul>
 </div>

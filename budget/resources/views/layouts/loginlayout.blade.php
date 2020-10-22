@@ -19,12 +19,15 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/styleNakamichi.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    
 </head>
 <body class="bodyLogin">
-    <div id="app">
-        <main class="py-4">
+    <!--<div id="app">
+        <main class="py-4">-->
             @yield('content')
-        </main>
-    </div>
+        <!--</main>
+    </div>-->
 </body>
 </html>

@@ -50,8 +50,8 @@
                 </div>
             </div>
             <div style="display:inline-block;padding-left:15px; ">
-                    <input type="button" id="btnSearch" value="検索" class="btn btn-primary" >
-                    <input type="button" id="btnCsv" value="CSV" class="btn btn-secondary" >
+                    <input type="button" id="btnSearch" value="検索" class="btn btn-width70 btn-primary" >
+                    <input type="button" id="btnCsv" value="CSV" class="btn btn-width70 btn-secondary" @if($Deliveries->isEmpty()) disabled='disabled' @endif >
             </div>
         </form>
 
@@ -60,7 +60,6 @@
             {{$Deliveries->appends(request()->query())->links()}}    
         @endif
         </div>
-        @if(!$Deliveries->isEmpty())
             <table id="table-purchaseFixed" class="table table-fixed table-purchaseFixed table-striped">
                 <thead>
                     <tr>
@@ -76,6 +75,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                @if(!$Deliveries->isEmpty())
                 
                 @foreach ($Deliveries as $delivery)
                     <tr class="table-purchaseFixed-tr">
@@ -96,19 +96,18 @@
                             <input type="hidden" class="hidSupplierNameJp" value="{{$delivery->SupplierNameJp}}">
                             <input type="hidden" class="hidOrderRemark" value="{{$delivery->OrderRemark}}">
                         </td>
-                        <td class="align-right">{{ number_format($delivery->UnitPrice) }}</td>
+                        <td class="align-right">\{{ number_format($delivery->UnitPrice) }}</td>
                         <td class="align-right">{{ number_format($delivery->DeliveryNumber) }}</td>
-                        <td class="align-right">{{ number_format($delivery->DeliveryPrice) }}</td>
+                        <td class="align-right">\{{ number_format($delivery->DeliveryPrice) }}</td>
                         <td>{{ $delivery->BudgetNameJp }}</td>
                         <td>{{ $delivery->RequestUserNameJp }}</td>
                     </tr>
                 @endforeach
+                @endif
                 </tbody>
             </table>
-        <!--</form>-->
-        @else
-        <p>データがありません</p>
-        @endif
+        
+        
         <div id="modal-orderRequest" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
             <!--以下modal-dialogのCSSの部分で modal-lgやmodal-smを追加するとモーダルのサイズを変更することができる-->
             <div  class="modal-dialog modal-sm100" role="document">
@@ -131,53 +130,22 @@
                                 <input type="text" id="txtOrderRemark" name="OrderRemark" value="{{old('OrderRemark')}}">
                             </div>
                             <input type="hidden" id="hidInsertOrderId" value="">
-                        </section>
-                    
+                            {{-- エラーメッセージ --}}
+                            <div id="divError" class="alert alert-danger" style="display:none;" >
+                            <ul></ul>
+                            </div>
+                        </section>                    
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="btnOrderRequest" class="btn btn-primary" >発注依頼</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                        <button type="button" id="btnClear" class="btn btn-width70 btn-secondary" >クリア</button>
+                        <button type="button" class="btn btn-width70 btn-secondary" data-dismiss="modal">閉じる</button>
                     </div>
                 </div>
             </div>
         </div>
-        <div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
-            <!--以下modal-dialogのCSSの部分で modal-lgやmodal-smを追加するとモーダルのサイズを変更することができる-->
-            <div  class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="Modal">商品詳細</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <table class="modal-detail-table">
-                            <tbody>
-                                <tr>
-                                    <td>商品名：</td><td id="detailProductName" colspan="3"></td>
-                                </tr>
-                                <tr>
-                                    <td>容量：</td><td id="detailAmount"></td><td>規格：</td><td id="detailStandard"></td>
-                                </tr>
-                                <tr>
-                                    <td>カタログコード：</td><td id="detailCatalogCode"></td><td>単価：</td><td id="detailUnitPrice"></td>
-                                </tr>
-                                <tr>
-                                    <td>メーカー：</td><td id="detailMakerName"></td><td>優先する発注先：</td><td id="detailSupplierName"></td>
-                                </tr>
-                                <tr>
-                                    <td>備考：</td><td id="detailRemark" colspan="3"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-                    </div>
-                </div>
-            </div>
-        </div>        
+        @component('components.productDetail')
+        @endcomponent
     </div>
 
 

@@ -91,36 +91,21 @@
             <div class="form-group">
                 <label for="author">権限</label>
                 <fieldset id="author">
-                    @if (strpos($editUser->UserAuthString,'Order') !== false)
-                    <input type="checkbox" id="chkOrder" name="chkAuthor[]" value="Order" checked >
-                    @else
-                    <input type="checkbox" id="chkOrder" name="chkAuthor[]" value="Order" >
-                    @endif
+                    <input type="checkbox" id="chkOrder" name="chkAuthor[]" value="Order" @if(strpos($editUser->UserAuthString,'Order') !== false) checked='checked' @endif >
                     <label for="chkOrder">発注</label>
-                    @if (strpos($editUser->UserAuthString,'Delivery') !== false)
-                    <input type="checkbox" id="chkDelivery" name="chkAuthor[]" value="Delivery" checked >
-                    @else
-                    <input type="checkbox" id="chkDelivery" name="chkAuthor[]" value="Delivery" >
-                    @endif
+
+                    <input type="checkbox" id="chkDelivery" name="chkAuthor[]" value="Delivery" @if (strpos($editUser->UserAuthString,'Delivery') !== false) checked='checked' @endif >
                     <label for="chkDelivery">納品</label>
-                    @if (strpos($editUser->UserAuthString,'Budget') !== false)
-                    <input type="checkbox" id="chkBudget" name="chkAuthor[]" value="Budget" checked  >
-                    @else
-                    <input type="checkbox" id="chkBudget" name="chkAuthor[]" value="Budget" >
-                    @endif
+
+                    <input type="checkbox" id="chkBudget" name="chkAuthor[]" value="Budget" @if (strpos($editUser->UserAuthString,'Budget') !== false) checked='checked' @endif >
                     <label for="chkBudget">予算状況</label><br />
-                    @if (strpos($editUser->UserAuthString,'Purchase') !== false)
-                    <input type="checkbox" id="chkPurchase" name="chkAuthor[]" value="Purchase" checked >
-                    @else
-                    <input type="checkbox" id="chkPurchase" name="chkAuthor[]" value="Purchase" >
-                    @endif
+                    
+                    <input type="checkbox" id="chkPurchase" name="chkAuthor[]" value="Purchase" @if (strpos($editUser->UserAuthString,'Purchase') !== false) checked='checked' @endif >
                     <label for="chkPurchase">購入履歴</label>
-                    @if (strpos($editUser->UserAuthString,'Master') !== false)
-                    <input type="checkbox" id="chkMaster" name="chkAuthor[]" value="Master" checked >
-                    @else
-                    <input type="checkbox" id="chkMaster" name="chkAuthor[]" value="Master">
-                    @endif
+                    
+                    <input type="checkbox" id="chkMaster" name="chkAuthor[]" value="Master" @if (strpos($editUser->UserAuthString,'Master') !== false) checked='checked' @endif >
                     <label for="chkMaster">マスタ</label>
+
                     @if (strpos($editUser->UserAuthString,'Payment') !== false)
                     <input type="checkbox" id="chkPayment" name="chkAuthor[]" value="Payment" checked >
                     @else
@@ -135,7 +120,7 @@
                 <div class="alert-string" style="margin-left:150px;">※この署名は注文時にメールやPDFに使用されます。</div>
             </div>
             <div class="form-group text-center">
-                <button id="submit_user_regist" name="submit_user_regist" class="btn btn-primary" >保存</button>
+                <button id="submit_user_regist" type="submit" name="submit_user_regist" class="btn btn-primary" >保存</button>
                 <input id="btn_user_clear" type="button" class="btn btn-secondary" value="クリア">
                 <input type="hidden" id="id" name="id" value="{{ $editUser->id }}" >
             </div>

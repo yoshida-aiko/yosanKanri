@@ -48,8 +48,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <input id="submitReagent" type="submit" value="{{ __('screenwords.search') }}" class="btn btn-primary">
-                    <input type="button" value="{{ __('screenwords.clear') }}" id="btnClearReagent" class="btn btn-secondary" />
+                    <input id="submitReagent" type="submit" value="{{ __('screenwords.search') }}" class="btn btn-width70 btn-primary">
+                    <input type="button" value="{{ __('screenwords.clear') }}" id="btnClearReagent" class="btn btn-width70 btn-secondary" />
                 </div>
             </div>
             <input type="radio" name="searchFormTab" id="tabArticle" value="2" >
@@ -84,8 +84,8 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <input id="submitArticle" type="submit" value="{{ __('screenwords.search') }}" class="btn btn-primary">
-                    <input type="button" value="{{ __('screenwords.clear') }}" id="btnClearArticle" class="btn btn-secondary" />
+                    <input id="submitArticle" type="submit" value="{{ __('screenwords.search') }}" class="btn btn-width70 btn-primary">
+                    <input type="button" value="{{ __('screenwords.clear') }}" id="btnClearArticle" class="btn btn-width70 btn-secondary" />
                 </div>
             </div>
         </div>
@@ -107,7 +107,7 @@
         <table id="table-searchFixed" class="table table-fixed table-searchFixed table-striped">
             <thead>
                 <tr>
-                    <th class="align-center ">@sortablelink('ItemClass','　　')</th>
+                    <th class="align-center ">@sortablelink('ItemClass','種類')</th>
                     <th class="align-center ">@sortablelink('AmountUnit','容量')</th>
                     <th>@sortablelink('ItemNameJp','商品名')</th>
                     <th class="align-center ">@sortablelink('Standard','規格')</th>
@@ -156,43 +156,8 @@
     @else
     <p>{{ __('screenwords.noData') }}</p>
     @endif
-
-    <div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
-        <!--以下modal-dialogのCSSの部分で modal-lgやmodal-smを追加するとモーダルのサイズを変更することができる-->
-        <div  class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="Modal">{{ __('screenwords.itemDetails') }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('screenwords.close') }}">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="modal-detail-table">
-                        <tbody>
-                            <tr>
-                                <td>{{ __('screenwords.itemName') }}：</td><td id="detailProductName" colspan="3"></td>
-                            </tr>
-                            <tr>
-                                <td>{{ __('screenwords.capacity') }}：</td><td id="detailAmount"></td><td>{{ __('screenwords.standard') }}：</td><td id="detailStandard"></td>
-                            </tr>
-                            <tr>
-                                <td>{{ __('screenwords.catalogCode') }}：</td><td id="detailCatalogCode"></td><td>{{ __('screenwords.unitPrice') }}：</td><td id="detailUnitPrice"></td>
-                            </tr>
-                            <tr>
-                                <td>{{ __('screenwords.maker') }}：</td><td id="detailMakerName"></td><td>{{ __('screenwords.prioritySupplier') }}：</td><td id="detailSupplierName"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('screenwords.close') }}</button>
-               </div>
-            </div>
-        </div>
-    </div>
-
-    
+    @component('components.productDetail')
+    @endcomponent
     </div>
     <div class="leftside-fixed-280">
         <h6 class="h6-title">{{ __('screenwords.orderRequestList') }}</h6>

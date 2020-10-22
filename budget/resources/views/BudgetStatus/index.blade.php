@@ -14,12 +14,12 @@
                     <input type="text" id="txtStartDate" name="startDate" class="inpExecDate" readonly="readonly" value="{{$startDate}}" >
                     <span>～</span>
                     <input type="text" id="txtEndDate" name="endDate" class="inpExecDate" readonly="readonly"  value="{{$endDate}}" >
-                    <input type="button" name="btnExec" value="表示" class="btn btn-primary">
-                    <input type="button" name="btnCSV" value="CSV" class="btn btn-secondary">
+                    <input type="button" name="btnExec" value="表示" class="btn btn-width70 btn-primary">
+                    <input type="button" name="btnCSV" value="CSV" class="btn btn-width70 btn-secondary" @if(count($BudgetLists) < 1) disabled='disabled' @endif>
                     <input type="hidden" id="hidSelectedBudgetId" name="hidSelectedBudgetId" value="{{$hidSelectedBudgetId}}" >
                 </form>
             </div>
-            @if(count($BudgetLists) > 0)
+            
             <table id="table-budgetFixed" class="table table-fixed table-budgetFixed table-striped">
                 <thead>
                     <tr>
@@ -32,7 +32,8 @@
                         <th class="align-center ">@sortablelink('','執行予定込残高')</th>
                     </tr>
                 </thead>
-                <tbody>                
+                <tbody>
+                @if(count($BudgetLists) > 0)             
                 @foreach ($BudgetLists as $BudgetList)
                     <tr class="table-budgetFixed-tr">
                         <td>
@@ -42,18 +43,17 @@
                             <p class="lnkDetail">{{ $BudgetList['BudgetNameJp'] }}</p>
                             <input type="hidden" name="hidBudgetId" class="hidBudgetId" value="{{$BudgetList['BudgetId']}}" >
                         </td>
-                        <td class="align-right">{{ $BudgetList['Budget'] }}</td>
-                        <td class="align-right">{{ $BudgetList['BudgetUsed'] }}</td>
-                        <td class="align-right">{{ $BudgetList['BudgetRemainBal'] }}</td>
-                        <td class="align-right">{{ $BudgetList['BudgetScheduled'] }}</td>
-                        <td class="align-right">{{ $BudgetList['BudgetScheduledRemain'] }}</td>
+                        <td class="align-right">\{{ $BudgetList['Budget'] }}</td>
+                        <td class="align-right">\{{ $BudgetList['BudgetUsed'] }}</td>
+                        <td class="align-right">\{{ $BudgetList['BudgetRemainBal'] }}</td>
+                        <td class="align-right">\{{ $BudgetList['BudgetScheduled'] }}</td>
+                        <td class="align-right">\{{ $BudgetList['BudgetScheduledRemain'] }}</td>
                     </tr>
                 @endforeach
+                @endif
                 </tbody>
             </table>
-            @else
-            <p>データがありません</p>
-            @endif
+
         </div>
         <div class="flexmain">
             
@@ -75,7 +75,7 @@
                         <td>{{ $BudgetDetail['ItemNameJp'] }}</td>
                         <td class="align-right">{{ $BudgetDetail['UnitPrice'] }}</td>
                         <td class="align-right">{{ $BudgetDetail['ExecNumber'] }}</td>
-                        <td class="align-right">{{ $BudgetDetail['ExecPrice'] }}</td>
+                        <td class="align-right">\{{ $BudgetDetail['ExecPrice'] }}</td>
                     </tr>
                 @endforeach
                 @endif
@@ -108,11 +108,16 @@
                                 <label for="txtExecPrice" class="required">執行額</label>
                                 <input type="text" id="txtExecPrice" class="align-right" name="ExecPrice" value="{{old('ExecPrice')}}">
                             </div>
+                            {{-- エラーメッセージ --}}
+                            <div id="divError" class="alert alert-danger" style="display:none;" >
+                            <ul></ul>
+                            </div>
                         </section>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="btnBalanceExec" class="btn btn-primary">執行</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                        <button type="button" id="btnBalanceExec" class="btn btn-width70 btn-primary">執行</button>
+                        <button type="button" id="btnClear" class="btn btn-width70 btn-primary">クリア</button>
+                        <button type="button" class="btn btn-width70 btn-secondary" data-dismiss="modal">閉じる</button>
                     </div>
                 </div>
             </div>

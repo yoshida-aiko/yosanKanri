@@ -9,10 +9,8 @@
 
     <div class="flexmain" >
         <h6 class="h6-title">納品リスト</h6>
-        @if(!$Orders->isEmpty())
-        <!--<form action="{{action('DeliveryController@insertDelivery')}}" method='post'>-->
         <div class="divOrderRequestHeaderButton">
-            <input type="button" id="btnDelivery" value="納品" class="btn btn-primary" >
+            <input type="button" id="btnDelivery" value="納品" class="btn btn-width70 btn-primary" >
         </div>
         <div class="pagenationStyle">
         @if(!$Orders->isEmpty())
@@ -38,7 +36,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                
+                @if(!$Orders->isEmpty())
                 @foreach ($Orders as $order)
                     <tr class="table-deliveryFixed-tr">
                         <td>
@@ -88,7 +86,7 @@
                                 $Summary = $order->UnitPrice * intval($DeliveryExpectedNumber);
                                 $SummaryFormat = number_format($order->UnitPrice * intval($DeliveryExpectedNumber));
                             ?>
-                            <span class="spnOrderInputNumber">{{ $SummaryFormat }}</span>
+                            <span class="spnOrderInputNumber">\{{ $SummaryFormat }}</span>
                             <input type="text" class="inpOrderInputNumber inpSummaryPrice" pattern="[0-9]*"  title="数字のみ" min="1" value="{{ $Summary }}" >
                         </td>
                         <td>{{ $order->RequestUserNameJp }}</td>
@@ -112,48 +110,13 @@
                         <td class="tdItemName" style="display:none;">{{$order->item->ItemNameJp}}</td>
                     </tr>
                 @endforeach
+                @endif
                 </tbody>
             </table>
-        <!--</form>-->
-        @else
-        <div class="divNoData">
-            <p>データがありません</p>
-        </div>
-        @endif
-        <div id="modal-detail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
-            <!--以下modal-dialogのCSSの部分で modal-lgやmodal-smを追加するとモーダルのサイズを変更することができる-->
-            <div  class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="Modal">商品詳細</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <table class="modal-detail-table">
-                            <tbody>
-                                <tr>
-                                    <td>商品名：</td><td id="detailProductName" colspan="3"></td>
-                                </tr>
-                                <tr>
-                                    <td>容量：</td><td id="detailAmount"></td><td>規格：</td><td id="detailStandard"></td>
-                                </tr>
-                                <tr>
-                                    <td>カタログコード：</td><td id="detailCatalogCode"></td><td>単価：</td><td id="detailUnitPrice"></td>
-                                </tr>
-                                <tr>
-                                    <td>メーカー：</td><td id="detailMakerName"></td><td>優先する発注先：</td><td id="detailSupplierName"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+            @component('components.productDetail')
+            @endcomponent
+
     </div>
 
 

@@ -12,14 +12,22 @@
         
         <button type="button" id="btnModalBulletinBoad" class="btn btn-primary" >{{ __('screenwords.newRegister') }}</button>
         <section class="info">
-        @foreach($BulletinBoards as $BulletinBoard)
+        @foreach($arrBulletin as $Bulletin)
             <article class="bulletinArticle">
-                <time>{{$BulletinBoard->RegistDate}}</time><span>{{$BulletinBoard->user->UserNameJp}}</span>
-                <h6>{{$BulletinBoard->Title}}</h6>
-                <p>{{$BulletinBoard->Contents}}</p>
-                <input type="hidden" name="BulletinBoadIdlist" value="{{$BulletinBoard->id}}" >
-                <input type="hidden" name="RegistUserIdlist" value="{{$BulletinBoard->user->id}}" >
-                <input type="hidden" name="LimitDatelist" value="{{$BulletinBoard->LimitDate}}" >
+                <time>{{$Bulletin['RegistDate']}}</time>
+                <span>
+                    @if(App::getLocale()=='en') {{$Bulletin['UserNameEn']}}
+                    @else {{$Bulletin['UserNameJp']}}
+                    @endif
+                </span>
+                @if ($Bulletin['newicon'])
+                    <div class="newicon"></div>
+                @endif
+                <h6>{{$Bulletin['Title']}}</h6>
+                <p>{{$Bulletin['Contents']}}</p>
+                <input type="hidden" name="BulletinBoadIdlist" value="{{$Bulletin['id']}}" >
+                <input type="hidden" name="RegistUserIdlist" value="{{$Bulletin['UserId']}}" >
+                <input type="hidden" name="LimitDatelist" value="{{$Bulletin['LimitDate']}}" >
             </article>
         @endforeach
         </section>
@@ -70,8 +78,8 @@
                     </section>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" id="submit_bulletinboad_save" name="submit_bulletinboad" class="btn btn-primary" value="{{ __('screenwords.save') }}" />
-                    <input type="submit" id="submit_bulletinboad_delete" name="submit_bulletinboad" class="btn btn-primary" value="{{ __('screenwords.delete') }}" 
+                    <input type="submit" id="submit_bulletinboad_save" name="submit_bulletinboad" class="btn btn-width70 btn-primary" value="{{ __('screenwords.save') }}" />
+                    <input type="submit" id="submit_bulletinboad_delete" name="submit_bulletinboad" class="btn btn-width70 btn-primary" value="{{ __('screenwords.delete') }}" 
                             onClick="if (!confirm('{{ __('messages.confirmDelete') }}')){ return false;} document.getElementById('DeleteFlag').value = '1'; return true;"  />
                     <input type="button" id="btnBulletinBoadClear" class="btn btn-secondary" value="{{ __('screenwords.clear') }}">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('screenwords.close') }}</button>
@@ -88,7 +96,8 @@
     <div class="table-responsive">
     <table class="table table-fixed table-progressFixed table-striped" ><!--table-sm table-hover table-striped table-bordered progressTable-->
         <thead>
-            <th class="align-center ">@sortablelink('ItemClass','種類')</th>
+            
+            <th class="align-center ">@sortablelink('ItemClass','{{ __('screenwords.type') }}')</th>
             <th >&nbsp;</th>
             <th class="align-center ">@sortablelink('OrderDate','依頼/発注日')</th>
             <th >@sortablelink('item.ItemNameJp','商品名')</th>
@@ -107,9 +116,9 @@
             
             <td class="align-center ">
                 @if($OrderRequest->ItemClass==1)
-                    試薬
+                    {{ __('screenwords.reagent') }}
                 @elseif($OrderRequest->ItemClass==2)
-                    物品
+                    {{ __('screenwords.article') }}
                 @endif
             </td>
             <td class="align-center ">
@@ -126,19 +135,27 @@
                     {{$OrderRequest->OrderDate}}
                 @endif
             </td>
-            <td class="tdReagentName">{{$OrderRequest->item->ItemNameJp}}</td>
+            <td class="tdReagentName">
+                @if(App::getLocale()=='en') {{$OrderRequest->item->ItemNameEn}}
+                @else {{$OrderRequest->item->ItemNameJp}}
+                @endif
+            </td>
             <td class="align-center " >{{$OrderRequest->item->AmountUnit}}</td>
             <td class="align-center">{{$OrderRequest->item->Standard}}</td>
             <td class="align-center">{{$OrderRequest->user->UserNameJp}}</td>
             <td class="align-center">{{$OrderRequest->item->CatalogCode}}</td>
-            <td >{{$OrderRequest->item->MakerNameJp}}</td>
+            <td >
+                @if(App::getLocale()=='en') {{$OrderRequest->item->MakerNameEn}}
+                @else {{$OrderRequest->item->MakerNameJp}}
+                @endif
+            </td>
             <td class="align-right">{{$OrderRequest->UnitPrice}}</td>
             <td class="align-right">{{$OrderRequest->RequestNumber}}</td>
             <td class="align-center">
                 @if($OrderRequest->RequestProgress==1)
-                    納品待ち
+                    {{ __('screenwords.waitingForDelivery') }}
                 @else
-                    依頼中
+                    {{ __('screenwords.requesting') }}
                 @endif
             </td>
         </tr>
