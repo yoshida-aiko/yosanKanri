@@ -48,6 +48,12 @@ jQuery (function ()
         });
     };
 
+    $("input[name=txtHeaderProductSearch]").keypress(function(event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){//enter
+           $(this).parent("div").parent("form").submit();
+        }
+    });
 
 })
 
@@ -63,6 +69,14 @@ function getDate(element) {
 
 function getToday(splitchar) {
     var today = new Date();
+    return today.getFullYear() + splitchar + 
+        ( "0"+( today.getMonth()+1 ) ).slice(-2) + splitchar +
+        ( "0"+today.getDate() ).slice(-2);
+}
+function getAddMonth(splitchar,addmonth) {
+    var today = new Date();
+    today.setMonth(today.getMonth() + addmonth);
+    today.setDate(today.getDate() -1);
     return today.getFullYear() + splitchar + 
         ( "0"+( today.getMonth()+1 ) ).slice(-2) + splitchar +
         ( "0"+today.getDate() ).slice(-2);

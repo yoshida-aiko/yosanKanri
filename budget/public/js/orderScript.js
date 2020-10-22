@@ -42,10 +42,6 @@ jQuery (function ()
             tblwidth = tblwidth - 1040;
             $(".table-orderFixed thead th:nth-child(3)").css('width',tblwidth + 'px');
             $(".table-orderFixed tbody td:nth-child(3)").css('width',tblwidth + 'px');
-        }else{
-            if ($(".divNoData").length){
-                $(".divNoData").css('height', h - 350 + yosan + 'px');
-            }
         }
         if ($(".table-orderProcessingFixed").length > 0) {
             $(".table-orderProcessingFixed tbody").css('height', h - 400 + yosan + 'px');
@@ -60,7 +56,7 @@ jQuery (function ()
             }
         }
         var tblwidth_yosan = parseInt($(".table-yosan-under-list").css('width').replace('px',''));
-        tblwidth_yosan = tblwidth_yosan - 790;
+        tblwidth_yosan = tblwidth_yosan - 773;
         $(".table-yosan-under-list thead th:nth-child(1)").css('width',tblwidth_yosan + 'px');
         $(".table-yosan-under-list tbody td:nth-child(1)").css('width',tblwidth_yosan + 'px');
     }
@@ -207,7 +203,7 @@ jQuery (function ()
                     $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                     var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
                     var ordernum = $(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderRequestNumber').val();
-                   var deferred = updateOrder(id,price,ordernum);
+                    var deferred = updateOrder(id,price,ordernum);
                     deferred.done(function(){
                         $.unblockUI();
                     });  
@@ -333,7 +329,7 @@ jQuery (function ()
                     var deferred = updateExecOrder(arrayOrderRequestIds,howToOrderFlag);
                     deferred.done(function(){
                         $.unblockUI();
-                        //location.reload();
+                        location.reload();
                     });
                 }
             }

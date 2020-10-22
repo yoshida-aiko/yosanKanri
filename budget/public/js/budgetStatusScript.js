@@ -1,6 +1,5 @@
 jQuery (function ()
 {
-    console.log($("[name=hidSelectedBudgetId]").val());
     $(".table-budgetFixed > tbody > tr").each(function(index,elem){
         if ($(elem).find("[name=hidBudgetId]").val()==$("[name=hidSelectedBudgetId]").val()){
             $(".table-budgetFixed-tr").removeClass("table-fixed-selectRow");
@@ -22,13 +21,10 @@ jQuery (function ()
 
         if ($(".table-budgetFixed").length > 0) {
             $(".table-budgetFixed tbody").css('height', (h - 320)/3*2 + 'px');
-            $(".table-budgetDetailFixed tbody").css('height', (h - 320)/3 + 'px');
+            
             settingGridWidth();
-        }else{
-            if ($(".divNoData").length){
-                $(".divNoData").css('height', (h - 190) / 2  + 'px');
-            }
         }
+        $(".table-budgetDetailFixed tbody").css('height', (h - 320)/3 + 'px');
     }
 
     function settingGridWidth() {
@@ -81,9 +77,47 @@ jQuery (function ()
         $("#hidSelectedBudgetId").val($(this).parent('td').next('td').children('[name=hidBudgetId]').val());
         $("#modal-oherExec").modal('show');
     });
-
+    $("#btnClear").click(function() {
+        $("#divError").css('display','none');
+        $("#divError li").remove();
+        $("#txtExecDate").val(getToday('/'));
+        $("#txtExecRemark").val("");
+        $("#txtExecPrice").val("");
+    });
     /*残高調整実行*/
     $("#btnBalanceExec").click(function() {
+        var message = "";
+        $("#divError").css('display','none');
+        $("#divError li").remove();
+        if ($("#txtExecDate").val()==""){
+            message += '<li>執行日は必須です</li>';
+        }
+        if ($("#txtExecRemark").val()==""){
+            message += '<li>備考は必須です</li>';
+        }
+        else{
+            if($("#txtExecRemark").val().length > 100){
+                message += '<li>備考は100文字以下のみ有効です</li>';
+            }
+        }
+        if ($("#txtExecPrice").val()==""){
+            message += '<li>執行額は必須です</li>';
+        }
+        else{
+            var floatprice = parseFloat($("#txtExecPrice").val());
+            if (isNaN(floatprice)){
+                message += '<li>執行額は「数字」のみ有効です</li>';
+            }
+            else if(floatprice > 99999999) {
+                message += '<li>執行額は99,999,999以下のみ有効です</li>';
+            }         
+        }
+        if (message != ""){
+            $("#divError").css('display','block');
+            $("#divError").append(message);
+            return false;
+        }
+
         var deferred = balanceExec();
         deferred.done(function(){
             $.unblockUI();

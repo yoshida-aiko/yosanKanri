@@ -48,6 +48,58 @@ jQuery (function ()
         
     });
 
+    $("#submit_newProduct_save").click(function() {
+        var message = "";
+        $("#divError").css('display','none');
+        $("#divError li").remove();
+        if (!$("input[name=newItemClass]:checked").val()){
+            message += '<li>「試薬」か「物品」を選択して下さい</li>';
+        }
+        if ($("#newProductName").val()==""){
+            message += '<li>商品名は必須です</li>';
+        }
+        else{
+            if($("#newProductName").val().length > 50){
+                message += '<li>商品名は50文字以下のみ有効です</li>';
+            }
+        }
+        if ($("#newMaker option:selected").val()==""){
+            message += '<li>メーカーは必須です</li>';
+        }
+        if ($("#newUnitPrice").val()==""){
+            message += '<li>単価は必須です</li>';
+        }
+        else{
+            var floatprice = parseFloat($("#newUnitPrice").val());
+            if (isNaN(floatprice)){
+                message += '<li>単価は「数字」のみ有効です</li>';
+            }
+            else if(floatprice > 99999999) {
+                message += '<li>単価は99,999,999以下のみ有効です</li>';
+            }         
+        }
+        if (message != ""){
+            $("#divError").css('display','block');
+            $("#divError").append(message);
+            return false;
+        }
+        var deferred = insertNewProduct();
+        deferred.done(function(){
+            $.unblockUI();
+            location.reload();
+        });  
+    });
+    /*クリアボンタをクリック */
+    $("#btnClear").click(function() {
+        $("#divError").css('display','none');
+        $("#divError li").remove();
+        ("#newProductName").val("");
+        $("#newStandard").val("");
+        $("#newAmountUnit").val("");
+        $("#newCatalogCode").val("");
+        $("#newMaker").prop('selectedIndex',0);
+        $("#newUnitPrice").val("");
+    });
     /*一覧の行をダブルクリック */
     $(".table-orderRequestFixed-tr").dblclick(function() {
         $("#detailAmount").html($(this).children("td").eq(4).html());
@@ -199,7 +251,7 @@ jQuery (function ()
         }
     });    
 
-    jsTreeCreate('OrderRequest','favoriteTree',true);
+    jsTreeCreate('OrderRequest','favoriteTree',false);
     
     function updateOrder(id,price,ordernum,remark) {
         processing();
@@ -259,6 +311,43 @@ jQuery (function ()
         return deferred;
     }
 
+    function insertNewProduct(){
+        var ref = {
+            'ItemClass' : $("input[name=newItemClass]:checked").val(),
+            'MakerId' : $("#newMaker option:selected").val(),
+            'CatalogCode' : $("#newCatalogCode").val(),
+            'ItemNameJp' : $("#newProductName").val(),
+            'AmountUnit' : $("#newAmountUnit").val(),
+            'Standard' : $("#newStandard").val(),
+            'UnitPrice' : $("#newUnitPrice").val()
+        }
+        processing();
+        var deferred = new $.Deferred();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: 'OrderRequest/newProductStore',
+            type: 'GET',
+            datatype: 'json',
+            data : ref
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if (data['status'] !== 'OK') {
+                alert('データ更新に失敗しました' + data['status']);
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            alert('データ更新に失敗しました' + data['status']);
+        })
+        .always(function(data) {
+            deferred.resolve();           
+        });
+        
+        return deferred;        
+    }
 })
 $(window).on("load", function(){
     loadingStart();

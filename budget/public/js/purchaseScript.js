@@ -27,10 +27,6 @@ jQuery (function ()
             tblwidth = tblwidth - 940;
             $(".table-purchaseFixed thead th:nth-child(4)").css('width',tblwidth + 'px');
             $(".table-purchaseFixed tbody td:nth-child(4)").css('width',tblwidth + 'px');
-        }else{
-            if ($(".divNoData").length){
-                $(".divNoData").css('height', h - 190  + 'px');
-            }
         }
     }
 
@@ -45,8 +41,8 @@ jQuery (function ()
     $("input[name=searchWord]").keypress(function(event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if(keycode == '13'){//enter
-            $(this).parent("div").parent("form").attr('action','Purchase');
-            $(this).parent("div").parent("form").submit();
+            $(this).parent("div").parent("div").parent("form").attr('action','Purchase');
+            $(this).parent("div").parent("div").parent("form").submit();
         }
     });
 
@@ -58,11 +54,43 @@ jQuery (function ()
         $("#txtOrderNumber").focus();
     });
     $("#btnOrderRequest").click(function() {
+        var message = "";
+        $("#divError").css('display','none');
+        $("#divError li").remove();
+        if ($("#txtOrderNumber").val()==""){
+            message += '<li>数量は必須です</li>';
+        }
+        else{
+            var intnum = parseInt($("#txtOrderNumber").val());
+            if (isNaN(intnum)){
+                message += '<li>数量は「数字」のみ有効です</li>';
+            }
+            else if(intnum > 9999) {
+                message += '<li>数量は9,999以下のみ有効です</li>';
+            }         
+        }        
+        if ($("#txtOrderRemark").val()!=""){
+            if($("#txtOrderRemark").val().length > 100){
+                message += '<li>備考は100文字以下のみ有効です</li>';
+            }
+        }
+        if (message != ""){
+            $("#divError").css('display','block');
+            $("#divError").append(message);
+            return false;
+        }
         var deferred = insertOrderRequest();
         deferred.done(function(){
             $.unblockUI();
         });
     });
+    $("#btnClear").click(function() {
+        $("#divError").css('display','none');
+        $("#divError li").remove();
+        $("#txtOrderNumber").val("");
+        $("#txtOrderRemark").val("");
+    });
+
     /*一覧の行をダブルクリック */
     $(".table-purchaseFixed-tr").dblclick(function() {
         $("#detailAmount").html($(this).children("td").eq(3).children(".hidAmountUnit").val());

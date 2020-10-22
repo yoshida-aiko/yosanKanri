@@ -21,7 +21,9 @@ jQuery (function ()
         $(".table-progressFixed tbody td:nth-child(4)").css('width',tblwidth + 'px');
     }
 
-    $('#LimitDate').datepicker();
+    $('#LimitDate').datepicker({
+        minDate: new Date(),
+    });
 
     /*掲示板新規作成ボタンクリック時*/
     $("#btnModalBulletinBoad").click(function() {
@@ -29,8 +31,7 @@ jQuery (function ()
         $("#RegistDate").val(getToday('/'));
         $("#Title").val("");
         $("#Contents").val("");
-        $("#LimitDate").val("");
-        $("#LimitDate").prop("min",getToday('-'));
+        $("#LimitDate").val(getAddMonth('/',1));
         $("#BulletinBoadId").val("");
         $("#RegistUserId").val("");
         $("#DeleteFlag").val("");
@@ -50,7 +51,7 @@ jQuery (function ()
         var userid = $(this).children("input[name='RegistUserIdlist']").val();
         var title = $(this).children("h6").text();
         var contents = $(this).children("p").text();
-        var limitdate = $(this).children("input[name='LimitDatelist']").val().replace(/\//g, '-');
+        var limitdate = $(this).children("input[name='LimitDatelist']").val();
         var id = $(this).children("input[name='BulletinBoadIdlist']").val();
         $("#RegistDate").val(time);
         $("#Title").val(title);

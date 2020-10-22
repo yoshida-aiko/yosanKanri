@@ -18,10 +18,6 @@ jQuery (function ()
             tblwidth = tblwidth - 1260;
             $(".table-deliveryFixed thead th:nth-child(3)").css('width',tblwidth + 'px');
             $(".table-deliveryFixed tbody td:nth-child(3)").css('width',tblwidth + 'px');
-        }else{
-            if ($(".divNoData").length){
-                $(".divNoData").css('height', h - 190  + 'px');
-            }
         }
     }
 
