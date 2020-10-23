@@ -62,7 +62,8 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('/Supplier','SupplierController');
     Route::resource('/Maker','MakerController');
     Route::resource('/Budget','BudgetController');
-    Route::resource('/Condition', 'ConditionController'); 
+    Route::resource('/Condition', 'ConditionController');
+    Route::post('/Condition', 'ConditionController@judge');
     
     Route::get('pdf','PDFController@index');
     Route::get('lang/{lang}', ['as'=>'lang.switch', 'uses'=>'LanguageController@switchLang']);
