@@ -4,32 +4,53 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-// use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
+use Request as PostRequest;
 use App\Condition;
 
 
 class ConditionController extends Controller
 {
+    // POSTで送信された場合に、処理を分岐
+    public function judge(Request $request){
+        if ($request->has('send')) {
+            // 保存ボタン
+            if($request->action === 'back') {
+                return redirect()->route('Condition.index');
+            }  
+            list($Condition,$mode) = $this->store($request);
+            // Session::put('completeMessage', '登録完了しました'); 
+            $request->session()->flash('completeMessage', '登録完了しました');
+
+        }else if ($request->has('delete')) {
+            // クリアボタン
+            list($Condition,$mode) = $this->destroy($request);
+        }      
+        return view('Condition/index',compact('Condition','mode'));
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        // セッション削除
+        $request->session()->forget('completeMessage');
+
        $Condition = Condition::first();
         if ($Condition == null) {
-            $Condition = new Condition();
-            $Condition->FiscalStartMonth = 4;
-            $Condition->NewBulletinTerm = 5;
-            $Condition->BulletinTerm = 30;
-            $Condition->bilingual = 0;
-            $Condition->SMTPServerPort = 25;
-            $Condition->SMTPAuthFlag = 0;
-            $Condition->ExecutionBasis = 1;
+            $Condition = $this->initialize();
+            $mode = 'new';
+        }        
+        else{
+            /* // SMTP項目は　.envに設定するためコメント化
+            $Condition->SMTPPassword = Crypt::decryptString($Condition->SMTPPassword); */
+            $mode = 'edit';
         } 
 
-        return view('Condition/index',compact('Condition'));
+        return view('Condition/index',compact('Condition','mode'));
     }
 
     /**
@@ -52,10 +73,6 @@ class ConditionController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->action === 'back') {
-            return redirect()->route('Condition.index');
-        }
-
         $isUpdate = false;
 
         $Condition = Condition::first();
@@ -72,38 +89,44 @@ class ConditionController extends Controller
             'FiscalStartMonth' => ['required', 'integer'],
             'BulletinTerm' => ['required', 'integer'],
             'NewBulletinTerm' => ['required', 'integer'],
-            'email' => ['required', 'string', 'max:100'],
-            'SMTPServerId' => ['required', 'string', 'max:100'],
-            'SMTPServerPort' => ['required', 'integer'],
+            'email' => ['required', 'string', 'email', 'max:100'],
+            // SMTP項目は　.envに設定するためコメント化
+            /* 'SMTPServerId' => ['required', 'string', 'max:100'],
+            'SMTPServerPort' => ['required', 'integer'], */
         ];
         if ($request['bilingual'] == "1") {
             $rules['SystemNameEn'] = ['required', 'string', 'max:50'];
         }
-        if ($request['SMTPAuthFlag'] == "1") {
+        // SMTP項目は　.envに設定するためコメント化
+        /* if ($request['SMTPAuthFlag'] == "1") {
             $rules['SMTPAccount'] = ['required', 'string', 'max:100'];
             $rules['SMTPPassword'] = ['required', 'string', 'min:50'];
-        }
+        } */
         $this->validate($request, $rules);
 
         $Condition->VersionNo = 0;
         $Condition->bilingual = $request->bilingual;
         $Condition->SystemNameJp = $request->SystemNameJp;
+        if ($request->SystemNameEn == NULL) {
+            $request->SystemNameEn  = '';
+        }
         $Condition->SystemNameEn = $request->SystemNameEn;
         $Condition->FiscalStartMonth = $request->FiscalStartMonth;
         $Condition->NewBulletinTerm = $request->NewBulletinTerm;
         $Condition->BulletinTerm = $request->BulletinTerm;
+        /* SMTP項目は　.envに設定するためコメント化
         $Condition->SMTPServerId = $request->SMTPServerId;
         $Condition->SMTPServerPort = $request->SMTPServerPort;
         $Condition->SMTPAccount = $request->SMTPAccount;
-        // $Condition->SMTPPassword = Hash::make($request->SMTPPassword);
-        $Condition->SMTPPassword = $request->SMTPPassword;
+        $Condition->SMTPPassword =  Crypt::encryptString($request->SMTPPassword);
         if ($request->SMTPAuthFlag =="") {
             $Condition->SMTPAuthFlag = 0;
         }else {
             $Condition->SMTPAuthFlag = 1;
-        }
+        } 
+        */
         
-        $Condition->SMTPConnectMethod = 2;
+        // $Condition->SMTPConnectMethod = 2;
         $Condition->Organization = "インフォグラム";
         $Condition->Department = "福岡本社";
         $Condition->EMail = $request->email;
@@ -111,41 +134,12 @@ class ConditionController extends Controller
        
         $Condition->save();
 
-        return view('Condition/index',compact('Condition'));
-    }
+        $query = Condition::first();
+        // SMTP項目は　.envに設定するためコメント化
+        // $Condition->SMTPPassword = Crypt::decryptString($query->SMTPPassword);
+        $mode = 'edit';
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        return [$Condition,$mode];
     }
 
     /**
@@ -154,20 +148,37 @@ class ConditionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $Condition = Condition::first();
-        if ($Condition == null) {
-            $Condition = new Condition();
-            $Condition->FiscalStartMonth = 4;
-            $Condition->NewBulletinTerm = 5;
-            $Condition->BulletinTerm = 30;
-            $Condition->bilingual = 0;
-            $Condition->SMTPServerPort = 25;
-            $Condition->SMTPAuthFlag = 0;
-            $Condition->ExecutionBasis = 1;
-        } 
+        $exists  = Condition::where('id',$request->id)->exists();
+        if (!$exists) {
+            $Condition = $this->initialize();
+            $mode = 'new'; 
+        }else{
+            $Condition = Condition::findOrFail($request->id);
+            // SMTP項目は　.envに設定するためコメント化
+            // $Condition->SMTPPassword = Crypt::decryptString($Condition->SMTPPassword);
+            $mode = 'edit'; 
+        }
+        $completeMessage = $request->session()->get('completeMessage');
+        if ($completeMessage) {
+            $request->session()->forget('completeMessage');
+        }
+        return [$Condition,$mode];
+    }
 
-        return view('Condition/index',compact('Condition'));
+    /* 初期値 */
+    public function initialize(){
+        $Condition = new Condition();
+        $Condition->FiscalStartMonth = 4;
+        $Condition->NewBulletinTerm = 5;
+        $Condition->BulletinTerm = 30;
+        $Condition->bilingual = 0;
+        /* SMTP項目は　.envに設定するためコメント化
+        $Condition->SMTPServerPort = 25;
+        $Condition->SMTPAuthFlag = 0;
+         */
+        $Condition->ExecutionBasis = 1;
+        return $Condition;
     }
 }

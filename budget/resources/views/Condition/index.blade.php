@@ -6,7 +6,7 @@
 <h5 class="master-title">設定</h5>
 <div class="wrapper">
     <div class="divConditionInput">
-    <form id="frmCondition" class="frmConditionInput" action="{{action('ConditionController@store')}}" method="POST">
+    <form id="frmCondition" class="frmConditionInput" action="{{route('Condition.index')}}" method="POST">
             {{-- エラーメッセージ --}}
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -23,14 +23,23 @@
                 $Condition->FiscalStartMonth = old('FiscalStartMonth');
                 $Condition->BulletinTerm = old('BulletinTerm');
                 $Condition->NewBulletinTerm = old('NewBulletinTerm');
-                $Condition->EMail = old('EMail');
+                $Condition->EMail = old('email');               
+                /* SMTP項目　コメント化
                 $Condition->SMTPServerId = old('SMTPServerId');
                 $Condition->SMTPServerPort = old('SMTPServerPort');
                 $Condition->SMTPAccount = old('SMTPAccount');
                 $Condition->SMTPPassword = old('SMTPPassword');
-                $Condition->SMTPAuthFlag = old('SMTPAuthFlag');
+                $Condition->SMTPAuthFlag = old('SMTPAuthFlag'); */
                 ?>
             @endif
+            @if (session('completeMessage'))
+                <div class="alert alert-success">
+                    <ul>
+                    {{ session('completeMessage') }}
+                    </ul>
+                </div>
+            @endif
+
             @csrf
             <fieldset>
             <legend>環境設定</legend>
@@ -78,6 +87,7 @@
                 </div>              
            </fieldset>
 
+           {{-- 　SMTP項目　コメント化
            <fieldset>
             <legend>SMTPサーバー</legend>
                 <div class="form-group">
@@ -105,12 +115,12 @@
                     <input type="checkbox" id="SMTPAuthFlag" name="SMTPAuthFlag" value="{{ $Condition->SMTPAuthFlag }}" {{ $Condition->SMTPAuthFlag == 1 ? 'checked' : '' }}>
                     <label for="SMTPAuthFlag" class="chk1">メールアカウントとパスワードを使用する</label>
                 </div>
-
             </fieldset>
+            --}}
 
             <fieldset>
             <legend>執行基準</legend>
-                <div class="form-group text-center">
+                <div class="form-group text-center" id="ExecutionBasisArea">
                     <input type="radio" id="deliveryBasis" name="ExecutionBasis" value="1"  {{ $Condition->ExecutionBasis == 1 ? 'checked' : '' }}>
                     <label for="deliveryBasis" class="radio1">納品基準</label>
                     <input type="radio" id="paymentBasis" name="ExecutionBasis" value="2"  {{ $Condition->ExecutionBasis == 2 ? 'checked' : '' }}>
@@ -119,8 +129,10 @@
            </fieldset>
 
             <div class="form-group text-center">
-                <button id="submit_condition_regist" name="submit_condition_regist" class="btn btn-primary" >保存</button>
-                <input id="btn_condition_clear" type="button" class="btn btn-secondary" value="クリア">
+                <button id="submit_condition_regist" name="send" class="btn btn-primary" type="submit" onClick="if (!confirm('登録しますか？')){ return false;} return true;">保存</button>
+                <input id="btn_condition_clear" type="submit" name="delete" class="btn btn-secondary" value="クリア">
+                <input type="hidden" id="id" name="id" value="{{ $Condition->id }}" >
+                <input type="hidden" id="mode" name="mode" value="{{ $mode }}" >
             </div>
 
         </form>

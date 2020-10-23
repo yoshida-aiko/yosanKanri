@@ -894,6 +894,10 @@ label.required:after {
 	color: #999;
 	border:1px solid #666;
 }
+.frmConditionInput  > fieldset > div.readonly {
+	color: #999;
+}
+
 /* スピンボタン 非表示 */
 /* Chrome、Safari Edge*/
 .frmConditionInput  > fieldset > div.form-group > input[type=number]::-webkit-outer-spin-button,

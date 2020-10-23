@@ -13,7 +13,7 @@ jQuery (function ()
         })
       });
 
-    // メールアカウントとパスワードを使用するの選択（SMTPAuthFlag）必須マーク可視・不可視
+/*     // メールアカウントとパスワードを使用するの選択（SMTPAuthFlag）必須マーク可視・不可視
     $('#SMTPAuthFlag').click(function() {
         if ( $(this).prop('checked')) {
             //チェックされている場合  
@@ -26,5 +26,21 @@ jQuery (function ()
             $('#lblSMTPPassword').removeClass('required');
             $(this).val("0");
         }
-    });
+    }); */
+
+    //執行基準　モード判定
+    var mode = $('input:hidden[name="mode"]').val();
+    if (mode != 'new') {
+      $("#ExecutionBasisArea").addClass('readonly');
+      $(".readonly :radio:not(:checked)").attr("disabled", true); 
+    }
+
+    /*入力エリアでのEnterkeyでsubmitされるのを防ぐ*/
+    $("input").keypress(function(event) {
+      var keycode = (event.keyCode ? event.keyCode : event.which);
+      if(keycode == '13'){//enter);
+          event.preventDefault();
+      }
+  });
+
 })

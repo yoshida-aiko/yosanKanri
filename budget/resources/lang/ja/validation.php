@@ -171,6 +171,15 @@ return [
         'useStartDate' => '執行期間の開始日', 
         'useEndDate' => '執行期間の終了日', 
         'displayOrder' => '表示順',
+        'SystemNameJp'  => 'システム名(和名)',
+        'SystemNameEn' => 'システム名(英名)',
+        'FiscalStartMonth' => '期首月',
+        'BulletinTerm' => '掲示日数', 
+        'NewBulletinTerm' => 'NEW！表示期間', 
+        'SMTPServerId' => 'SMTPサーバー名',
+        'SMTPServerPort' => 'SMTPポート番号',
+        'SMTPAccount' => 'SMTPメールアカウント',
+        'SMTPPassword' => 'SMTPパスワード',
     ],
 
 ];

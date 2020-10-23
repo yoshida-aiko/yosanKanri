@@ -45,6 +45,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/Order/updateOrderRequestGiveBudget', 'OrderController@updateOrderRequestGiveBudget');
     Route::get('/Order/orderExec', 'OrderController@orderExec');
     Route::get('/Order/createPDF', 'OrderController@createPDF');
+
     Route::resource('/Delivery', 'DeliveryController', ['only' => ['index', 'update', 'destroy']]); 
     Route::get('/Delivery/insertDelivery', 'DeliveryController@insertDelivery');
     
@@ -58,14 +59,16 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/Purchase/insertOrderRequest', 'PurchaseController@insertOrderRequest');
 
     Route::resource('/User','UserController');
-    Route::get('/Order/passwordHash','OrderController@passwordHash');
     Route::resource('/Supplier','SupplierController');
     Route::resource('/Maker','MakerController');
     Route::resource('/Budget','BudgetController');
-    Route::resource('/Condition', 'ConditionController');
+    Route::resource('/Condition', 'ConditionController', ['only' => ['index', 'create', 'store', 'destroy']]); 
     Route::post('/Condition', 'ConditionController@judge');
     
     Route::get('pdf','PDFController@index');
+
+    Route::get('/Init','InitController@passwordHash');
+    
     Route::get('lang/{lang}', ['as'=>'lang.switch', 'uses'=>'LanguageController@switchLang']);
     
 });
