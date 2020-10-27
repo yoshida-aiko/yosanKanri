@@ -161,8 +161,10 @@ return [
         'Tel' => '連絡先（携帯等）',
         'email' => 'メールアドレス',
         'Signature' => '署名',
-        'SupplierNameJp' => '発注先名',
-        'ChargeUserJp' => '担当者名',
+        'SupplierNameJp' => '発注先(和名)',
+        'SupplierNameEn' => '発注先(英名)',
+        'ChargeUserJp' => '担当者名(和名)',
+        'ChargeUserEn' => '担当者名(英名)',
         'SupplierTel' => '電話番号', //発注先マスタの電話番号
         'Fax' => 'ファックス番号',
         'MakerNameJp'  => 'メーカー名',

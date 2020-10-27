@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use App\Exceptions\ExclusiveLockException;
+use App;
 
 class Handler extends ExceptionHandler
 {
@@ -57,7 +58,13 @@ class Handler extends ExceptionHandler
         }
         // 排他エラー
         if($exception instanceof ExclusiveLockException) {
-            return redirect()->back()->with('exclusiveError', '他のユーザーから削除されたデータです。');
+            $msg = '';
+            if (App::getLocale()=='en') {
+                $msg ='Data deleted from other users.';
+            }else{
+                $msg ='他のユーザーから削除されたデータです。';
+            }
+            return redirect()->back()->with('exclusiveError', $msg);
         } 
 
         

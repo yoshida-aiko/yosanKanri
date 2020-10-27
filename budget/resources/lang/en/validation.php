@@ -146,6 +146,13 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'Email' => 'Email',
+        'SupplierNameJp' => 'Supplier name(Jp)',
+        'SupplierNameEn' => 'Supplier name(En)',
+        'ChargeUserJp' => 'Charge user name(Jp)',
+        'SupplierTel' => 'Tel', //発注先マスタの電話番号
+        'Fax' => 'Fax',
+    ],
 
 ];

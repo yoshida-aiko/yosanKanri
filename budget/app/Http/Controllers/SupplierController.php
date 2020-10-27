@@ -9,6 +9,7 @@ use App\Maker;
 use App\Rules\Exists;
 use App\Exceptions\ExclusiveLockException;
 use App\Condition;
+use App;
 
 class SupplierController extends Controller
 {
@@ -62,17 +63,17 @@ class SupplierController extends Controller
             $isUpdate = true;
         }
 
-        $rules = [
-            'SupplierNameJp' => ['required', 'string', 'max:50'],
-            'ChargeUserJp' => ['nullable', 'string', 'max:50'],
-            'SupplierTel' => ['nullable','string', 'max:20'],
-            'Fax' => ['nullable','string', 'max:20'],
-            'email' => ['required', 'string', 'max:100']
-        ];
-        if ($request->session()->has('bilingual') == "1") {
+        $rules['SupplierNameJp'] = ['required', 'string', 'max:50'];
+        if ($request->session()->get('bilingual') == "1") {
             $rules['SupplierNameEn'] = ['required', 'string', 'max:50'];
+        }
+        $rules['ChargeUserJp'] =  ['nullable', 'string', 'max:50'];
+        if ($request->session()->get('bilingual') == "1") {
             $rules['ChargeUserEn'] = ['nullable', 'string', 'max:50'];
         }
+        $rules['SupplierTel'] = ['nullable', 'string', 'max:20'];
+        $rules['Fax'] = ['nullable', 'string', 'max:20'];
+        $rules['email'] = ['required', 'string', 'max:100'];
         $this->validate($request, $rules);
 
         if ($isUpdate){
@@ -130,17 +131,17 @@ class SupplierController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $rules = [
-            'SupplierNameJp' => ['required', 'string', 'max:50'],
-            'ChargeUserJp' => ['string', 'min:50'],
-            'SupplierTel' => ['string', 'max:20'],
-            'Fax' => ['string', 'max:20'],
-            'email' => ['required', 'string', 'max:100']
-        ];
-        if ($request->session()->has('bilingual') == "1") {
+        $rules['SupplierNameJp'] = ['required', 'string', 'max:50'];
+        if ($request->session()->get('bilingual') == "1") {
             $rules['SupplierNameEn'] = ['required', 'string', 'max:50'];
+        }
+        $rules['ChargeUserJp'] =  ['nullable', 'string', 'max:50'];
+        if ($request->session()->get('bilingual') == "1") {
             $rules['ChargeUserEn'] = ['nullable', 'string', 'max:50'];
         }
+        $rules['SupplierTel'] = ['nullable', 'string', 'max:20'];
+        $rules['Fax'] = ['nullable', 'string', 'max:20'];
+        $rules['email'] = ['required', 'string', 'email', 'max:100'];
         $this->validate($request, $rules);
 
         $Supplier = Supplier::findOrFail($id);
@@ -169,7 +170,13 @@ class SupplierController extends Controller
         //メーカーマスタの優先する発注先に登録されていれば、メッセージを出力
         $exists = Maker::where('MainSupplierId',$id)->exists();
         if ($exists) {
-            return redirect()->back()->with('MainSupplierIdError', '優先する発注先に指定しているメーカーがある為、削除できません');
+            $msg = '';
+            if (App::getLocale()=='en') {
+                $msg ='It is not possible to delete it because there is a manufacturer that specifies it for the source that gives priority.';
+            }else{
+                $msg ='優先する発注先に指定しているメーカーがある為、削除できません';
+            }
+            return redirect()->back()->with('MainSupplierIdError', $msg);
         }
         $Supplier = Supplier::lockForUpdate()->withTrashed()->find($id);
         $Supplier->delete();
