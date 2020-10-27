@@ -8,6 +8,7 @@ use App\Supplier;
 use App\Maker;
 use App\Rules\Exists;
 use App\Exceptions\ExclusiveLockException;
+use App\Condition;
 
 class SupplierController extends Controller
 {
@@ -16,10 +17,16 @@ class SupplierController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $Suppliers = Supplier::all();
         $editSupplier = new Supplier();
+        $Condition = Condition::first();
+        $bilingual = 0;
+        if ($Condition != null) {
+            $bilingual = $Condition->bilingual;
+        }
+        $request->session()->put('bilingual', $bilingual);
 
         return view('Supplier/index',compact('Suppliers','editSupplier'));
     }
@@ -62,6 +69,10 @@ class SupplierController extends Controller
             'Fax' => ['nullable','string', 'max:20'],
             'email' => ['required', 'string', 'max:100']
         ];
+        if ($request->session()->has('bilingual') == "1") {
+            $rules['SupplierNameEn'] = ['required', 'string', 'max:50'];
+            $rules['ChargeUserEn'] = ['nullable', 'string', 'max:50'];
+        }
         $this->validate($request, $rules);
 
         if ($isUpdate){
@@ -71,7 +82,9 @@ class SupplierController extends Controller
             $Supplier = new Supplier();
         }
         $Supplier->SupplierNameJp = $request->SupplierNameJp;
+        $Supplier->SupplierNameEn = $request->SupplierNameEn;
         $Supplier->ChargeUserJp = $request->ChargeUserJp;
+        $Supplier->ChargeUserEn = $request->ChargeUserEn;
         $Supplier->Tel = $request->SupplierTel;
         $Supplier->Fax = $request->Fax;
         $Supplier->EMail = $request->email;
@@ -79,8 +92,9 @@ class SupplierController extends Controller
         $Supplier->save();
         $Suppliers = Supplier::all();
         $editSupplier = new Supplier();
+        $bilingual = $request->bilingual;
 
-        return view('Supplier/index',compact('Suppliers','editSupplier'));
+        return view('Supplier/index',compact('Suppliers','editSupplier','bilingual'));
     }
 
     /**
@@ -98,8 +112,10 @@ class SupplierController extends Controller
                 throw new ExclusiveLockException;
             }
                
-            $editSupplier = Supplier::findOrFail($id);    
-            return view('Supplier/index',compact('Suppliers','editSupplier'));
+            $editSupplier = Supplier::findOrFail($id); 
+            $bilingual = $request->bilingual;
+
+            return view('Supplier/index',compact('Suppliers','editSupplier','bilingual'));
         } catch (ExclusiveLockException $e) {
             throw $e;
         }     
@@ -121,10 +137,15 @@ class SupplierController extends Controller
             'Fax' => ['string', 'max:20'],
             'email' => ['required', 'string', 'max:100']
         ];
+        if ($request->session()->has('bilingual') == "1") {
+            $rules['SupplierNameEn'] = ['required', 'string', 'max:50'];
+            $rules['ChargeUserEn'] = ['nullable', 'string', 'max:50'];
+        }
         $this->validate($request, $rules);
 
         $Supplier = Supplier::findOrFail($id);
         $Supplier->SupplierNameJp = $request->SupplierNameJp;
+        $Supplier->SupplierNameEn = $request->SupplierNameEn;
         $Supplier->ChargeUserJp = $request->ChargeUserJp;
         $Supplier->Tel = $request->SupplierTel;
         $Supplier->Fax = $request->Fax;
@@ -132,8 +153,9 @@ class SupplierController extends Controller
         $Supplier->save();
  
         $editSupplier = new Supplier();
+        $bilingual = $request->bilingual;
 
-        return view('Supplier/index',compact('Suppliers','editSupplier'));
+        return view('Supplier/index',compact('Suppliers','editSupplier','bilingual'));
     }
 
     /**

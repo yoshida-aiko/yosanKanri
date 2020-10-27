@@ -26,6 +26,12 @@ jQuery (function ()
          tblwidth = tblwidth - 120;
      }
 
+    //  設定画面のバイリンガルが使用するの場合、必須マークをつける
+    var bilingual = $('input:hidden[name="bilingual"]').val();
+    if (bilingual == '1') {
+      $("#lblSupplierNameEn").addClass('required');
+    }
+
      /*マスタ　クリアボタンクリック時*/
     $("#btn_supplier_clear").click(function() {
         $("#frmSupplierMaster > div.form-group > input[type=text]").val("");

@@ -8,6 +8,7 @@ return [
     |-----------------------------------------------------------------
     */
     'all' => 'All',
+    'amount' => 'Amount',
     'article' => 'Article',
     
     'budgetStatus' => 'Budget status',
@@ -19,6 +20,7 @@ return [
     'clear' => 'Clear',
     'close' => 'Close',
     'capacity' => 'Capacity',
+    'capacityUnit' => 'Capacity unit',
     'content' => 'Content',
     
     'delete' => 'Delete',
@@ -39,10 +41,12 @@ return [
     'master_budget' => 'Budget Master Maintenance',
     'master_setting' => 'My Setting',
     
+    'newItemInput' => 'New item input',
     'newRegister' => 'New Register',
     'noData' => 'There is no data.',
     
     'orderRequest' => 'Order Request',
+    'orderRequestTooltip' => 'Order Request',
     'order' => 'Order',
     'orderRequestList' => 'Order Request List',
     
@@ -55,6 +59,7 @@ return [
     'reagent' => 'Reagent',
     'reagentName' => 'Reagent name',
     'remark' => 'Remark',
+    'requestDestination' => 'Request destination',
     'requesting' => 'Requesting',
     'refineItem' => 'Refine Item',
     
