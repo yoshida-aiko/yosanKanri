@@ -9,9 +9,9 @@
 <div id="divOrderRequestList" class="wrapper" style="padding-bottom: 0px;display:none;">
 
     <div class="leftside-fixed-400">
-        <h6 class="h6-title">予算リスト</h6>
+        <h6 class="h6-title">{{ __('screenwords.budgetList') }}</h6>
         <div class="divOrderHeaderButton">
-            <input type="button" id="btnToOrderList" class="btn btn-primary" value="発注リスト" style="margin-left:300px;" >
+            <input type="button" id="btnToOrderList" class="btn btn-primary" value="{{ __('screenwords.orderList') }}" style="margin-left:300px;" >
         </div>
         <div id="budgetTree" class="budgetTree">
             @foreach ($arrayBudgetTree as $arrBudget)
@@ -23,22 +23,33 @@
                 <span>&nbsp;</span>
                 <span class="fa fa-folder"></span>
                 @endif
-                <span>{{$arrBudget['BudgetNameJp']}}</span>
-                <span class="smalllabel">発注額:</span>
+                <span>
+                    @if(App::getLocale()=='en'&&$arrBudget['BudgetNameEn']!=null) {{$arrBudget['BudgetNameEn']}}
+                    @else {{$arrBudget['BudgetNameJp']}}
+                    @endif
+                </span>
+                <span class="smalllabel" title="{{ __('screenwords.orderAmount') }}">{{ __('screenwords.orderAmount') }}:</span>
                 <span>\{{$arrBudget['orderFee']}}</span>
-                <span class="smalllabel">残高:</span>
+                <span class="smalllabel" title="{{ __('screenwords.remain') }}">{{ __('screenwords.remain') }}:</span>
                 <span>\{{$arrBudget['remainFee']}}</span>
             </div>
             @if ($arrBudget['children'] <> null)
             <ul class="childBudget">
             @foreach ($arrBudget['children'] as $arrChild)
                 <?php
-                    $tooltip = $arrChild['ProductNameJp'].'【容量】'.$arrChild['AmountUnit']
-                        .'【規格】'.$arrChild['Standard'].'【メーカー】'.$arrChild['MakerNameJp']
-                        .'【ｶﾀﾛｸﾞｺｰﾄﾞ】'.$arrChild['CatalogCode'].'【依頼者】'.$arrChild['RequestUserName'];
+                    $tooltip = (App::getLocale()=='en' ? $arrChild['ProductNameEn'] : $arrChild['ProductNameJp']);
+                    $tooltip .= '【'.__('screenwords.capacity').'】';$arrChild['AmountUnit'];
+                    $tooltip .= '【'.__('screenwords.standard').'】'.$arrChild['Standard'];
+                    $tooltip .= '【'.__('screenwords.maker').'】'.(App::getLocale()=='en' ? $arrChild['MakerNameEn'] : $arrChild['MakerNameJp']);
+                    $tooltip .= '【'.__('screenwords.catalogCode').'】'.$arrChild['CatalogCode'];
+                    $tooltip .= '【'.__('screenwords.client').'】'.(App::getLocale()=='en' ? $arrChild['RequestUserNameEn'] : $arrChild['RequestUserNameJp']);
                 ?>
                 <li>
-                    <span data-toggle="tooltip" title="{{$tooltip}}">{{$arrChild['ProductNameJp']}}</span>
+                    <span data-toggle="tooltip" title="{{$tooltip}}">
+                        @if(App::getLocale()=='en') {{$arrChild['ProductNameEn']}}
+                        @else {{$arrChild['ProductNameJp']}}
+                        @endif
+                    </span>
                     <span>\{{$arrChild['UnitPrice']}}</span>
                     <span>{{$arrChild['RequestNumber']}}</span>
                     <span>\{{$arrChild['SummaryPrice']}}</span>
@@ -51,12 +62,12 @@
         </div>
     </div>
     <div class="flexmain" >
-        <h6 class="h6-title">発注依頼リスト</h6>
+        <h6 class="h6-title">{{ __('screenwords.orderRequestList') }}</h6>
         <div class="divOrderHeaderButton">
             <form action="{{action('OrderController@index')}}" method="get">
-                <input type="radio" id="rdoBoth" name="rdoItemClass" value="-1" @if($itemclass=='-1') checked='checked' @endif onchange="submit(this.form)"><label for="rdoBoth">両方</label>
-                <input type="radio" id="rdoReagent" name="rdoItemClass" value="1"  @if($itemclass=='1') checked='checked' @endif onchange="submit(this.form)"><label for="rdoReagent">試薬</label>
-                <input type="radio" id="rdoArticle" name="rdoItemClass" value="2" @if($itemclass=='2') checked='checked' @endif onchange="submit(this.form)"><label for="rdoArticle">物品</label>
+                <input type="radio" id="rdoBoth" name="rdoItemClass" value="-1" @if($itemclass=='-1') checked='checked' @endif onchange="submit(this.form)"><label for="rdoBoth">{{ __('screenwords.both') }}</label>
+                <input type="radio" id="rdoReagent" name="rdoItemClass" value="{{config('const.ItemClass.reagent')}}"  @if($itemclass==config('const.ItemClass.reagent')) checked='checked' @endif onchange="submit(this.form)"><label for="rdoReagent">{{ __('screenwords.reagent') }}</label>
+                <input type="radio" id="rdoArticle" name="rdoItemClass" value="{{config('const.ItemClass.article')}}" @if($itemclass==config('const.ItemClass.article')) checked='checked' @endif onchange="submit(this.form)"><label for="rdoArticle">{{ __('screenwords.article') }}</label>
             </form>
         </div>
         <div class="pagenationStyle">
@@ -68,16 +79,16 @@
                 <thead>
                     <tr>
                         <th>&nbsp;</th>
-                        <th class="align-center ">@sortablelink('ItemClass','種類')</th>
-                        <th>@sortablelink('ItemNameJp','商品名')</th>
-                        <th class="align-center ">@sortablelink('AmountUnit','容量')</th>
-                        <th class="align-center ">@sortablelink('Standard','規格')</th>
-                        <th class="align-center ">@sortablelink('CatalogCode','カタログコード')</th>
-                        <th>@sortablelink('MakerNameJp','メーカー名')</th>
-                        <th class="align-center ">@sortablelink('UnitPrice','単価')</th>
-                        <th class="align-center ">@sortablelink('RequestNumber','数量')</th>
-                        <th class="align-center ">金額</th>
-                        <th>@sortablelink('RequestUserNameJp','依頼者')</th>
+                        <th class="align-center ">@sortablelink('ItemClass',__('screenwords.type'))</th>
+                        <th>@sortablelink(__('screenwords.sortItemName'),__('screenwords.itemName'))</th>
+                        <th class="align-center ">@sortablelink('AmountUnit',__('screenwords.capacity'))</th>
+                        <th class="align-center ">@sortablelink('Standard',__('screenwords.standard'))</th>
+                        <th class="align-center ">@sortablelink('CatalogCode',__('screenwords.catalogCode'))</th>
+                        <th>@sortablelink(__('screenwords.sortMakerName'),__('screenwords.makerName'))</th>
+                        <th class="align-center ">@sortablelink('UnitPrice',__('screenwords.unitPrice'))</th>
+                        <th class="align-center ">@sortablelink('RequestNumber',__('screenwords.quantity'))</th>
+                        <th class="align-center ">{{__('screenwords.amount')}}</th>
+                        <th>@sortablelink(__('screenwords.sortRequestUserName'),__('screenwords.client'))</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,22 +100,30 @@
                                 @csrf
                                 @method('DELETE')
                                 <input type="submit" value="&#xf1f8;" 
-                                    onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="fa btn-delete-icon">
+                                    onClick="if (!confirm({{ __('messages.confirmDelete') }})){ return false;} return true;" class="fa btn-delete-icon">
                                 <input type="hidden" name="orderreqId" value="{{$OrderRequest->id}}">
                             </form>
                         </td>
                         <td class="align-center">
                             @if($OrderRequest->ItemClass == '1')
-                                試薬
+                            {{ __('screenwords.reagent') }}
                             @elseif($OrderRequest->ItemClass == '2')
-                                物品
+                            {{ __('screenwords.article') }}
                             @endif
                         </td>
-                        <td>{{ $OrderRequest->ItemNameJp }}</td>
+                        <td>
+                            @if(App::getLocale()=='en') {{$OrderRequest->ItemNameEn}}
+                            @else {{$OrderRequest->ItemNameJp}}
+                            @endif
+                        </td>
                         <td class="align-center">{{ $OrderRequest->AmountUnit }}</td>
                         <td class="align-center">{{ $OrderRequest->Standard }}</td>
                         <td class="align-center">{{ $OrderRequest->CatalogCode }}</td>
-                        <td>{{ $OrderRequest->item->MakerNameJp }}</td>
+                        <td>
+                            @if(App::getLocale()=='en') {{$OrderRequest->item->MakerNameEn}}
+                            @else {{$OrderRequest->item->MakerNameJp}}
+                            @endif
+                        </td>
                         <td class="align-right tdOrderInputNumber">
                         <?php
                             if ($OrderRequest->UnitPrice > 0) {
@@ -127,12 +146,18 @@
                             ?>
                             \{{$TotalFee}}
                         </td>
-                        <td>{{ $OrderRequest->RequestUserNameJp }}</td>
+                        <td>
+                            @if(App::getLocale()=='en') {{$OrderRequest->RequestUserNameEn}}
+                            @else {{$OrderRequest->RequestUserNameJp}}
+                            @endif
+                        </td>
                         <td style="display:none;">
                             {{$OrderRequest->id}}
                         </td>
                         <td style="display:none;">
-                            {{$OrderRequest->SupplierNameJp}}
+                            @if(App::getLocale()=='en') {{$OrderRequest->SupplierNameEn}}
+                            @else {{$OrderRequest->SupplierNameJp}}
+                            @endif
                         </td>
                         <td style="display:none;">
                             {{$OrderRequest->OrderRemark}}
@@ -149,11 +174,10 @@
 
 <div id="divOrderList" class="wrapper" style="padding-bottom: 0px;display:none;">
     <div class="flexmain" >
-        <h6 class="h6-title">発注リスト</h6>
+        <h6 class="h6-title">{{ __('screenwords.orderList') }}</h6>
         <div class="divOrderHeaderButton">
-            <input type="button" id="btnHowToOrder" class="btn btn-primary" value="発注" >
-            <input type="button" id="btnReturnOrderRequestList" class="btn btn-secondary" value="戻る">
-            <input type="button" id="btnHash" class="btn btn-primary" value="Hash">
+            <input type="button" id="btnHowToOrder" class="btn btn-primary" value="{{ __('screenwords.order') }}" >
+            <input type="button" id="btnReturnOrderRequestList" class="btn btn-secondary" value="{{ __('screenwords.back') }}">
         </div>
         <div class="pagenationStyle">
         @if(!$orderRequest_Orders->isEmpty())
@@ -164,13 +188,13 @@
                 <thead>
                     <tr>
                         <th>&nbsp;</th>
-                        <th class="align-center"><input type="checkbox" name="chkTargetAll" checked ></th>
-                        <th>@sortablelink('SupplierNameJp','発注先')</th>
-                        <th>@sortablelink('ItemNameJp','商品名・容量・規格・カタログコード・メーカー')</th>
-                        <th class="align-center ">@sortablelink('OrderPrice','発注額')</th>
-                        <th>@sortablelink('BudgetNameJp','予算科目')</th>
-                        <th class="align-center ">@sortablelink('OrderRemark','備考')</th>
-                        <th>@sortablelink('RequestUserNameJp','依頼者')</th>
+                        <th class="align-center"><input type="checkbox" name="chkTargetAll" @if(!$orderRequest_Orders->isEmpty()) checked @endif ></th>
+                        <th>@sortablelink(__('screenwords.sortSupplierName'),__('screenwords.supplierName'))</th>
+                        <th>@sortablelink(__('screenwords.sortItemName'),__('screenwords.items'))</th>
+                        <th class="align-center ">@sortablelink('OrderPrice',__('screenwords.orderAmount'))</th>
+                        <th>@sortablelink(__('screenwords.sortBudgetName'),__('screenwords.budgetSubject'))</th>
+                        <th class="align-center ">@sortablelink('OrderRemark',__('screenwords.remark'))</th>
+                        <th>@sortablelink(__('screenwords.sortRequestUserName'),__('screenwords.client'))</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -182,28 +206,55 @@
                                 @csrf
                                 @method('DELETE')
                                 <input type="submit" value="&#xf1f8;" 
-                                    onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="fa btn-delete-icon">
+                                    onClick="if (!confirm({{ __('messages.confirmDelete') }})){ return false;} return true;" class="fa btn-delete-icon">
                                 <input type="hidden" name="orderreqId" value="{{$orderRequest_Order->id}}">
                            </form>
                         </td>
                         <td class="align-center"><input type="checkbox" name="chkTarget[]" checked ></td>
                         <td class="tdOrderSelectSupplier">
-                            <span class="spnOrderSelectSupplier">{{ $orderRequest_Order->supplier->SupplierNameJp }}</span>
+                            <span class="spnOrderSelectSupplier">
+                                @if(App::getLocale()=='en') {{$orderRequest_Order->supplier->SupplierNameEn}}
+                                @else {{$orderRequest_Order->supplier->SupplierNameJp}}
+                                @endif
+                            </span>
                             <select class="selOrderSelectSupplier">
                                 @foreach ($Suppliers as $supplier)
-                                <option value="{{$supplier->id}}">{{$supplier->SupplierNameJp}}</option>
+                                <option value="{{$supplier->id}}">
+                                    @if(App::getLocale()=='en') {{$supplier->SupplierNameEn}}
+                                    @else {{$supplier->SupplierNameJp}}
+                                    @endif
+                                </option>
                                 @endforeach
                             </select>
                             <span class="spnSupplierId">{{ $orderRequest_Order->SupplierId }}</span>
                         </td>
-                        <td><p>{{ $orderRequest_Order->item->ItemNameJp }}</p><p>容量：{{$orderRequest_Order->item->AmountUnit}} 規格：{{$orderRequest_Order->item->Standard}} カタログコード：{{$orderRequest_Order->item->CatalogCode}} メーカー：{{$orderRequest_Order->item->MakerNameJp}}</p></td>
+                        <td>
+                            <p>
+                                @if(App::getLocale()=='en') {{ $orderRequest_Order->item->ItemNameEn }}
+                                @else {{ $orderRequest_Order->item->ItemNameJp }}
+                                @endif   
+                            </p>
+                            <p>{{ __('screenwords.capacity') }}：{{$orderRequest_Order->item->AmountUnit}} {{ __('screenwords.standard') }}：{{$orderRequest_Order->item->Standard}} {{ __('screenwords.catalogCode') }}：{{$orderRequest_Order->item->CatalogCode}} {{ __('screenwords.maker') }}：
+                                @if(App::getLocale()=='en') {{$orderRequest_Order->item->MakerNameEn}}
+                                @else {{$orderRequest_Order->item->MakerNameJp}}
+                                @endif
+                            </p>
+                        </td>
                         <?php
                             $ordersum = number_format($orderRequest_Order->UnitPrice * $orderRequest_Order->RequestNumber)
                         ?>
                         <td class="align-right">\{{ $ordersum }}</td>
-                        <td>{{ $orderRequest_Order->BudgetNameJp }}</td>
+                        <td>
+                            @if(App::getLocale()=='en') {{ $orderRequest_Order->BudgetNameEn }}
+                            @else {{ $orderRequest_Order->BudgetNameJp }}
+                            @endif   
+                        </td>
                         <td>{{ $orderRequest_Order->OrderRemark }}</td>
-                        <td>{{ $orderRequest_Order->user->UserNameJp }}</td>
+                        <td>
+                            @if(App::getLocale()=='en') {{ $orderRequest_Order->user->UserNameEn }}
+                            @else {{ $orderRequest_Order->user->UserNameJp }}
+                            @endif   
+                        </td>
                         <td style="display:none;">
                             {{$orderRequest_Order->id}}
                         </td>
@@ -218,23 +269,23 @@
             <div  class="modal-dialog modal-sm" role="document">
                 <div class="modal-content">
                     <div class="modal-header" style="padding: 5px 10px;">
-                        <h5 class="modal-title" id="Modal">発注方法を選択してください</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+                        <h5 class="modal-title" id="Modal">{{ __('screenwords.orderingMethod') }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('screenwords.close') }}">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="divCircleWrapper" >
-                            <div id="btnCircle_Email" class="btnCircle" title="e-Mailで発注"><span class="fa fa-envelope-o"></span><span>e-mail</span></div>
-                            <div id="btnCircle_PDF" class="btnCircle" title="注文書PDFを作成"  data-dismiss="modal"><span class="fa fa-file-pdf-o"></span><span>pdf</span></div>
+                            <div id="btnCircle_Email" class="btnCircle" title="{{ __('screenwords.sendEmail') }}"><span class="fa fa-envelope-o"></span><span>e-mail</span></div>
+                            <div id="btnCircle_PDF" class="btnCircle" title="{{ __('screenwords.outputPdf') }}"  data-dismiss="modal"><span class="fa fa-file-pdf-o"></span><span>pdf</span></div>
                             <form id="frmPdfOutput" action="{{action('OrderController@createPDF')}}" method="get">
                                 <input type="hidden" name="arrayOrderRequestIds" >
                             </form>
-                            <div id="btnCircle_Other" class="btnCircle" title="その他の方法"><span class="fa fa-pencil-square-o"></span><span>other</span></div>
+                            <div id="btnCircle_Other" class="btnCircle" title="{{ __('screenwords.otherWay') }}"><span class="fa fa-pencil-square-o"></span><span>other</span></div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('screenwords.close') }}</button>
                     </div>
                 </div>
             </div>
@@ -248,18 +299,23 @@
     <table class="table table-fixed table-yosan-under-list table-striped">
         <thead>
             <tr>
-                <th>予算科目</th>
-                <th>予算額</th>
-                <th>執行額</th>
-                <th>執行済残高</th>
-                <th>執行予定額</th>
-                <th>執行予定込み残高</th>
+                <th>{{ __('screenwords.budgetSubject') }}</th>
+                <th>{{ __('screenwords.budgetAmount') }}</th>
+                <th>{{ __('screenwords.excutionAmount') }}</th>
+                <th>{{ __('screenwords.excutedBalance') }}</th>
+                <th>{{ __('screenwords.excutionScheduledAmount') }}</th>
+                <th>{{ __('screenwords.IncludingExecutionScheduledBalance') }}</th>
             </tr>
         </thead>
         <tbody>
             @foreach($arrayBudgetList as $BudgetItem)
             <tr>
-                <td>{{$BudgetItem['BudgetNameJp']}}</td>
+                <td>
+                    @if(App::getLocale()=='en') {{ $BudgetItem['BudgetNameEn'] }}
+                    @else {{ $BudgetItem['BudgetNameJp'] }}
+                    @endif   
+                
+                </td>
                 <td>\{{$BudgetItem['BudgetAmount']}}</td>
                 <td>\{{$BudgetItem['BudgetUsed']}}</td>
                 <td>\{{$BudgetItem['BudgetScheduled']}}</td>
@@ -274,7 +330,7 @@
 <div id="popmenu-budgetlist" role='popmenu-layer'>
     <ul role='popmenu'>
         <li class='popmenu-header'>
-            <span class='fa fa-hand-o-left'></span>予算リストへ
+            <span class='fa fa-hand-o-left'></span>{{ __('screenwords.toBudgetList') }}
         </li>
         @foreach($arrayBudgetForContext as $budgetitem)
         <li id="BudgetId-{{ $budgetitem['BudgetId'] }}" name="{{$budgetitem['BudgetNameJp']}}" ><span class="fa fa-folder"></span>{{$budgetitem['BudgetNameJp']}}</li>
@@ -283,7 +339,7 @@
 </div>
 <div id="popmenu-orderrequestlist" role='popmenu-layer'>
     <ul role='popmenu'>
-        <li id="toOrderrequestlist" name="toOrderrequestlist" >発注依頼リストへ<span class="fa fa-hand-o-right"></span></li>
+        <li id="toOrderrequestlist" name="toOrderrequestlist" >{{ __('screenwords.toOrderRequestList') }}<span class="fa fa-hand-o-right"></span></li>
     </ul>
 </div>
 

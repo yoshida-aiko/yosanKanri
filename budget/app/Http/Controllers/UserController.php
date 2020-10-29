@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\User;// as Authenticatable;;
+use Auth;
 use App\Rules\Exists;
 use App\Exceptions\ExclusiveLockException;
 
@@ -15,11 +16,38 @@ class UserController extends Controller
 {
     public function index()
     {
-        $Users = User::all();
-        $editUser = new User();
+        /*
+        if (strpos(Auth::user()->UserAuthString,'Master') === false){
+            $Users = User::where('id','=',Auth::id())->get();
+            $editUser = $Users->first();
+            $editUser->password = 'resetLink';
+        }
+        else{
+            $Users = User::all();
+            $editUser = new User();
+        }*/
+        
+        [$Users,$editUser] = $this->getUserData();
 
         return view('User/index',compact('Users','editUser'));
     }
+
+    private function getUserData(){
+
+        /*マスタ権限のないユーザーだった場合、自分のデータのみ返す */
+        if (strpos(Auth::user()->UserAuthString,'Master') === false){
+            $Users = User::where('id','=',Auth::id())->get();
+            $editUser = $Users->first();
+            $editUser->password = 'resetLink';
+        }
+        else{
+            $Users = User::all();
+            $editUser = new User();
+        }
+        
+        return [$Users,$editUser];
+    }
+
     public function edit($id)
     {
         try {
@@ -105,8 +133,10 @@ class UserController extends Controller
         $User->Signature = $request->Signature;
         $User->save();
 
-        $Users = User::all();
-        $editUser = new User();
+        /*$Users = User::all();
+        $editUser = new User();*/
+
+        [$Users,$editUser] = $this->getUserData();
 
         return view('User/index',compact('Users','editUser'));
     }
@@ -120,5 +150,9 @@ class UserController extends Controller
         return redirect()->route('User.index');
     }
 
+    public function getLogout(){
+        Auth::logout();
+        return redirect()->route('login');
+    }
 
 }

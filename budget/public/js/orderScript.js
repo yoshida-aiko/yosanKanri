@@ -198,7 +198,7 @@ jQuery (function ()
             if (e.which == 13) {
                 if ($(this).val() !== "" && isFinite($(this).val())) {
                     var id=$(this).parent().parent().find('input[name=orderreqId]').val();
-                    $(this).parent().children('.spnOrderInputNumber').html(Number($(this).val()).toLocaleString());
+                    $(this).parent().children('.spnOrderInputNumber').html('\\' + Number($(this).val()).toLocaleString());
                     $(this).css('display','none');
                     $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                     var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
@@ -208,14 +208,14 @@ jQuery (function ()
                         $.unblockUI();
                     });  
                     var totalfee = (price * ordernum).toLocaleString();
-                    $(this).parent().nextAll('.tdOrderTotalFee').html(totalfee);
+                    $(this).parent().nextAll('.tdOrderTotalFee').html('\\' + totalfee);
                 }
             }
         },
         "blur":function() {
             if ($(this).val() !== "" && isFinite($(this).val())) {
                 var id=$(this).parent().parent().find('input[name=orderreqId]').val();
-                $(this).parent().children('.spnOrderInputNumber').html(Number($(this).val()).toLocaleString());
+                $(this).parent().children('.spnOrderInputNumber').html('\\' + Number($(this).val()).toLocaleString());
                 $(this).css('display','none');
                 $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                 var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
@@ -225,7 +225,7 @@ jQuery (function ()
                     $.unblockUI();
                 });  
                 var totalfee = (price * ordernum).toLocaleString();
-                $(this).parent().nextAll('.tdOrderTotalFee').html(totalfee);
+                $(this).parent().nextAll('.tdOrderTotalFee').html('\\' + totalfee);
             }
         }
     });
@@ -336,26 +336,6 @@ jQuery (function ()
         }
     }
 
-    $("#btnHash").click(function() {
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: 'Order/passwordHash',
-            type: 'GET',
-            datatype: 'json',
-            data : {'aa' : '1'}
-        })
-        .done(function(data) {
-            if (data['status'] == 'NG') {
-                alert(data['errorMsg']);
-            }
-        })
-        .fail(function(data) {
-            alert('データ更新に失敗しました' +  alert(data['errorMsg']));
-
-        });
-    });
 
     function updateExecOrder(arrayOrderRequestIds,howToOrderFlag) {
         processing();

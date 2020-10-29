@@ -19,6 +19,10 @@ jQuery (function ($)
     else {
         $(".leftside-fixed-240").hide();
     }
+    if(sessionStorage.getItem('IsFavoriteSharedChecked') !== null){
+        var isShared = sessionStorage.getItem('IsFavoriteSharedChecked')=='true' ? true : false;
+        $("#chkShared").prop('checked',isShared);
+    }
 
     $(".numCartOrderRequestNumber").on('input', function() {
         var cartid = $(this).parent("div").children("input[name=CartId]").val();
@@ -30,7 +34,7 @@ jQuery (function ($)
         }); 
     });
 
-    jsTreeCreate('SearchPage','favoriteTree');
+
     
     function updateOrderRequestNumber(cartid,ordernumber){
         processing();
@@ -189,6 +193,7 @@ jQuery (function ($)
         });  
     });
 
+    /* お気に入りへ移動*/
     $("input[name=btnFavorite]").click(function() {
         var id = $(this).parent('td').children('.hidUpdateId').val();
         var deferred = favoriteAddAjax(id);
@@ -201,6 +206,10 @@ jQuery (function ($)
     function favoriteAddAjax(id) {
         
         processing();
+        var isShared = false;
+        if (sessionStorage.getItem('IsFavoriteSharedChecked')!==null){
+            isShared = sessionStorage.getItem('IsFavoriteSharedChecked')=='true'? true : false;
+        }
         var deferred = new $.Deferred();
         $.ajax({
             headers: {
@@ -209,7 +218,7 @@ jQuery (function ($)
             url: 'SearchPage/favoriteAddProcess',
             type: 'GET',
             datatype: 'json',
-            data : {'update_id' : id}
+            data : {'update_id' : id, 'isFavoriteSharedChecked' : isShared}
         })
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
@@ -316,7 +325,8 @@ jQuery (function ($)
         return ret;
 
     }
-
+    
+    $("#favoriteTreeReagent").favoriteTreeCreate('SearchPage','favoriteTree');
 })
 $(window).on("load", function(){
     loadingStart();

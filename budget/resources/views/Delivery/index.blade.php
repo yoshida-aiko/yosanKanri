@@ -8,9 +8,9 @@
 <div class="wrapper">
 
     <div class="flexmain" >
-        <h6 class="h6-title">納品リスト</h6>
+        <h6 class="h6-title">{{ __('screenwords.deliveryList') }}</h6>
         <div class="divOrderRequestHeaderButton">
-            <input type="button" id="btnDelivery" value="納品" class="btn btn-width70 btn-primary" >
+            <input type="button" id="btnDelivery" value="{{ __('screenwords.delivery') }}" class="btn btn-width70 btn-primary" >
         </div>
         <div class="pagenationStyle">
         @if(!$Orders->isEmpty())
@@ -22,17 +22,17 @@
                     <tr>
                         <th>&nbsp;</th>
                         <th><input type="checkbox" name="chkTargetAll"></th>
-                        <th>@sortablelink('ItemNameJp','商品名')</th>
-                        <th>@sortablelink('SupplierNameJp','発注先')</th>
-                        <th class="align-center ">@sortablelink('OrderSlipNo','注文No.')</th>
-                        <th class="align-center ">納品日</th>
-                        <th class="align-center ">@sortablelink('DeliveryNumber','納品済数')</th>
-                        <th class="align-center ">@sortablelink('OrderNumber','発注数')</th>
-                        <th class="align-center ">納品数</th>
-                        <th class="align-center ">執行額</th>
-                        <th>@sortablelink('RequestUserNameJp','依頼者')</th>
-                        <th>@sortablelink('BudgetNameJp','予算科目')</th>
-                        <th>@sortablelink('RecieveUserNameJp','発注者')</th>
+                        <th>@sortablelink(__('screenwords.sortItemName'),__('screenwords.items'))</th>
+                        <th>@sortablelink(__('screenwords.sortSupplierName'),__('screenwords.supplierName'))</th>
+                        <th class="align-center ">@sortablelink('OrderSlipNo',__('screenwords.orderSlipNo'))</th>
+                        <th class="align-center ">{{__('screenwords.deliveryDate')}}</th>
+                        <th class="align-center ">@sortablelink('DeliveryNumber',__('screenwords.completedNumber'))</th>
+                        <th class="align-center ">@sortablelink('OrderNumber',__('screenwords.orderNumber'))</th>
+                        <th class="align-center ">{{__('screenwords.deliveryNumber')}}</th>
+                        <th class="align-center ">{{__('screenwords.excutionAmount')}}</th>
+                        <th>@sortablelink(__('screenwords.sortRequestUserName'),__('screenwords.client'))</th>
+                        <th>@sortablelink(__('screenwords.sortBudgetName'),__('screenwords.budgetSubject'))</th>
+                        <th>@sortablelink(__('screenwords.sortRecieveUserName'),__('screenwords.orderUser'))</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,13 +44,28 @@
                                 @csrf
                                 @method('DELETE')
                                 <input type="submit" value="&#xf1f8;" 
-                                    onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="fa btn-delete-icon">
+                                    onClick="if (!confirm({{ __('messages.confirmDelete') }})){ return false;} return true;" class="fa btn-delete-icon">
                                 <input type="hidden" name="orderId" value="{{$order->id}}">
                             </form>
                         </td>
                         <td><input type="checkbox" name="chkTarget[]" ></td>
-                        <td><p>{{ $order->item->ItemNameJp }}</p><p>容量：{{$order->item->AmountUnit}} 規格：{{$order->item->Standard}} カタログコード：{{$order->item->CatalogCode}} メーカー：{{$order->item->MakerNameJp}}</p></td>
-                        <td>{{ $order->SupplierNameJp }}</td>
+                        <td>
+                            <p>
+                                @if(App::getLocale()=='en') {{ $order->item->ItemNameEn }}
+                                @else {{ $order->item->ItemNameJp }}
+                                @endif   
+                            </p>
+                            <p>{{ __('screenwords.capacity') }}：{{$order->item->AmountUnit}} {{ __('screenwords.standard') }}：{{$order->item->Standard}} {{ __('screenwords.catalogcode') }}：{{$order->item->CatalogCode}} {{ __('screenwords.maker') }}：
+                                @if(App::getLocale()=='en') {{$order->item->MakerNameEn}}
+                                @else {{$order->item->MakerNameJp}}
+                                @endif
+                            </p>
+                        </td>
+                        <td>
+                            @if(App::getLocale()=='en') {{ $order->SupplierNameEn }}
+                            @else {{ $order->SupplierNameJp }}
+                            @endif   
+                        </td>
                         <td class="align-center">{{ $order->orderslip->OrderSlipNo }}</td>
                         <td>
                             <?php
@@ -89,25 +104,52 @@
                             <span class="spnOrderInputNumber">\{{ $SummaryFormat }}</span>
                             <input type="text" class="inpOrderInputNumber inpSummaryPrice" pattern="[0-9]*"  title="数字のみ" min="1" value="{{ $Summary }}" >
                         </td>
-                        <td>{{ $order->RequestUserNameJp }}</td>
-
+                        <td>
+                            @if(App::getLocale()=='en') {{ $order->RequestUserNameEn }}
+                            @else {{ $order->RequestUserNameJp }}
+                            @endif   
+                        </td>
                         <td class="tdBudget">
-                            <span class="spnSelectBudget">{{ $order->BudgetNameJp }}</span>
+                            <span class="spnSelectBudget">
+                                @if(App::getLocale()=='en') {{ $order->BudgetNameEn }}
+                                @else {{ $order->BudgetNameJp }}
+                                @endif   
+                            </span>
                             <select class="selSelectBudget">
                                 @foreach($Budgets as $Budget)
-                                <option value="{{$Budget->id}}">{{$Budget->budgetNameJp}}</option>
+                                <option value="{{$Budget->id}}">
+                                    @if(App::getLocale()=='en') {{ $Budget->budgetNameEn }}
+                                    @else {{ $Budget->budgetNameJp }}
+                                    @endif   
+                                </option>
                                 @endforeach
                             </select>
                             <span class="spnBudgetId" style="display:none;">{{ $order->BudgetId }}</span>
                         </td>
-                        <td>{{ $order->RecieveUserNameJp }}</td>
+                        <td>
+                            @if(App::getLocale()=='en') {{ $order->RecieveUserNameEn }}
+                            @else {{ $order->RecieveUserNameJp }}
+                            @endif   
+                        </td>
                         <td class="tdAmountUnit" style="display:none;">{{$order->item->AmountUnit}}</td>
                         <td class="tdStandard" style="display:none;">{{$order->item->Standard}}</td>
                         <td class="tdCatalogCode" style="display:none;">{{$order->item->CatalogCode}}</td>
                         <td class="tdUnitPrice" style="display:none;">{{$order->UnitPrice}}</td>
-                        <td class="tdMakerName" style="display:none;">{{$order->item->MakerNameJp}}</td>
-                        <td class="tdSupplierName" style="display:none;">{{$order->MainSupplierNameJp}}</td>
-                        <td class="tdItemName" style="display:none;">{{$order->item->ItemNameJp}}</td>
+                        <td class="tdMakerName" style="display:none;">
+                            @if(App::getLocale()=='en') {{ $order->item->MakerNameEn }}
+                            @else {{ $order->item->MakerNameJp }}
+                            @endif   
+                        </td>
+                        <td class="tdSupplierName" style="display:none;">
+                            @if(App::getLocale()=='en') {{ $order->item->MainSupplierNameEn }}
+                            @else {{ $order->item->MainSupplierNameJp }}
+                            @endif   
+                        </td>
+                        <td class="tdItemName" style="display:none;">
+                            @if(App::getLocale()=='en') {{ $order->item->ItemNameEn }}
+                            @else {{ $order->item->ItemNameJp }}
+                            @endif   
+                        </td>
                     </tr>
                 @endforeach
                 @endif
@@ -118,9 +160,6 @@
             @endcomponent
 
     </div>
-
-
-
 </div>
 </div>
 

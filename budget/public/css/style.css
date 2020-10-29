@@ -373,7 +373,7 @@ h5{
 	display:flex;
 }
 .tabLabel {
-	width: calc(100%/5);
+	width: calc(100%/4);
 	height: 25px;
 	line-height: 25px;
  	text-align: center;
@@ -620,7 +620,9 @@ input[name="tabFavorite"]:checked + .tabLabel + .tabContent {
 	height:120px;
 	resize:none;
 }
-.frmMasterInput  > div.form-group > input[type=text]:read-only {
+.frmMasterInput  > div.form-group > input[type=text]:read-only,
+.frmMasterInput  > div.form-group > input[type=tel]:read-only,
+.frmMasterInput  > div.form-group > textarea:read-only {
     cursor: normal;
     background-color: #f8f8f8;
 	color: #999;
@@ -629,6 +631,7 @@ input[name="tabFavorite"]:checked + .tabLabel + .tabContent {
 
 #author {
 	display:inline-block;
+	position: relative;
 }
 #author > label {
 	width:75px;
@@ -708,13 +711,12 @@ input[name="tabFavorite"]:checked + .tabLabel + .tabContent {
 	color:#e3342f;
 }
 label.required:after {
-	margin-left: 1.0em;
-	padding: 0px 6px 0px 6px;
+	margin-left: 3px;
+	padding: 0px 2px 0px 2px;
 	border-radius: 4px;
-	font-size: 0.6em;
-	color: white;
-	background-color: #C44;
-	content: "必須";
+	font-size: 12px;
+	color: #e3342f;
+	content: "＊";
 }
 
 .resetLinkOn {

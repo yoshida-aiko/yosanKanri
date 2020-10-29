@@ -17,7 +17,8 @@ class FavoriteController extends Controller
         try{
             $ItemClass = $request->ItemClass;
             $FolderName = $request->FolderName;
-            BaseClass::folderAdd($ItemClass,$FolderName);
+            $IsShared = $request->IsShared;
+            BaseClass::folderAdd($ItemClass,$FolderName,$IsShared);
         }
         catch(Exception $e){
             $response['status'] = $e->getMessage();

@@ -1,6 +1,5 @@
 jQuery (function ()
 {
-
     /*ウィンドウの高さを取得して、グリッドの高さを指定*/
     settingGridHeight();
  
@@ -58,20 +57,20 @@ jQuery (function ()
         $("#divError").css('display','none');
         $("#divError li").remove();
         if ($("#txtOrderNumber").val()==""){
-            message += '<li>数量は必須です</li>';
+            message += '<li>' + requireQuantity[selLang] + '</li>';
         }
         else{
             var intnum = parseInt($("#txtOrderNumber").val());
             if (isNaN(intnum)){
-                message += '<li>数量は「数字」のみ有効です</li>';
+                message += '<li>' + numericQuantity[selLang] + '</li>';
             }
             else if(intnum > 9999) {
-                message += '<li>数量は9,999以下のみ有効です</li>';
+                message += '<li>' + maxAmountQuantity[selLang] + '</li>';
             }         
         }        
         if ($("#txtOrderRemark").val()!=""){
             if($("#txtOrderRemark").val().length > 100){
-                message += '<li>備考は100文字以下のみ有効です</li>';
+                message += '<li>' + maxRemark[selLang] + '</li>';
             }
         }
         if (message != ""){
@@ -97,9 +96,9 @@ jQuery (function ()
         $("#detailProductName").html($(this).children("td").eq(3).children("p").eq(0).html());
         $("#detailStandard").html($(this).children("td").eq(3).children(".hidStandard").val());
         $("#detailCatalogCode").html($(this).children("td").eq(3).children(".hidCatalogCode").val());
-        $("#detailMakerName").html($(this).children("td").eq(3).children(".hidMakerNameJp").val());
+        $("#detailMakerName").html($(this).children("td").eq(3).children(".hidMakerName").val());
         $("#detailUnitPrice").html($(this).children("td").eq(4).html());
-        $("#detailSupplierName").html($(this).children("td").eq(3).children(".hidSupplierNameJp").val());
+        $("#detailSupplierName").html($(this).children("td").eq(3).children(".hidSupplierName").val());
         $("#detailRemark").html($(this).children("td").eq(3).children(".hidOrderRemark").val());
         $("#modal-detail").modal('show');
     });
@@ -110,6 +109,7 @@ jQuery (function ()
 
     function insertOrderRequest(){
         
+        var finishOrderRequest = ['発注を依頼しました','It registered.'];
         processing();
         var deferred = new $.Deferred();
         $.ajax({
@@ -132,7 +132,7 @@ jQuery (function ()
             }
             else if(data['status'] == 'OK') {
                 $("#modal-orderRequest").modal('hide');
-                alert('発注を依頼しました');
+                alert(finishOrderRequest[selLang]);
             }
         })
         // Ajaxリクエスト失敗時の処理

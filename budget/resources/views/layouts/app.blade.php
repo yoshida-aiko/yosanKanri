@@ -9,6 +9,9 @@
 
     <title>{{ config('app.name', 'Budget Management System') }}</title>
 
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon.ico">
+    
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/script.js') }}" defer></script>
@@ -25,8 +28,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
     
     <!-- jstree -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.2/jstree.min.js" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.2/themes/default/style.min.css">
+    <script src="{{ asset('js/jstree.min.js') }}" defer></script>
+    <link href="{{ asset('css/jstree/style.min.css') }}" rel="stylesheet">
     
     <!-- jQuery UI -->
      <script src="{{ asset('js/jquery-ui.js') }}" defer></script>
@@ -60,108 +63,71 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <!-- Left Side Of Navbar -->
                         <ul id="myNavbar" class="navbar-nav mr-auto">
-                            <li class="current"><a href="{{ route('home') }}" class="nav-menu-home">{{ __('screenwords.top') }}</a></li>
-                            <li><a href="{{ route('SearchPage.index') }}" class="nav-menu-search">{{ __('screenwords.search') }}</a></li>
-                            <li><a href="{{ route('OrderRequest.index') }}" class="nav-menu-orderrequest">{{ __('screenwords.orderRequest') }}</a></li>
+                            <li class="nav-home"><a href="{{ route('home') }}" class="nav-menu-home">{{ __('screenwords.top') }}</a></li>
+                            <li class="nav-seacrch"><a href="{{ route('SearchPage.index') }}" class="nav-menu-search">{{ __('screenwords.search') }}</a></li>
+                            <li class="nav-orderRequest"><a href="{{ route('OrderRequest.index') }}" class="nav-menu-orderrequest">{{ __('screenwords.orderRequest') }}</a></li>
                             @if (strpos(Auth::user()->UserAuthString,'Order') !== false)
-                            <li><a href="{{ route('Order.index') }}" class="nav-menu-order">{{ __('screenwords.order') }}</a></li>
+                            <li class="nav-order"><a href="{{ route('Order.index') }}" class="nav-menu-order">{{ __('screenwords.order') }}</a></li>
                             @endif
                             @if (strpos(Auth::user()->UserAuthString,'Delivery') !== false)
-                            <li><a href="{{ route('Delivery.index') }}" class="nav-menu-delivery">{{ __('screenwords.delivery') }}</a></li>
+                            <li class="nav-delivery"><a href="{{ route('Delivery.index') }}" class="nav-menu-delivery">{{ __('screenwords.delivery') }}</a></li>
                             @endif
                             @if (strpos(Auth::user()->UserAuthString,'Payment') !== false)
-                            <li><a href="#" class="nav-menu-payment">{{ __('screenwords.payment') }}</a></li>
+                            <li class="nav-payment"><a href="#" class="nav-menu-payment">{{ __('screenwords.payment') }}</a></li>
                             @endif
                             @if (strpos(Auth::user()->UserAuthString,'Budget') !== false)
-                            <li><a href="{{ route('BudgetStatus.index') }}" class="nav-menu-budget">{{ __('screenwords.budgetStatus') }}</a></li>
+                            <li class="nav-budgetStatus"><a href="{{ route('BudgetStatus.index') }}" class="nav-menu-budget">{{ __('screenwords.budgetStatus') }}</a></li>
                             @endif
                             @if (strpos(Auth::user()->UserAuthString,'Purchase') !== false)
-                            <li><a href="{{ route('Purchase.index') }}" class="nav-menu-purchase">{{ __('screenwords.buyingHistory') }}</a></li>
+                            <li class="nav-purchase"><a href="{{ route('Purchase.index') }}" class="nav-menu-purchase">{{ __('screenwords.buyingHistory') }}</a></li>
                             @endif
-                            @if (strpos(Auth::user()->UserAuthString,'Master') !== false) 
-                            <li class="dropdown">
+                           
+                            <li class="nav-master dropdown">
                                 <a class="dropdown-toggle nav-menu-master" href="#" data-toggle="dropdown" >{{ __('screenwords.master') }}</a>
                                 <div class="dropdown-menu dropdown-menu-originalcolor" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('User.index') }}">{{ __('screenwords.master_user') }}</a>
+                                    @if (strpos(Auth::user()->UserAuthString,'Master') !== false) 
                                     <a class="dropdown-item" href="{{ route('Supplier.index') }}">{{ __('screenwords.master_supplier') }}</a>
                                     <a class="dropdown-item" href="{{ route('Maker.index') }}">{{ __('screenwords.master_maker') }}</a>
                                     <a class="dropdown-item" href="{{ route('Budget.index') }}">{{ __('screenwords.master_budget') }}</a>
                                     <a class="dropdown-item" href="{{ route('Condition.index') }}">{{ __('screenwords.master_setting') }}</a>
-                                </div>
-                            </li>
-                            @endif
-                        </ul>
-
-                        <!-- Right Side Of Navbar -->
-                        <!--<ul class="navbar-login">-->
-
-                            <!--<ul class="navbar-login navbar-top">
-                            <li class="nav-item dropdown">
-                            <a href="#" class="dropdown-toggle"  role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                {{ Config::get('languages')[App::getLocale()] }}<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                @foreach (Config::get('languages') as $lang => $language)
-                                    @if ($lang != App::getLocale())
-                                        <li>
-                                            <a href="{{ route('lang.switch', $lang) }}">{{$language}}</a>
-                                        </li>
                                     @endif
-                                @endforeach
-                            </ul>
-                            </li>
-                            </ul>-->
-                            <!-- Authentication Links -->
-                            @guest
-                                <!--<li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>-->
-                                @if (Route::has('register'))
-                                    <!--<li class="nav-item">
-                                        <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                    </li> -->
-                                @endif
-                            @else
-                            <div class="navbar-login navbar-top navbar-language">
-                                <input type="radio" id="rdoLang_Ja" name="rdoLanguage" value="ja" onclick="location.href='{{ route('lang.switch', 'ja') }}'"  @if(App::getLocale()=='ja') checked='checked' @endif ><label for="rdoLang_Ja">日本語</label>
-                                <input type="radio" id="rdoLang_En" name="rdoLanguage" value="en" onclick="location.href='{{ route('lang.switch', 'en') }}'"  @if(App::getLocale()=='en') checked='checked' @endif ><label for="rdoLang_En">English</label>
-                            </div>
-                            <ul class="navbar-login navbar-top">
-                                <li class="nav-item dropdown">
-                                    <a id="navbarDropdown" class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                        {{ Auth::user()->UserNameJp }} <span class="caret"></span>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="{{ route('logout') }}"  class="nav-menu-logout"
-                                            onclick="event.preventDefault();
-                                                            document.getElementById('logout-form').submit();">
-                                                {{ __('Logout') }}
-                                            </a>
-                                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                                @csrf
-                                            </form>
-                                        </li>
-                                    </ul>
-                                    <!--<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                        <a class="dropdown-item" href="{{ route('logout') }}"
-                                        onclick="event.preventDefault();
-                                                        document.getElementById('logout-form').submit();">
-                                            {{ __('Logout') }}
-                                        </a>
-                                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                            @csrf
-                                        </form>
-                                    </div>-->
-                                </li>
-                            </ul>
-                            @endguest
-                            <form action="{{url('/SearchPage')}}" method="GET">
-                                <div id="headerProductSearchArea">
-                                    <input type="text" name="txtHeaderProductSearch" class="txtHeaderProductSearch" placeholder="商品名またはカタログコードの一部で検索します">
-                                    <input type="submit" class="btn btn-width70 btn-primary" value="検索">
                                 </div>
-                            </form>
-                        <!--</ul>-->
+                            </li>
+                            
+                        </ul>
+                        <div class="navbar-login navbar-top navbar-language" @if (config('app.bilingual')!='true') style="display:none;" @endif>
+                            <input type="radio" id="rdoLang_Ja" name="rdoLanguage" value="ja" onclick="location.href='{{ route('lang.switch', 'ja') }}'"  @if(App::getLocale()=='ja') checked='checked' @endif ><label for="rdoLang_Ja">日本語</label>
+                            <input type="radio" id="rdoLang_En" name="rdoLanguage" value="en" onclick="location.href='{{ route('lang.switch', 'en') }}'"  @if(App::getLocale()=='en') checked='checked' @endif ><label for="rdoLang_En">English</label>
+                        </div>
+                        <div class="navbar-login navbar-top navbar-username">
+                            <?php
+                                $UserName = "";
+                                if (App::getLocale()=='en' && Auth::user()->UserNameEn!=null) {
+                                    $UserName = Auth::user()->UserNameEn;
+                                }
+                                else {
+                                    $UserName = Auth::user()->UserNameJp;
+                                }
+                            ?>
+                            <p title="{{$UserName}}">{{$UserName}}</p>
+                        </div>
+                        <div class="navbar-login navbar-top navbar-logout">
+                            <a href="{{ route('user.logout') }}" class="nav-menu-logout" onclick="setLogout();" >{{ __('Logout') }}</a>
+                            
+                            <!--<a href="{{ route('logout') }}"  class="nav-menu-logout" onclick="event.preventDefault();setLogout();">
+                                {{ __('Logout') }}
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>-->
+                        </div>
+                        <form id="frmHeaderProductSearch" action="{{url('/SearchPage')}}" method="GET">
+                            <div id="headerProductSearchArea">
+                                <input type="text" name="txtHeaderProductSearch" class="txtHeaderProductSearch" placeholder="{{ __('screenwords.searchHeaderPlaceholder') }}">
+                                <input type="submit" class="btn btn-width70 btn-primary" value="検索">
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -50,11 +50,14 @@ class OrderController extends Controller
                 'order_requests.*',
                 'order_requests.ItemClass as ItemClass',
                 'items.ItemNameJp as ItemNameJp',
+                'items.ItemNameEn as ItemNameEn',
                 'items.AmountUnit as AmountUnit',
                 'items.Standard as Standard',
                 'items.CatalogCode as CatalogCode',
                 'items.MakerNameJp as MakerNameJp',
+                'items.MakerNameEn as MakerNameEn',
                 'users.UserNameJp as RequestUserNameJp',
+                'users.UserNameEn as RequestUserNameEn',
                 'suppliers.SupplierNameJp',
                 'suppliers.SupplierNameEn'
             ])
@@ -78,11 +81,14 @@ class OrderController extends Controller
                 'order_requests.*',
                 'order_requests.ItemClass as ItemClass',
                 'items.ItemNameJp as ItemNameJp',
+                'items.ItemNameEn as ItemNameEn',
                 'items.AmountUnit as AmountUnit',
                 'items.Standard as Standard',
                 'items.CatalogCode as CatalogCode',
                 'items.MakerNameJp as MakerNameJp',
+                'items.MakerNameEn as MakerNameEn',
                 'users.UserNameJp as RequestUserNameJp',
+                'users.UserNameEn as RequestUserNameEn',
                 'suppliers.SupplierNameJp',
                 'suppliers.SupplierNameEn'
             ])
@@ -162,7 +168,8 @@ class OrderController extends Controller
                         'MakerNameEn'=>$orderRequest_Order->item->MakerNameEn,
                         'CatalogCode'=>$orderRequest_Order->item->CatalogCode,
                         'RequestUserId'=>$orderRequest_Order->RequestUserId,
-                        'RequestUserName'=>$orderRequest_Order->user->UserNameJp
+                        'RequestUserNameJp'=>$orderRequest_Order->user->UserNameJp,
+                        'RequestUserNameEn'=>$orderRequest_Order->user->UserNameEn
                     ];
                     
                     array_push($childTree,$item);
@@ -560,29 +567,7 @@ class OrderController extends Controller
         return $retMessage;
     }
 
-    public function passwordHash(Request $request){
 
-        $Users = DB::connection('mysql_kobe')->select('select * from users where id=2');
-        
-        dd($Users[0]->LoginAccount.' '.Hash::check($Users[0]->name,$Users[0]->password));
-
-
-        //$User = User::findOrFail(1);;
-        //dd(Hash::check('info1180',$User->password));
-        
-        /*$Users = DB::connection('mysql_kobe')->select('select * from users');
-        foreach($Users as $item){
-            
-            $param = [
-                'id' => $item->id,
-                'password' => Hash::make($item->name)
-            ];
-            DB::connection('mysql_kobe')->update('UPDATE users set password = :password where id = :id',$param);
-            
-        }*/
-
-
-    }   
 
 
 }

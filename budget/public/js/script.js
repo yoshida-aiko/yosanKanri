@@ -1,6 +1,5 @@
 jQuery (function ()
 {
-
     $(document).keydown(function (event) {
         // クリックされたキーのコード
         var keyCode = event.keyCode;
@@ -25,6 +24,30 @@ jQuery (function ()
         }
     });
     
+    if (sessionStorage.getItem('selectedNavMenu') != null){
+        var target = sessionStorage.getItem('selectedNavMenu');
+        $("#myNavbar > li.selected").removeClass("selected");
+        $("#myNavbar > li." + target).addClass("selected");
+    }
+    else{
+        $("#myNavbar > li.selected").removeClass("selected");
+        $("#myNavbar > li.nav-home").addClass("selected");
+    }
+    $("#myNavbar > li").click(function() {
+        var classNm = $(this).attr("class");
+        
+        sessionStorage.setItem('selectedNavMenu',classNm);
+        /*$("#myNavbar > li.selected").removeClass("selected");
+        $(this).addClass("selected");*/
+    });
+
+    /*共用クリック時*/
+    $("#chkShared").click(function() {
+        sessionStorage.setItem('IsFavoriteSharedChecked',$(this).is(':checked'));
+        location.reload();
+    });
+
+    /*tableのclick行を選択状態にする */
     $(".table-fixed > tbody > tr").click(function() {
         $(".table-fixed > tbody > tr").removeClass("table-fixed-selectRow");
         $(".table-fixed > tbody > tr").removeClass("table-fixed-nonselect");
@@ -48,13 +71,331 @@ jQuery (function ()
         });
     };
 
+    $.fn.favoriteTreeCreate = function(url,id,isToCartDisabled=true) {
+
+        var isShared = false;
+        if (sessionStorage.getItem('IsFavoriteSharedChecked')!==null){
+            isShared = sessionStorage.getItem('IsFavoriteSharedChecked')=='true'? true : false;
+        }
+        var deferred = new $.Deferred();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: url+'/getData_Favorite',
+            type: 'GET',
+            datatype: 'json',
+            data: {
+                'isFavoriteSharedChecked' : isShared
+            }
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if (data['status'] == 'OK') {
+                var id_Reagent = id + 'Reagent';
+                var id_Article = id + 'Article';
+                jsTreeCreate_sub($.parseJSON(data['jsonFavoriteTreeReagent']),url,id_Reagent,isToCartDisabled);
+                jsTreeCreate_sub($.parseJSON(data['jsonFavoriteTreeArticle']),url,id_Article,isToCartDisabled);
+            }
+            else {
+                alert('データ取得に失敗しました' + data['status']);
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            alert('データ取得に失敗しました' + data['status']);
+        })
+        .always(function(data) {
+            $.unblockUI();
+            deferred.resolve();
+        });
+    };
+
+    /*ヘッダ部検索*/
     $("input[name=txtHeaderProductSearch]").keypress(function(event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if(keycode == '13'){//enter
            $(this).parent("div").parent("form").submit();
         }
     });
+    $("#frmHeaderProductSearch").submit(function() {
+        if ($("input[name=txtHeaderProductSearch]").val()==""){
+            return false;
+        }
+        else{
+            $(this).submit();
+        }
+    });
 
+    function jsTreeCreate_sub(jsondata,url,id,isToCartDisabled) {
+
+        $('#' + id).jstree({
+            "core":{
+                "data":jsondata,
+                "check_callback":function(operation,node,node_parent,node_position,more){
+                    if (operation=="move_node"){
+                        if(node_parent.icon != "jstree-folder" && node_parent.id != "#"){
+                            return false;
+                        }
+                    }
+                }
+            },
+            "state" : { "key": "favoriteTree"},
+            "plugins":["contextmenu", "dnd", "state"],
+            "contextmenu":{
+                "items": function($node) {
+                    var tree = $('#' + id).jstree(true);
+                    var isNodata = $node.original.key<=-100 ? true : false;
+                    return {
+                        "Delete": {
+                            "separator_before": false,
+                            "separator_after": false,
+                            "label": "削除",
+                            "icon": "contextmenu_deleteicon",
+                            "_disabled" : isNodata,
+                            "action": function (obj) {
+                                if (confirm('削除しますか？')){
+                                    deletekey = $node.original.key;
+                                    var deferred = deleteTreeAjax(url,deletekey,tree,$node);
+                                    deferred.done(function(){
+                                        $.unblockUI();
+                                    });
+                                }
+                            }
+                        },
+                        "createFolder":{
+                            "separator_before": true,
+                            "separator_after": false,
+                            "label": "新規フォルダ作成",
+                            "icon": "contextmenu_createfoldericon",
+                            "action": function(data){
+                               var inst = $.jstree.reference(data.reference),
+                                    obj = inst.get_node(data.reference);
+                                    inst.create_node('#', { text:'New Folder', 'icon':'jstree-folder' }
+                                    , "last", 
+                                    function(new_node){
+                                        try{
+                                            inst.edit(new_node, new_node.text, function(data){
+                                                var itemclass = $('#' + id).parent('div').parent('div').children('input[name=tabFavorite]:checked').val();
+                                                var deferred = createFolderTreeAjax(url,data.text,itemclass);
+                                                deferred.done(function(){
+                                                    $.unblockUI();
+                                                    location.reload();
+                                                });
+                                             });
+                                            
+                                        }catch(ex){
+                                            setTimeout(function(){ inst.edit(new_node); },0);
+                                        }
+                                    });
+                            }
+                        },
+                        "MoveToCart": {
+                            "separator_before": true,
+                            "separator_after": false,
+                            "label": "リストに追加",
+                            "icon": "contextmenu_movetocarticon",
+                            "_disabled": isToCartDisabled || isNodata,
+                            "action": function (obj) {
+                                itemkey = $node.original.key;
+                                var deferred = moveToCartTreeAjax(url,itemkey);
+                                deferred.done(function(){
+                                    $.unblockUI();
+                                });                            
+                            }
+                        },
+                    }
+                }
+            }
+        }).on('move_node.jstree', function(e, data){
+            /*移動したデータのFavoriteテーブルid*/
+            movenodeKey = data.node.original.key;
+            parentKey = '-1';
+            if (data.parent !== '#') {
+                parentKey = data.instance.get_node(data.node.parent).original.key;        
+            }
+    
+            var deferred = moveTreeAjax(url,movenodeKey,parentKey);
+            deferred.done(function(){
+                $.unblockUI();
+            });
+            
+        });
+    
+    }
+    
+    
+    function createFolderTreeAjax(url,foldername,itemclass){
+        processing();
+        var deferred = new $.Deferred();
+        var isShared = false;
+        if (sessionStorage.getItem('IsFavoriteSharedChecked')!==null){
+            isShared = sessionStorage.getItem('IsFavoriteSharedChecked')=='true'? true : false;
+        }
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: url + '/createFavoriteFolder',
+            type: 'GET',
+            datatype: 'json',
+            data : {'FolderName' : foldername, 'ItemClass' : itemclass, 'IsShared' : isShared}
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if (data['status'] !== 'OK') {
+                alert('データ更新に失敗しました');
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            alert('データ更新に失敗しました');
+        })
+        .always(function(data) {
+            deferred.resolve();           
+        });
+        
+        return deferred;
+    
+    }
+    
+    function moveToCartTreeAjax(url,itemkey){
+        processing();
+        var deferred = new $.Deferred();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: url + '/moveToCart',
+            type: 'GET',
+            datatype: 'json',
+            data : {'update_id' : itemkey}
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if (data['status'] !== 'OK') {
+                if (data['status']=='404') {
+                    alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
+                    location.reload();
+                }
+                else{
+                    alert('データ更新に失敗しました ' + data['status']);
+                }
+            }
+            else{
+                location.reload();
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            alert('データ更新に失敗しました');
+        })
+        .always(function(data) {
+            deferred.resolve();           
+        });
+        
+        return deferred;
+    
+    }
+    //'url + '/' + deletekey + ''
+    //data : {'update_id' : -1, 'parent_id' : -1, 'delete_id' : deletekey, 'order_number' : -1}
+    function deleteTreeAjax(url,deletekey,tree,$node){
+        processing();
+        var deferred = new $.Deferred();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: url + '/updateFavorite',
+            type: 'GET',
+            datatype: 'json',
+            data : {'update_id' : -1, 'parent_id' : -1, 'delete_id' : deletekey}
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if (data['status'] !== 'OK') {
+                if (data['status']=='404') {
+                    alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
+                    location.reload();
+                }
+                else{
+                    alert('データ削除に失敗しました ' + data['status']);
+                }
+            }
+            else{
+                tree.delete_node($node);
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            if (data['status']=='404') {
+                alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
+                location.reload();
+            }
+            else {
+                alert('データ削除に失敗しました' + data['status']);
+            }
+        })
+        .always(function(data) {
+            deferred.resolve();           
+        });
+        
+        return deferred;;
+    }
+    
+    function moveTreeAjax(url,movenodeKey,parentKey){
+        processing();
+        var deferred = new $.Deferred();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: url + '/updateFavorite',
+            type: 'GET',
+            datatype: 'json',
+            data : {'update_id' : movenodeKey, 'parent_id' : parentKey, 'delete_id' : -1}
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if (data['status'] !== 'OK') {
+                if (data['status']=='404') {
+                    alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
+                    location.reload();
+                }
+                else{
+                    alert('データ更新に失敗しました ' + data['status']);
+                }
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            if (data['status']=='404') {
+                alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
+                location.reload();
+            }
+            else {
+                alert('データ更新に失敗しました ' + data['status']);
+            }
+        })
+        .always(function(data) {
+            deferred.resolve();           
+        });
+        
+        return deferred;
+    
+    }
+    
+    /*フォルダ作成ボタン*/
+    $("#btnFolderAdd").click(function() {
+        $("#modal-folderadd").modal('show');
+    });
+    
+    /*フォルダクリアボタン*/
+    $("#btnFolderClear").click(function() {
+        $("#FolderName").val("");
+    });
+    
+    
 })
 
 function getDate(element) {
@@ -81,14 +422,7 @@ function getAddMonth(splitchar,addmonth) {
         ( "0"+( today.getMonth()+1 ) ).slice(-2) + splitchar +
         ( "0"+today.getDate() ).slice(-2);
 }
-function getNendo() {
-    var today = new Date();
-    var nendo = today.getFullYear();
-    if(today.getMonth()+1 < 4){
-        nendo = nendo - 1;
-    }
-    return nendo;
-}
+
 function loadingFinish() {
     $(".loading").fadeOut();
 }
@@ -120,301 +454,34 @@ function processing()
 	});
 }
 
-function jsTreeCreate(url,id,isToCartDisabled=true) {
-
-    //processing();
-    var deferred = new $.Deferred();
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: url+'/getData_Favorite',
-        type: 'GET',
-        datatype: 'json',
-    })
-    // Ajaxリクエスト成功時の処理
-    .done(function(data) {
-        if (data['status'] == 'OK') {
-            var id_Reagent = id + 'Reagent';
-            var id_Article = id + 'Article';
-            jsTreeCreate_sub($.parseJSON(data['jsonFavoriteTreeReagent']),url,id_Reagent,isToCartDisabled);
-            jsTreeCreate_sub($.parseJSON(data['jsonFavoriteTreeArticle']),url,id_Article,isToCartDisabled);
-        }
-        else {
-            alert('データ取得に失敗しました' + data['status']);
-        }
-    })
-    // Ajaxリクエスト失敗時の処理
-    .fail(function(data) {
-        alert('データ更新に失敗しました5555' + data['status']);
-    })
-    .always(function(data) {
-        $.unblockUI();
-        deferred.resolve();
-    });
+function setLogout() {
+    sessionStorage.setItem('IsFavoriteSharedChecked',false);
+    sessionStorage.removeItem('selectedNavMenu');
 }
 
-function jsTreeCreate_sub(jsondata,url,id,isToCartDisabled) {
+var selLang = $("input[name=rdoLanguage]:checked").val()=="en" ? 1 : 0;
 
-    $('#' + id).jstree({
-        "core":{
-            "data":jsondata,
-            "check_callback":function(operation,node,node_parent,node_position,more){
-                if (operation=="move_node"){
-                    if(node_parent.icon != "jstree-folder" && node_parent.id != "#"){
-                        return false;
-                    }
-                }
-            }
-        },
-        "state" : { "key": "favoriteTree"},
-        "plugins":["contextmenu", "dnd", "state"],
-        "contextmenu":{
-            "items": function($node) {
-                var tree = $('#' + id).jstree(true);
-                var isNodata = $node.original.key<=-100 ? true : false;
-                return {
-                    "Delete": {
-                        "separator_before": false,
-                        "separator_after": false,
-                        "label": "削除",
-                        "icon": "contextmenu_deleteicon",
-                        "_disabled" : isNodata,
-                        "action": function (obj) {
-                            if (confirm('削除しますか？')){
-                                deletekey = $node.original.key;
-                                var deferred = deleteTreeAjax(url,deletekey,tree,$node);
-                                deferred.done(function(){
-                                    $.unblockUI();
-                                });
-                            }
-                        }
-                    },
-                    "createFolder":{
-                        "separator_before": true,
-                        "separator_after": false,
-                        "label": "新規フォルダ作成",
-                        "icon": "contextmenu_createfoldericon",
-                        "action": function(data){
-                           var inst = $.jstree.reference(data.reference),
-                                obj = inst.get_node(data.reference);
-                                inst.create_node('#', { text:'New Folder', 'icon':'jstree-folder' }
-                                , "last", 
-                                function(new_node){
-                                    try{
-                                        inst.edit(new_node, new_node.text, function(data){
-                                            var itemclass = $('#' + id).parent('div').parent('div').children('input[name=tabFavorite]:checked').val();
-                                            var deferred = createFolderTreeAjax(url,data.text,itemclass);
-                                            deferred.done(function(){
-                                                $.unblockUI();
-                                                location.reload();
-                                            });
-                                         });
-                                        
-                                    }catch(ex){
-                                        setTimeout(function(){ inst.edit(new_node); },0);
-                                    }
-                                });
-                        }
-                    },
-                    "MoveToCart": {
-                        "separator_before": true,
-                        "separator_after": false,
-                        "label": "リストに追加",
-                        "icon": "contextmenu_movetocarticon",
-                        "_disabled": isToCartDisabled || isNodata,
-                        "action": function (obj) {
-                            itemkey = $node.original.key;
-                            var deferred = moveToCartTreeAjax(url,itemkey);
-                            deferred.done(function(){
-                                $.unblockUI();
-                            });                            
-                        }
-                    },
-                }
-            }
-        }
-    }).on('move_node.jstree', function(e, data){
-        /*移動したデータのFavoriteテーブルid*/
-        movenodeKey = data.node.original.key;
-        parentKey = '-1';
-        if (data.parent !== '#') {
-            parentKey = data.instance.get_node(data.node.parent).original.key;        
-        }
+var requireQuantity = ['数量は必須です','The Quantity field is required.'];
+var numericQuantity = ['数量は「数字」のみ有効です','The Quantity must be a number.'];
+var maxAmountQuantity = ['数量は9,999以下のみ有効です','The Quantity may not be greater than 9,999.'];
+var requireRemark = ['備考は必須です','The remark field is required.'];
+var maxRemark = ['備考は100文字以下のみ有効ですす','The Remark may not be greater than 100 characters.'];
+var requireExcutionDate = ['執行日は必須です','The Excution date field is required.'];
+var requireExcutionAmount = ['執行額は必須です','The Excution amount field is required.'];
+var numericExcutionAmount = ['執行額は「数字」のみ有効です','The Excution amount must be a number.'];
+var maxAmountExcutionAmount = ['執行額は99,999,999以下のみ有効です','The Excution amount may not be greater than 99,999,999.'];
+var requireItemClass = ['「試薬」か「物品」を選択して下さい','Please select [Reagent] or [Article].'];
+var requireItemName = ['商品名は必須です','The Item name field is required.'];
+var maxlengthItemName = ['商品名は50文字以下のみ有効です','The Item name may not be greater than 50 characters.'];
+var requireMaker = ['メーカーは必須です','The Maker field is required.'];
+var requireUnitPrice = ['単価は必須です','The Unit price field is required.'];
+var numericUnitPrice = ['単価は「数字」のみ有効です','The Unit price must be a number.'];
+var maxAmountUnitPrice = ['単価は99,999,999以下のみ有効です','The Unit price may not be greater than 99,999,999.'];
 
-        var deferred = moveTreeAjax(url,movenodeKey,parentKey);
-        deferred.done(function(){
-            $.unblockUI();
-        });
-        
-    });
-
-}
+var pleaseSelect = ['納品対象を選択してください','Please select the delivery target.'];
+var confirmRegist = ['納品処理を行いますか？【対象：{0}件】','Do you register?【target:{0} case(s)】'];
+var pleaseSelect = ['登録対象を選択してください','Please select the items(s) registration.'];
+var confirmRegist = ['登録しますか？【対象：{0}件】','Do you register?【target:{0} case(s)】'];
 
 
-function createFolderTreeAjax(url,foldername,itemclass){
-    processing();
-    var deferred = new $.Deferred();
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: url + '/createFavoriteFolder',
-        type: 'GET',
-        datatype: 'json',
-        data : {'FolderName' : foldername, 'ItemClass' : itemclass}
-    })
-    // Ajaxリクエスト成功時の処理
-    .done(function(data) {
-        if (data['status'] !== 'OK') {
-            alert('データ更新に失敗しました');
-        }
-    })
-    // Ajaxリクエスト失敗時の処理
-    .fail(function(data) {
-        alert('データ更新に失敗しました');
-    })
-    .always(function(data) {
-        deferred.resolve();           
-    });
-    
-    return deferred;
-
-}
-
-function moveToCartTreeAjax(url,itemkey){
-    processing();
-    var deferred = new $.Deferred();
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: url + '/moveToCart',
-        type: 'GET',
-        datatype: 'json',
-        data : {'update_id' : itemkey}
-    })
-    // Ajaxリクエスト成功時の処理
-    .done(function(data) {
-        if (data['status'] !== 'OK') {
-            if (data['status']=='404') {
-                alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
-                location.reload();
-            }
-            else{
-                alert('データ更新に失敗しました ' + data['status']);
-            }
-        }
-        else{
-            location.reload();
-        }
-    })
-    // Ajaxリクエスト失敗時の処理
-    .fail(function(data) {
-        alert('データ更新に失敗しました');
-    })
-    .always(function(data) {
-        deferred.resolve();           
-    });
-    
-    return deferred;
-
-}
-//'url + '/' + deletekey + ''
-//data : {'update_id' : -1, 'parent_id' : -1, 'delete_id' : deletekey, 'order_number' : -1}
-function deleteTreeAjax(url,deletekey,tree,$node){
-    processing();
-    var deferred = new $.Deferred();
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: url + '/updateFavorite',
-        type: 'GET',
-        datatype: 'json',
-        data : {'update_id' : -1, 'parent_id' : -1, 'delete_id' : deletekey}
-    })
-    // Ajaxリクエスト成功時の処理
-    .done(function(data) {
-        if (data['status'] !== 'OK') {
-            if (data['status']=='404') {
-                alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
-                location.reload();
-            }
-            else{
-                alert('データ削除に失敗しました ' + data['status']);
-            }
-        }
-        else{
-            tree.delete_node($node);
-        }
-    })
-    // Ajaxリクエスト失敗時の処理
-    .fail(function(data) {
-        if (data['status']=='404') {
-            alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
-            location.reload();
-        }
-        else {
-            alert('データ削除に失敗しました' + data['status']);
-        }
-    })
-    .always(function(data) {
-        deferred.resolve();           
-    });
-    
-    return deferred;;
-}
-
-function moveTreeAjax(url,movenodeKey,parentKey){
-    processing();
-    var deferred = new $.Deferred();
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: url + '/updateFavorite',
-        type: 'GET',
-        datatype: 'json',
-        data : {'update_id' : movenodeKey, 'parent_id' : parentKey, 'delete_id' : -1}
-    })
-    // Ajaxリクエスト成功時の処理
-    .done(function(data) {
-        if (data['status'] !== 'OK') {
-            if (data['status']=='404') {
-                alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
-                location.reload();
-            }
-            else{
-                alert('データ更新に失敗しました ' + data['status']);
-            }
-        }
-    })
-    // Ajaxリクエスト失敗時の処理
-    .fail(function(data) {
-        if (data['status']=='404') {
-            alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
-            location.reload();
-        }
-        else {
-            alert('データ更新に失敗しました ' + data['status']);
-        }
-    })
-    .always(function(data) {
-        deferred.resolve();           
-    });
-    
-    return deferred;
-
-}
-
-/*フォルダ作成ボタン*/
-$("#btnFolderAdd").click(function() {
-    $("#modal-folderadd").modal('show');
-});
-
-/*フォルダクリアボタン*/
-$("#btnFolderClear").click(function() {
-    $("#FolderName").val("");
-});
 

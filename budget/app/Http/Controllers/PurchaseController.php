@@ -8,6 +8,7 @@ use Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Library\BaseClass;
+use App;
 use App\Delivery;
 use App\User;
 use App\Maker;
@@ -41,32 +42,32 @@ class PurchaseController extends Controller
                 $stream = fopen('php://output', 'w');
                 stream_filter_prepend($stream,'convert.iconv.utf-8/cp932//TRANSLIT');
                 fputcsv($stream, [
-                    '発注日',
-                    '納品日',
-                    '商品名',
-                    '規格',
-                    'カタログコード',
-                    'メーカー',
-                    '定価単価',
-                    '数量',
-                    '納入金額',
-                    '使用予算',
-                    '発注依頼者'
+                    __('screenwords.orderDate'),
+                    __('screenwords.deliveryDate'),
+                    __('screenwords.itemName'),
+                    __('screenwords.standard'),
+                    __('screenwords.catalogCode'),
+                    __('screenwords.maker'),
+                    __('screenwords.fixedPriceUnitPrice'),
+                    __('screenwords.quantity'),
+                    __('screenwords.paymentAmount'),
+                    __('screenwords.useBudget'),
+                    __('screenwords.orderRequestUser')
                 ]);
 
                 foreach($Deliveries as $Delivery){
                     fputcsv($stream, [
                         $Delivery->OrderDate,
                         $Delivery->DeliveryDate,
-                        $Delivery->ItemNameJp,
+                        App::getLocale()=='en' ? $Delivery->ItemNameEn : $Delivery->ItemNameJp,
                         $Delivery->Standard,
                         $Delivery->CatalogCode,
-                        $Delivery->MakerNameJp,
+                        App::getLocale()=='en' ? $Delivery->MakerNameEn : $Delivery->MakerNameJp,
                         $Delivery->UnitPrice,
                         $Delivery->DeliveryNumber,
                         $Delivery->DeliveryPrice,
-                        $Delivery->BudgetNameJp,
-                        $Delivery->RequestUserNameJp
+                        App::getLocale()=='en' ? $Delivery->BudgetNameEn : $Delivery->BudgetNameJp,
+                        App::getLocale()=='en' ? $Delivery->RequestUserNameEn : $Delivery->RequestUserNameJp
                     ]);
                 }
                 fclose($stream);

@@ -2700,8 +2700,9 @@ fieldset:disabled a.btn {
 .btn-primary.disabled,
 .btn-primary:disabled {
   color: #fff;
-  background-color: #3490dc;
-  border-color: #3490dc;
+  background-color: #949ba3;/*#3490dc;*/
+  border-color: #949ba3;/*#3490dc;*/
+  cursor:not-allowed;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active,
@@ -2741,8 +2742,9 @@ fieldset:disabled a.btn {
 .btn-secondary.disabled,
 .btn-secondary:disabled {
   color: #fff;
-  background-color: #6c757d;
-  border-color: #6c757d;
+  background-color: #949ba3;/*#6c757d;*/
+  border-color: #949ba3;/*#6c757d;*/
+  cursor:not-allowed;
 }
 
 .btn-secondary:not(:disabled):not(.disabled):active,
@@ -4531,8 +4533,8 @@ input[type=button].btn-block {
 
 .navbar-brand {
   display: inline-block;
-  padding-top: 0.32rem;
-  padding-bottom: 0.32rem;
+  padding-top: 0.20rem;
+  padding-bottom: 0.20rem;
   margin-right: 1rem;
   font-size: 1.125rem;
   line-height: inherit;

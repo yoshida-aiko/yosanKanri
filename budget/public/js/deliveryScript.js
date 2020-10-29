@@ -36,10 +36,10 @@ jQuery (function ()
     $("#btnDelivery").click(function() {
         var arrayChecked = $("#table-deliveryFixed tr").children('td').children('input[type=checkbox]:checked');
         if (arrayChecked.length <= 0){
-            alert('納品対象を選択してください');
+            alert(pleaseSelect[selLang]);
         }
         else {
-            if (confirm('納品処理を行いますか？' + '【対象：' + arrayChecked.length + '件】')) {
+            if (confirm(confirmRegist[selLang].replace('{0}',arrayChecked.length))) {
                 var deferred = insertDelivery();
                 deferred.done(function(){
                     $.unblockUI();
@@ -78,8 +78,8 @@ jQuery (function ()
         "keypress":function(e) {
             if (e.which == 13) {
                 if ($(this).val() !== "" && isFinite($(this).val())) {
-                    var id=$(this).parent().parent().find('input[name=orderreqId]').val();
-                    $(this).parent().children('.spnOrderInputNumber').html(Number($(this).val()).toLocaleString());
+                    var target = $(this).hasClass('inpDeliveryExpectedNumber') ? Number($(this).val()).toLocaleString() : "\\" + Number($(this).val()).toLocaleString();
+                    $(this).parent().children('.spnOrderInputNumber').html(target);
                     $(this).css('display','none');
                     $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                     if ($(this).hasClass('inpDeliveryExpectedNumber')){
@@ -87,19 +87,15 @@ jQuery (function ()
                         var num = Number($(this).val());
                         var total = price * num;
                         $(this).parent().parent().children('.tdSummaryPrice').children('.inpSummaryPrice').val(total);
-                        $(this).parent().parent().children('.tdSummaryPrice').children('.spnOrderInputNumber').html(total.toLocaleString());
+                        $(this).parent().parent().children('.tdSummaryPrice').children('.spnOrderInputNumber').html('\\' + total.toLocaleString());
                     }
-                    /*var deferred = updateOrder(id,price,ordernum);
-                    deferred.done(function(){
-                        $.unblockUI();
-                    });  */
                 }
             }
         },
         "blur":function() {
             if ($(this).val() !== "" && isFinite($(this).val())) {
-                var id=$(this).parent().parent().find('input[name=orderreqId]').val();
-                $(this).parent().children('.spnOrderInputNumber').html(Number($(this).val()).toLocaleString());
+                var target = $(this).hasClass('inpDeliveryExpectedNumber') ? Number($(this).val()).toLocaleString() : "\\" + Number($(this).val()).toLocaleString();
+                $(this).parent().children('.spnOrderInputNumber').html(target);
                 $(this).css('display','none');
                 $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                 if ($(this).hasClass('inpDeliveryExpectedNumber')){
@@ -107,12 +103,8 @@ jQuery (function ()
                     var num = Number($(this).val());
                     var total = price * num;
                     $(this).parent().parent().children('.tdSummaryPrice').children('.inpSummaryPrice').val(total);
-                    $(this).parent().parent().children('.tdSummaryPrice').children('.spnOrderInputNumber').html(total.toLocaleString());
+                    $(this).parent().parent().children('.tdSummaryPrice').children('.spnOrderInputNumber').html('\\' + total.toLocaleString());
                 }
-                /*var deferred = updateOrderInfo(id,-1,selval);
-                deferred.done(function(){
-                    $.unblockUI();
-                });*/
             }
         }
     });
@@ -200,7 +192,6 @@ jQuery (function ()
                 arrayOrderList.push(obj);
             }
         });
-console.log(arrayOrderList);
         var deferred = new $.Deferred();
         $.ajax({
             headers: {

@@ -8,6 +8,7 @@ use Response;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Library\BaseClass;
+use App;
 use App\Order;
 use App\Budget;
 use App\Delivery;
@@ -33,7 +34,7 @@ class BudgetStatusController extends Controller
             $endDate = $request->endDate;
         }
 
-        $Budgets = Budget::where('useStartDate','>=',$startDate)->where('useEndDate','<=',$endDate)->get();
+        $Budgets = Budget::where('useStartDate','>=',$startDate)->where('useEndDate','<=',$endDate)->sortable()->get();
         
         $BudgetLists = array();
         foreach($Budgets as $Budget){
@@ -67,6 +68,7 @@ class BudgetStatusController extends Controller
             $item = [
                 'BudgetId' => $Budget->id,
                 'BudgetNameJp' => $Budget->budgetNameJp,
+                'BudgetNameEn' => $Budget->budgetNameEn,
                 'Budget' => number_format($Budget->budgetAmount),
                 'BudgetUsed' => number_format($BudgetUsed),
                 'BudgetScheduled' => number_format($BudgetScheduled),
@@ -211,8 +213,6 @@ class BudgetStatusController extends Controller
     }
 
     function outputCSV(Request $request){
-
-        
         return response()->streamDownload(
             function() use($request) {
 
@@ -222,12 +222,12 @@ class BudgetStatusController extends Controller
                 $stream = fopen('php://output', 'w');
                 stream_filter_prepend($stream,'convert.iconv.utf-8/cp932//TRANSLIT');
                 fputcsv($stream, [
-                    '予算科目',
-                    '執行日',
-                    '商品名',
-                    '単価',
-                    '数量',
-                    '執行額'
+                    __('screenwords.budgetSubject'),
+                    __('screenwords.excutionDate'),
+                    __('screenwords.itemName'),
+                    __('screenwords.unitPrice'),
+                    __('screenwords.quantity'),
+                    __('screenwords.excutionAmount')
                 ]);
 
                 $Budgets = Budget::where('useStartDate','<=',$startDate)->where('useEndDate','>=',$endDate)->get();               
@@ -237,9 +237,9 @@ class BudgetStatusController extends Controller
                     if (count($details) > 0){
                         foreach($details as $detail){
                             fputcsv($stream, [
-                                $Budget->budgetNameJp,
+                                App::getLocale()=='en' ? $Budget->budgetNameEn : $Budget->budgetNameJp,
                                 $detail['ExecDate'],
-                                $detail['ItemNameJp'],
+                                App::getLocale()=='en' ? $detail['ItemNameEn'] : $detail['ItemNameJp'],
                                 $detail['UnitPrice'],
                                 $detail['ExecNumber'],
                                 $detail['ExecPrice']
@@ -247,9 +247,7 @@ class BudgetStatusController extends Controller
                         }
                     }
                 }
-
                 fclose($stream);
-
             }, 
             'BudgetStatus.csv',
             [

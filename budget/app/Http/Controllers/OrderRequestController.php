@@ -24,7 +24,8 @@ class OrderRequestController extends Controller
         $Carts = Cart::select([
             'carts.*',
             DB::raw('carts.UnitPrice * carts.OrderRequestNumber as OrderPrice'),
-            'suppliers.SupplierNameJp as SupplierName'
+            'suppliers.SupplierNameJp as SupplierNameJp',
+            'suppliers.SupplierNameEn as SupplierNameEn'
         ])
         ->leftjoin('suppliers', function($join) {
             $join->on('carts.SupplierId','=','suppliers.id');
@@ -44,7 +45,8 @@ class OrderRequestController extends Controller
         $response = array();
         $response['status'] = 'OK';
         try{
-            list($jsonFavoriteTreeReagent,$jsonFavoriteTreeArticle) = BaseClass::getFavoriteTree();
+            $isShared = $request->isFavoriteSharedChecked;
+            list($jsonFavoriteTreeReagent,$jsonFavoriteTreeArticle) = BaseClass::getFavoriteTree($isShared);
             $response['jsonFavoriteTreeReagent'] = $jsonFavoriteTreeReagent;
             $response['jsonFavoriteTreeArticle'] = $jsonFavoriteTreeArticle;
         }

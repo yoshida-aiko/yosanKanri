@@ -12,6 +12,7 @@
             <th style="min-width:200px;">ユーザー名</th>
         </thead>
         <tbody>
+        @if (strpos(Auth::user()->UserAuthString,'Master') !== false) 
         @foreach($Users as $User)
         <tr>
             <td>
@@ -25,6 +26,7 @@
             <td><a href="{{ route('User.edit', $User->id) }}">{{$User->UserNameJp}}</a></td>
         </tr>
         @endforeach
+        @endif
         </tbody>
 
         </table>
@@ -61,7 +63,8 @@
             @csrf
             <div class="form-group">
                 <label for="LoginAccount" class="required">ユーザーID</label>
-                <input type="text" id="LoginAccount" name="LoginAccount" value="{{ $editUser->LoginAccount }}" >
+                <input type="text" id="LoginAccount" name="LoginAccount" value="{{ $editUser->LoginAccount }}"
+                    @if (strpos(Auth::user()->UserAuthString,'Master') === false) readonly="readonly" @endif  >
            </div>
             <div class="form-group">
                 @if ($editUser->password == 'resetLink')
@@ -73,16 +76,18 @@
                 <label class="resetLinkOff">&nbsp;</label>
                 <a class="btn btn-primary resetLinkOff" href="{{ route('password.request') }}">パスワード再設定</a>
                 <label for="password" class="required resetLinkOn">パスワード</label>
-                <input type="text" id="password" name="password" value="" class="resetLinkOn">
+                <input type="text" id="password" name="password" value="" class="resetLinkOn" autocomplete="off">
                 @endif               
             </div>
             <div class="form-group">
                 <label for="UserNameJp" class="required">ユーザー名</label>
-                <input type="text" id="UserNameJp" name="UserNameJp" value="{{ $editUser->UserNameJp }}" >
+                <input type="text" id="UserNameJp" name="UserNameJp" value="{{ $editUser->UserNameJp }}" 
+                    @if (strpos(Auth::user()->UserAuthString,'Master') === false) readonly="readonly" @endif  >
             </div>
             <div class="form-group">
                 <label for="Tel">連絡先（携帯等）</label>
-                <input type="tel" id="Tel" name="Tel" value="{{ $editUser->Tel }}">
+                <input type="tel" id="Tel" name="Tel" value="{{ $editUser->Tel }}"
+                    @if (strpos(Auth::user()->UserAuthString,'Master') === false) readonly="readonly" @endif  >
             </div>
             <div class="form-group">
                 <label for="email" class="required">メールアドレス</label>
@@ -90,7 +95,8 @@
             </div>
             <div class="form-group">
                 <label for="author">権限</label>
-                <fieldset id="author">
+                <fieldset id="author" >
+                <div class="userAuthorOverlay" ></div>
                     <input type="checkbox" id="chkOrder" name="chkAuthor[]" value="Order" @if(strpos($editUser->UserAuthString,'Order') !== false) checked='checked' @endif >
                     <label for="chkOrder">発注</label>
 
@@ -106,22 +112,20 @@
                     <input type="checkbox" id="chkMaster" name="chkAuthor[]" value="Master" @if (strpos($editUser->UserAuthString,'Master') !== false) checked='checked' @endif >
                     <label for="chkMaster">マスタ</label>
 
-                    @if (strpos($editUser->UserAuthString,'Payment') !== false)
-                    <input type="checkbox" id="chkPayment" name="chkAuthor[]" value="Payment" checked >
-                    @else
-                    <input type="checkbox" id="chkPayment" name="chkAuthor[]" value="Payment" >
-                    @endif
+                    <input type="checkbox" id="chkPayment" name="chkAuthor[]" value="Payment" @if (strpos($editUser->UserAuthString,'Payment') !== false) checked='checked' @endif >
                     <label for="chkPayment">支払</label>
+                    
                 </fieldset>
             </div>
             <div class="form-group">
                 <label for="Signature">署名</label>
-                <textarea id="Signature" name="Signature" >{{ $editUser->Signature }}</textarea>
+                <textarea id="Signature" name="Signature" 
+                    @if (strpos(Auth::user()->UserAuthString,'Master') === false) readonly="readonly" @endif  >{{ $editUser->Signature }}</textarea>
                 <div class="alert-string" style="margin-left:150px;">※この署名は注文時にメールやPDFに使用されます。</div>
             </div>
             <div class="form-group text-center">
                 <button id="submit_user_regist" type="submit" name="submit_user_regist" class="btn btn-primary" >保存</button>
-                <input id="btn_user_clear" type="button" class="btn btn-secondary" value="クリア">
+                <input id="btn_user_clear" type="button" class="btn btn-secondary" value="クリア" @if (strpos(Auth::user()->UserAuthString,'Master') === false) disabled="disabled" @endif>
                 <input type="hidden" id="id" name="id" value="{{ $editUser->id }}" >
             </div>
 

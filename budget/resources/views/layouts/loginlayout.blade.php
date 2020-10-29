@@ -9,10 +9,15 @@
 
     <title>{{ config('app.name', 'Budget Management System') }}</title>
 
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon.ico">
+    
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/script.js') }}" defer></script>
 
     <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Sawarabi+Mincho" rel="stylesheet">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 

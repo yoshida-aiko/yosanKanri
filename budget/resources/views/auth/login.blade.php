@@ -48,8 +48,8 @@
     </form>
     </div>-->
                 <div class="login-area-body">
-                    <div class="loginTitle">予算管理支援システム</div>
-                    <div class="loginSubTitle">Budget Management Support System</div>
+                    <div class="loginTitle">{{ config('app.name', '予算管理支援システム') }}</div>
+                    <div class="loginSubTitle">{{ config('app.organization', '') }} {{ config('app.department', '') }}</div>
                     <form id="frmLogin" method="POST" action="{{ route('login') }}">
                         @csrf
                         <div class="form-group">

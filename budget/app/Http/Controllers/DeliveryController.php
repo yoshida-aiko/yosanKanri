@@ -23,14 +23,20 @@ class DeliveryController extends Controller
         $Orders = Order::select([
             'orders.*',
             'items.ItemNameJp as ItemNameJp',
+            'items.ItemNameEn as ItemNameEn',
             'budgets.budgetNameJp as BudgetNameJp',
+            'budgets.budgetNameEn as BudgetNameEn',
             'budgets.useStartDate as UseStartDate',
             'budgets.useEndDate as UseEndDate',
             'recusers.UserNameJp as RecieveUserNameJp',
+            'recusers.UserNameEn as RecieveUserNameEn',
             'requsers.UserNameJp as RequestUserNameJp',
+            'requsers.UserNameEn as RequestUserNameEn',
             'suppliers.SupplierNameJp as SupplierNameJp',
+            'suppliers.SupplierNameEn as SupplierNameEn',
             'order_slips.OrderSlipNo as OrderSlipNo',
-            'mainsup.SupplierNameJp as MainSupplierNameJp'
+            'mainsup.SupplierNameJp as MainSupplierNameJp',
+            'mainsup.SupplierNameEn as MainSupplierNameEn'
         ])
         ->leftjoin('budgets', function($join) {
             $join->on('orders.BudgetId','=','budgets.id');

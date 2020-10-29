@@ -1,6 +1,5 @@
 jQuery (function ()
 {
-
     if (sessionStorage.getItem('orderFavoriteIsVisible') !== null){
         if (sessionStorage.getItem('orderFavoriteIsVisible')=='true'){
             $(".leftside-fixed-240").show();
@@ -34,7 +33,6 @@ jQuery (function ()
         }
     }
 
-    
     $("input[name=tabFavorite]").val([1]);
 
     /*絞込検索　表示・非表示ボタン*/
@@ -49,33 +47,35 @@ jQuery (function ()
     });
 
     $("#submit_newProduct_save").click(function() {
+        
         var message = "";
         $("#divError").css('display','none');
         $("#divError li").remove();
+        
         if (!$("input[name=newItemClass]:checked").val()){
-            message += '<li>「試薬」か「物品」を選択して下さい</li>';
+            message += '<li>' + requireItemClass[selLang] + '</li>';
         }
         if ($("#newProductName").val()==""){
-            message += '<li>商品名は必須です</li>';
+            message += '<li>' + requireItemName[selLang] + '</li>';
         }
         else{
             if($("#newProductName").val().length > 50){
-                message += '<li>商品名は50文字以下のみ有効です</li>';
+                message += '<li>' + maxlengthItemName[selLang] + '</li>';
             }
         }
         if ($("#newMaker option:selected").val()==""){
-            message += '<li>メーカーは必須です</li>';
+            message += '<li>' + requireMaker[selLang] + '</li>';
         }
         if ($("#newUnitPrice").val()==""){
-            message += '<li>単価は必須です</li>';
+            message += '<li>' + requireUnitPrice[selLang] + '</li>';
         }
         else{
             var floatprice = parseFloat($("#newUnitPrice").val());
             if (isNaN(floatprice)){
-                message += '<li>単価は「数字」のみ有効です</li>';
+                message += '<li>' + numericUnitPrice[selLang] + '</li>';
             }
             else if(floatprice > 99999999) {
-                message += '<li>単価は99,999,999以下のみ有効です</li>';
+                message += '<li>' + maxAmountUnitPrice[selLang] + '</li>';
             }         
         }
         if (message != ""){
@@ -137,10 +137,10 @@ jQuery (function ()
         var arrayChecked = $("#table-orderRequestFixed tr").children('td').children('input[type=checkbox]:checked');
         var arrayCartIds = [];
         if (arrayChecked.length <= 0){
-            alert('登録対象を選択してください');
+            alert(pleaseSelect[selLang]);
         }
         else {
-            if (confirm('登録しますか？' + '【対象：' + arrayChecked.length + '件】')) {
+            if (confirm(confirmRegist[selLang].replace('{0}',arrayChecked.length))) {
                 arrayChecked.each(function (index,element){
                     arrayCartIds.push($(element).parent().parent().find('input[name=cartId]').val());
                 });
@@ -163,7 +163,7 @@ jQuery (function ()
             if (e.which == 13) {
                 if ($(this).val() !== "" && isFinite($(this).val())) {
                     var id=$(this).parent().parent().find('input[name=cartId]').val();
-                    $(this).parent().children('.spnOrderInputNumber').html(Number($(this).val()).toLocaleString());
+                    $(this).parent().children('.spnOrderInputNumber').html('\\' + Number($(this).val()).toLocaleString());
                     $(this).css('display','none');
                     $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                     var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
@@ -174,14 +174,14 @@ jQuery (function ()
                         $.unblockUI();
                     });  
                     var totalfee = (price * ordernum).toLocaleString();
-                    $(this).parent().nextAll('.tdOrderTotalFee').html(totalfee);
+                    $(this).parent().nextAll('.tdOrderTotalFee').html('\\' + totalfee);
                 }
             }
         },
         "blur":function() {
             if ($(this).val() !== "" && isFinite($(this).val())) {
                 var id=$(this).parent().parent().find('input[name=cartId]').val();
-                $(this).parent().children('.spnOrderInputNumber').html(Number($(this).val()).toLocaleString());
+                $(this).parent().children('.spnOrderInputNumber').html('\\' + Number($(this).val()).toLocaleString());
                 $(this).css('display','none');
                 $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                 var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
@@ -192,7 +192,7 @@ jQuery (function ()
                     $.unblockUI();
                 });  
                 var totalfee = (price * ordernum).toLocaleString();
-                $(this).parent().nextAll('.tdOrderTotalFee').html(totalfee);
+                $(this).parent().nextAll('.tdOrderTotalFee').html('\\' + totalfee);
             }
         }
     });
@@ -251,7 +251,13 @@ jQuery (function ()
         }
     });    
 
-    jsTreeCreate('OrderRequest','favoriteTree',false);
+    if(sessionStorage.getItem('IsFavoriteSharedChecked') !== null){
+        var isShared = sessionStorage.getItem('IsFavoriteSharedChecked')=='true' ? true : false;
+        $("#chkShared").prop('checked',isShared);
+    }
+    
+    $("#favoriteTreeReagent").favoriteTreeCreate('OrderRequest','favoriteTree',false);
+        
     
     function updateOrder(id,price,ordernum,remark) {
         processing();

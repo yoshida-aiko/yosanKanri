@@ -96,44 +96,41 @@
     <div class="table-responsive">
     <table class="table table-fixed table-progressFixed table-striped" ><!--table-sm table-hover table-striped table-bordered progressTable-->
         <thead>
-            
-            <th class="align-center ">@sortablelink('ItemClass','{{ __('screenwords.type') }}')</th>
+            <?php $type=__('screenwords.type') ?>
+            <th class="align-center ">@sortablelink('ItemClass',__('screenwords.type'))</th>
             <th >&nbsp;</th>
-            <th class="align-center ">@sortablelink('OrderDate','依頼/発注日')</th>
-            <th >@sortablelink('item.ItemNameJp','商品名')</th>
-            <th class="align-center ">@sortablelink('item.AmountUnit','容量')</th>
-            <th class="align-center ">@sortablelink('item.Standard','規格')</th>
-            <th class="align-center ">@sortablelink('user.UserNameJp','依頼者')</th>
-            <th class="align-center ">@sortablelink('item.CatalogCode','ｶﾀﾛｸﾞｺｰﾄﾞ')</th>
-            <th >@sortablelink('item.MakerNameJp','ﾒｰｶｰ')</th>
-            <th class="align-center ">@sortablelink('UnitPrice','単価')</th>
-            <th class="align-center ">@sortablelink('RequestNumber','数量')</th>
-            <th class="align-center ">@sortablelink('RequestProgress','進捗')</th>
+            <th class="align-center ">@sortablelink('OrderReqDate',__('screenwords.requestOrderDate'))</th>
+            <th >@sortablelink(__('screenwords.sortItemNameFromItem'),__('screenwords.itemName'))</th>
+            <th class="align-center ">@sortablelink('item.AmountUnit',__('screenwords.capacity'))</th>
+            <th class="align-center ">@sortablelink('item.Standard',__('screenwords.standard'))</th>
+            <th class="align-center ">@sortablelink(__('screenwords.sortUserNameFromUser'),__('screenwords.requester'))</th>
+            <th class="align-center ">@sortablelink('item.CatalogCode',__('screenwords.catalogCode'))</th>
+            <th >@sortablelink(__('screenwords.sortMakerNameFromItem'),__('screenwords.maker'))</th>
+            <th class="align-center ">@sortablelink('UnitPrice',__('screenwords.unitPrice'))</th>
+            <th class="align-center ">@sortablelink('RequestNumber',__('screenwords.quantity'))</th>
+            <th class="align-center ">@sortablelink('RequestProgress',__('screenwords.progressReport'))</th>
         </thead>
         <tbody>
     @foreach($OrderRequests as $OrderRequest)
         <tr>
             
             <td class="align-center ">
-                @if($OrderRequest->ItemClass==1)
+                @if($OrderRequest->ItemClass==config('const.ItemClass.reagent'))
                     {{ __('screenwords.reagent') }}
-                @elseif($OrderRequest->ItemClass==2)
+                @elseif($OrderRequest->ItemClass==config('const.ItemClass.article'))
                     {{ __('screenwords.article') }}
                 @endif
             </td>
             <td class="align-center ">
-                @if($OrderRequest->RequestProgress==1)
+                @if($OrderRequest->RequestProgress==config('const.RequestProgress.ordered'))
                 <span class="deliveryWaitIcon"></span>
                 @else
                 <span class="requestingIcon"></span>
                 @endif
             </td>
             <td class="align-center " >
-                @if($OrderRequest->OrderDate=="")
-                    {{$OrderRequest->RequestDate}}
-                @else
-                    {{$OrderRequest->OrderDate}}
-                @endif
+                
+                {{$OrderRequest->OrderReqDate}}
             </td>
             <td class="tdReagentName">
                 @if(App::getLocale()=='en') {{$OrderRequest->item->ItemNameEn}}
@@ -152,7 +149,7 @@
             <td class="align-right">{{$OrderRequest->UnitPrice}}</td>
             <td class="align-right">{{$OrderRequest->RequestNumber}}</td>
             <td class="align-center">
-                @if($OrderRequest->RequestProgress==1)
+                @if($OrderRequest->RequestProgress==config('const.RequestProgress.ordered'))
                     {{ __('screenwords.waitingForDelivery') }}
                 @else
                     {{ __('screenwords.requesting') }}

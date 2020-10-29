@@ -1,5 +1,6 @@
 jQuery (function ()
 {
+
     $(".table-budgetFixed > tbody > tr").each(function(index,elem){
         if ($(elem).find("[name=hidBudgetId]").val()==$("[name=hidSelectedBudgetId]").val()){
             $(".table-budgetFixed-tr").removeClass("table-fixed-selectRow");
@@ -86,30 +87,31 @@ jQuery (function ()
     });
     /*残高調整実行*/
     $("#btnBalanceExec").click(function() {
+
         var message = "";
         $("#divError").css('display','none');
         $("#divError li").remove();
         if ($("#txtExecDate").val()==""){
-            message += '<li>執行日は必須です</li>';
+            message += '<li>' + requireExcutionDate[selLang] + '</li>';
         }
         if ($("#txtExecRemark").val()==""){
-            message += '<li>備考は必須です</li>';
+            message += '<li>' + requireRemark[selLang] + '</li>';
         }
         else{
             if($("#txtExecRemark").val().length > 100){
-                message += '<li>備考は100文字以下のみ有効です</li>';
+                message += '<li>' + maxRemark[selLang] + '</li>';
             }
         }
         if ($("#txtExecPrice").val()==""){
-            message += '<li>執行額は必須です</li>';
+            message += '<li>' + requireExcutionAmount[selLang] + '</li>';
         }
         else{
             var floatprice = parseFloat($("#txtExecPrice").val());
             if (isNaN(floatprice)){
-                message += '<li>執行額は「数字」のみ有効です</li>';
+                message += '<li>' + numericExcutionAmount[selLang] + '</li>';
             }
             else if(floatprice > 99999999) {
-                message += '<li>執行額は99,999,999以下のみ有効です</li>';
+                message += '<li>' + maxAmountExcutionAmount[selLang] + '</li>';
             }         
         }
         if (message != ""){

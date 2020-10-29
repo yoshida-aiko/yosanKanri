@@ -178,7 +178,8 @@ class SearchPageController extends Controller
         $response = array();
         $response['status'] = 'OK';
         try{
-            list($jsonFavoriteTreeReagent,$jsonFavoriteTreeArticle) = BaseClass::getFavoriteTree();
+            $isShared = $request->isFavoriteSharedChecked;
+            list($jsonFavoriteTreeReagent,$jsonFavoriteTreeArticle) = BaseClass::getFavoriteTree($isShared);
             $response['jsonFavoriteTreeReagent'] = $jsonFavoriteTreeReagent;
             $response['jsonFavoriteTreeArticle'] = $jsonFavoriteTreeArticle;
         }
@@ -225,7 +226,12 @@ class SearchPageController extends Controller
         try{
             $page = PostRequest::session()->get('searchPageCatalogItemWhere_page');
             $id = $request->update_id;
-            BaseClass::favoriteAdd($id);
+            $favoriteUserId = Auth::id();
+            $isShared = false;
+            if ($request->isFavoriteSharedChecked=='true'){
+                $isShared = true;
+            }
+            BaseClass::favoriteAdd($id,$favoriteUserId,$isShared);
         }
         catch(Exception $e){
             $response['status'] = $e->getMessage();

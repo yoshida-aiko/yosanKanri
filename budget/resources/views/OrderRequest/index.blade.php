@@ -17,17 +17,21 @@
         <div id="toggle-button-favorite"></div>
     </div>
     <div class="flexmain" >
-        <h6 class="h6-title">発注依頼リスト</h6>
+        <h6 class="h6-title">{{ __('screenwords.orderRequestList') }}</h6>
         <div class="divOrderRequestHeaderButton">
-            <input type="button" id="btnNewProduct" value="新規商品入力" title="カタログにない商品を登録します" class="btn btn-secondary" >
-            <label for="selTooRequest">依頼先選択：</label>
+            <input type="button" id="btnNewProduct" value="{{ __('screenwords.newItemInput') }}" title="カタログにない商品を登録します" class="btn btn-secondary" >
+            <label for="selTooRequest">{{ __('screenwords.requestDestination') }}：</label>
                 <select id="selOrderRequestUser">
-                    <option value="-1">すべて</option>
+                    <option value="-1">{{ __('screenwords.all') }}</option>
                     @foreach ($Users as $User)
-                        <option value="{{ $User->id}}">{{ $User->UserNameJp }}</option>
+                        <option value="{{ $User->id}}">
+                        @if(App::getLocale()=='en') {{$User->UserNameEn}}
+                        @else {{$User->UserNameJp}}
+                        @endif
+                        </option>
                     @endforeach
                 </select>
-            <input type="button" id="btnOrderRequest" value="発注依頼" title="発注を依頼します" class="btn btn-primary" @if($Carts->isEmpty()) disabled='disabled' @endif >
+            <input type="button" id="btnOrderRequest" value="{{ __('screenwords.orderRequest') }}" title="{{ __('screenwords.orderRequestTooltip') }}" class="btn btn-primary" @if($Carts->isEmpty()) disabled='disabled' @endif >
         </div>
         <div class="pagenationStyle">
         @if(!$Carts->isEmpty())
@@ -38,16 +42,16 @@
             <thead>
                 <tr>
                     <th>&nbsp;</th>
-                    <th><input type="checkbox" name="chkTargetAll" checked ></th>
-                    <th class="align-center ">@sortablelink('ItemClass','種類')</th>
-                    <th>@sortablelink('ItemNameJp','商品名')</th>
-                    <th class="align-center ">@sortablelink('AmountUnit','容量')</th>
-                    <th class="align-center ">@sortablelink('CatalogCode','カタログコード')</th>
-                    <th>@sortablelink('MakerNameJp','メーカー名')</th>
-                    <th class="align-center ">@sortablelink('UnitPrice','単価')</th>
-                    <th class="align-center ">@sortablelink('OrderRequestNumber','数量')</th>
-                    <th class="align-center ">@sortablelink('OrderPrice','金額')</th>
-                    <th>備考</th>
+                    <th><input type="checkbox" name="chkTargetAll" @if(!$Carts->isEmpty()) checked @endif ></th>
+                    <th class="align-center ">@sortablelink('ItemClass',__('screenwords.type'))</th>
+                    <th>@sortablelink(__('screenwords.sortItemName'),__('screenwords.itemName'))</th>
+                    <th class="align-center ">@sortablelink('AmountUnit',__('screenwords.capacity'))</th>
+                    <th class="align-center ">@sortablelink('CatalogCode',__('screenwords.catalogCode'))</th>
+                    <th>@sortablelink(__('screenwords.sortMakerName'),__('screenwords.makerName'))</th>
+                    <th class="align-center ">@sortablelink('UnitPrice',__('screenwords.unitPrice'))</th>
+                    <th class="align-center ">@sortablelink('OrderRequestNumber',__('screenwords.quantity'))</th>
+                    <th class="align-center ">@sortablelink('OrderPrice',__('screenwords.amount'))</th>
+                    <th> {{ __('screenwords.remark') }} </th>
                 </tr>
             </thead>
             <tbody>
@@ -59,22 +63,30 @@
                             @csrf
                             @method('DELETE')
                             <input type="submit" value="&#xf1f8;" 
-                                onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="fa btn-delete-icon">
+                                onClick="if (!confirm({{ __('messages.confirmDelete') }})){ return false;} return true;" class="fa btn-delete-icon">
                             <input type="hidden" name="cartId" value="{{$Cart->id}}">
                         </form>
                     </td>
                     <td><input type="checkbox" name="chkTarget[]" checked ></td>
                     <td class="align-center">
                         @if($Cart->ItemClass == '1')
-                            試薬
+                        {{ __('screenwords.reagent') }}
                         @elseif($Cart->ItemClass == '2')
-                            物品
+                        {{ __('screenwords.article') }}
                         @endif
                     </td>
-                    <td>{{ $Cart->ItemNameJp }}</td>
+                    <td>
+                        @if(App::getLocale()=='en') {{$Cart->ItemNameEn}}
+                        @else {{$Cart->ItemNameJp}}
+                        @endif
+                    </td>
                     <td class="align-center">{{ $Cart->AmountUnit }}</td>
                     <td class="align-center">{{ $Cart->CatalogCode }}</td>
-                    <td>{{ $Cart->MakerNameJp }}</td>
+                    <td>
+                        @if(App::getLocale()=='en') {{$Cart->MakerNameEn}}
+                        @else {{$Cart->MakerNameJp}}
+                        @endif
+                    </td>
                     <td class="align-right tdOrderInputNumber">
                         <?php
                         if ($Cart->UnitPrice > 0) {
@@ -105,7 +117,9 @@
                         {{$Cart->Standard}}
                     </td>
                     <td style="display:none;">
-                        {{$Cart->SupplierName}}
+                        @if(App::getLocale()=='en') {{$Cart->SupplierNameEn}}
+                        @else {{$Cart->SupplierNameJp}}
+                        @endif
                     </td>
                     <td style="display:none;">
                         {{$Cart->id}}
@@ -125,8 +139,8 @@
         <div  class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="Modal">新規商品入力</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+                    <h5 class="modal-title" id="Modal">{{ __('screenwords.newItemInput') }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('screenwords.close') }}">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -135,39 +149,43 @@
                         @csrf
                         <div class="form-group" >
                             <div class="divNewProductItemClass">
-                            <label class="required"></label>
+                            <label class="required">&nbsp;</label>
                             <label for="ItemClass_Reagent">
-                                <input type="radio" id="ItemClass_Reagent" name="newItemClass" value="1" required="required">試薬</label>
+                                <input type="radio" id="ItemClass_Reagent" name="newItemClass" value="{{config('const.ItemClass.reagent')}}" required="required">{{ __('screenwords.reagent') }}</label>
                             <label for="ItemClass_Article">
-                                <input type="radio" id="ItemClass_Article" name="newItemClass" value="2">物品</label>
+                                <input type="radio" id="ItemClass_Article" name="newItemClass" value="{{config('const.ItemClass.article')}}">{{ __('screenwords.article') }}</label>
                             </div>
                         </div>
                         <div class="form-group" >
-                            <label for="newProductName" class="required">商品名</label>
+                            <label for="newProductName" class="required">{{ __('screenwords.itemName') }}</label>
                             <input type="text" id="newProductName" name="newProductName" value="{{old('newProductName')}}" required="required" size="50">
                         </div>
                         <div class="form-group" >
-                            <label for="newStandard">規格</label>
+                            <label for="newStandard">{{ __('screenwords.standard') }}</label>
                             <input type="text" id="newStandard" name="newStandard" value="{{old('newStandard')}}" size="50">
                         </div>
                         <div class="form-group" >
-                            <label for="newAmountUnit">容量単位</label>
+                            <label for="newAmountUnit">{{ __('screenwords.capacityUnit') }}</label>
                             <input type="text" id="newAmountUnit" name="newAmountUnit" value="{{old('newAmountUnit')}}" size="50">
                         </div>
                         <div class="form-group" >
-                            <label for="newCatalogCode">カタログコード</label>
+                            <label for="newCatalogCode">{{ __('screenwords.catalogCode') }}</label>
                             <input type="text" id="newCatalogCode" name="newCatalogCode" value="{{old('newCatalogCode')}}" size="50">
                         </div>
                         <div class="form-group" >
-                            <label for="newMaker" class="required">メーカー</label>
+                            <label for="newMaker" class="required">{{ __('screenwords.maker') }}</label>
                             <select id="newMaker" name="newMaker" required>
                                 @foreach($Makers as $Maker)
-                                <option value="{{ $Maker->id }}">{{$Maker->MakerNameJp}}</option>
+                                <option value="{{ $Maker->id }}">
+                                    @if(App::getLocale()=='en') {{$Maker->MakerNameEn}}
+                                    @else {{$Maker->MakerNameJp}}
+                                    @endif
+                                </option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group" >
-                            <label for="newUnitPrice" class="required">単価</label>
+                            <label for="newUnitPrice" class="required">{{ __('screenwords.unitPrice') }}</label>
                             <input type="text" id="newUnitPrice" name="newUnitPrice" value="{{old('newUnitPrice')}}" required="required" style="width:100px;text-align:right;">&emsp;円
                         </div>
                         {{-- エラーメッセージ --}}
@@ -177,9 +195,9 @@
                     </section>
                 </div>
                 <div class="modal-footer">
-                    <input type="button" id="submit_newProduct_save" name="submit_newProduct" class="btn btn-widht70 btn-primary" value="保存" />
-                    <button type="button" id="btnClear" class="btn btn-width70 btn-secondary" >クリア</button>
-                    <button type="button" class="btn btn-width70 btn-secondary" data-dismiss="modal">閉じる</button>
+                    <input type="button" id="submit_newProduct_save" name="submit_newProduct" class="btn btn-width70 btn-primary" value="{{ __('screenwords.save') }}" />
+                    <button type="button" id="btnClear" class="btn btn-width70 btn-secondary" >{{ __('screenwords.clear') }}</button>
+                    <button type="button" class="btn btn-width70 btn-secondary" data-dismiss="modal">{{ __('screenwords.close') }}</button>
                 </div>
             </div>
         </div>
