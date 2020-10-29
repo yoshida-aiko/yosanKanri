@@ -71,6 +71,7 @@ Route::group(['middleware' => 'auth'], function() {
     
     Route::get('lang/{lang}', ['as'=>'lang.switch', 'uses'=>'LanguageController@switchLang']);
     
+    Route::get('/syslogout',['uses' => 'UserController@getLogout','as' => 'user.logout']);
 });
 
 Auth::routes();
