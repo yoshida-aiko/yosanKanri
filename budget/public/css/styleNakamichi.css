@@ -1,0 +1,1106 @@
+#toggle-button-favorite {
+	width:32px;
+	height:200px;
+	background-image: url("../images/favoritebutton.png");
+	background-repeat: no-repeat;
+	margin-top:49px;
+}
+
+.modal-detail-table {
+	width:100%;
+}
+
+.modal-detail-table > tbody > tr > td:nth-child(odd) {
+	color:#154170;
+	font-weight: bold;
+	width:20%;
+	text-align: right;
+}
+.modal-detail-table > tbody > tr > td:nth-child(even) {
+	width:30%;
+}
+
+/*発注依頼テーブル orderRequest*/
+.table-orderRequestFixed {
+	margin-top:33px;
+	min-width:1180px;
+}
+.table-orderRequestFixed td {
+	padding:3px 0.75rem !important;
+}
+/*削除ボタン*/
+.table-orderRequestFixed thead th:nth-child(1),
+.table-orderRequestFixed tbody td:nth-child(1) {
+	width:50px;
+}
+/*対象*/
+.table-orderRequestFixed thead th:nth-child(2),
+.table-orderRequestFixed tbody td:nth-child(2) {
+	width:50px;
+}
+/*種類*/
+.table-orderRequestFixed thead th:nth-child(3),
+.table-orderRequestFixed tbody td:nth-child(3) {
+	width:60px;
+}
+/*商品名*/
+.table-orderRequestFixed thead th:nth-child(4),
+.table-orderRequestFixed tbody td:nth-child(4) {
+	/*orderRequestScript.jsで設定*/
+}
+/*容量*/
+.table-orderRequestFixed thead th:nth-child(5),
+.table-orderRequestFixed tbody td:nth-child(5) {
+	width:120px;
+}
+/*カタログコード*/
+.table-orderRequestFixed thead th:nth-child(6),
+.table-orderRequestFixed tbody td:nth-child(6) {
+	width:120px;
+}
+/*メーカー*/
+.table-orderRequestFixed thead th:nth-child(7),
+.table-orderRequestFixed tbody td:nth-child(7) {
+	width:140px;
+}
+/*単価*/
+.table-orderRequestFixed thead th:nth-child(8),
+.table-orderRequestFixed tbody td:nth-child(8) {
+	width:90px;
+}
+/*数量*/
+.table-orderRequestFixed thead th:nth-child(9),
+.table-orderRequestFixed tbody td:nth-child(9) {
+	width:90px;
+}
+/*金額*/
+.table-orderRequestFixed thead th:nth-child(10),
+.table-orderRequestFixed tbody td:nth-child(10) {
+	width:90px;
+}
+/*備考*/
+.table-orderRequestFixed thead th:nth-child(11),
+.table-orderRequestFixed tbody td:nth-child(11) {
+	width:200px;
+}
+.tdOrderInputNumber {
+	padding-left:3px !important;
+	padding-right:2px !important;
+}
+.table-orderRequestFixed-tr .inpOrderUnitPrice {
+	width:70px;
+	display:none;
+	text-align:right;
+	ime-mode :inactive;
+}
+.table-orderRequestFixed-tr .inpOrderRequestNumber {
+	width:55px;
+	display:none;
+	text-align:right;
+	ime-mode :inactive;
+}
+.table-orderFixed-tr .inpOrderUnitPrice {
+	width:80px;
+	display:none;
+	text-align:right;
+	ime-mode :inactive;
+}
+
+.table-orderFixed-tr .inpOrderRequestNumber {
+	width:80px;
+	display:none;
+	text-align:right;
+	ime-mode :inactive;
+}
+.inpDeliveryExpectedNumber {
+	width:60px;
+	display:none;
+	text-align:right;
+	ime-mode :inactive;
+}
+
+.inpSummaryPrice {
+	width:80px;
+	display:none;
+	text-align:right;
+	ime-mode :inactive;
+}
+.pBudget{
+	width:190px;
+	margin:0 !important;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+}
+.inpBudget {
+	width:100%;
+	display:none;
+}
+
+.pOrderRemark{
+	width:190px;
+	margin:0 !important;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+}
+.inpOrderRemark {
+	width:100%;
+	display:none;
+}
+
+.searchFormArea > .tabContent {
+	overflow:hidden;
+}
+.inpOrderInputNumber {
+	ime-mode:disabled;
+	-ms-ime-mode: disabled;
+}
+.contextmenu_movetocarticon {
+	font-family: "FontAwesome";
+	display:inline-block;
+	cursor: pointer;
+	font-style: normal;
+	font-size:15px !important;
+	color:#e95295;
+}
+.contextmenu_movetocarticon::before{
+	content:"\f217";
+}
+.contextmenu_createfoldericon {
+	font-family: "FontAwesome";
+	display:inline-block;
+	cursor: pointer;
+	font-style: normal;	
+	font-size:15px !important;
+	color:#e6b422;
+}
+.contextmenu_createfoldericon::before{
+	content:"\f07b";
+}
+
+
+.vakata-context li > a{
+	font-size:11px;
+}
+.vakata-context .vakata-contextmenu-disabled a > i{
+	color: silver;
+}
+
+.divOrderRequestHeaderButton{
+	position: absolute;
+	top:23px;
+	left:10px;
+}
+
+.sectionNewProduct {
+	width:100%;
+	padding:15px 5px;
+	background-color:RGBA(255,255,255,1.0);
+	border:1px solid #b8b8b8;
+}
+.sectionNewProduct > div.form-group > label {
+	text-align:right;
+	width:150px;
+	padding-right:10px;
+	vertical-align: top;
+}
+.divNewProductItemClass{
+	padding-left:95px;
+}
+.divNewProductItemClass label {
+	width:80px;
+	padding-left:5px;
+}
+.divNewProductItemClass input[type=radio]{
+	margin-right:5px;
+}
+#myNavbar {
+	background-image:url('../images/navbarbackground.png');
+
+}
+.modal-header {
+	background-color: #d8e7f8;
+	background-image:url('../images/navbarbackground.png');
+}
+.modal-title {
+	font-weight:bold;
+	color:#154170 !important;
+}
+.leftside-fixed-400 {
+	width:400px;
+	min-width: 400px;
+	position: relative;
+}
+
+/*予算状況テーブル budgetstatus*/
+.table-budgetFixed {
+	margin-top:45px;
+	min-width:1000px;
+}
+.table-budgetFixed td {
+	padding:3px 0.75rem !important;
+}
+/*修正ボタン*/
+.table-budgetFixed thead th:nth-child(1),
+.table-budgetFixed tbody td:nth-child(1) {
+	width:120px;
+}
+
+/*予算額*/
+.table-budgetFixed thead th:nth-child(3),
+.table-budgetFixed tbody td:nth-child(3) {
+	width:120px;
+}
+/*執行額*/
+.table-budgetFixed thead th:nth-child(4),
+.table-budgetFixed tbody td:nth-child(4) {
+	width:120px;
+}
+/*執行済額*/
+.table-budgetFixed thead th:nth-child(5),
+.table-budgetFixed tbody td:nth-child(5) {
+	width:120px;
+}
+/*執行予定額*/
+.table-budgetFixed thead th:nth-child(6),
+.table-budgetFixed tbody td:nth-child(6) {
+	width:120px;
+}
+/*執行予定込残高*/
+.table-budgetFixed thead th:nth-child(7){
+	font-size:95%;
+}
+.table-budgetFixed thead th:nth-child(7),
+.table-budgetFixed tbody td:nth-child(7) {
+	width:120px;
+}
+
+.table-budgetDetailFixed {
+	min-width:1000px;
+}
+/*執行日*/
+.table-budgetDetailFixed thead th:nth-child(1),
+.table-budgetDetailFixed tbody td:nth-child(1) {
+	width:120px;
+}
+/*単価*/
+.table-budgetDetailFixed thead th:nth-child(3),
+.table-budgetDetailFixed tbody td:nth-child(3) {
+	width:120px;
+}
+/*数量*/
+.table-budgetDetailFixed thead th:nth-child(4),
+.table-budgetDetailFixed tbody td:nth-child(4) {
+	width:120px;
+}
+/*執行額*/
+.table-budgetDetailFixed thead th:nth-child(5),
+.table-budgetDetailFixed tbody td:nth-child(5) {
+	width:120px;
+}
+.inpExecDate{
+	display:inline-block;
+	width:100px;
+	text-align:center;
+}
+
+
+/*購入履歴リストテーブル purchase*/
+.table-purchaseFixed {
+	margin-top:10px;
+	min-width:1200px;
+}
+.table-purchaseFixed td {
+	padding:3px 0.75rem !important;
+}
+/*発注依頼ボタン*/
+.table-purchaseFixed thead th:nth-child(1),
+.table-purchaseFixed tbody td:nth-child(1) {
+	width:120px;
+}
+/*発注日*/
+.table-purchaseFixed thead th:nth-child(2),
+.table-purchaseFixed tbody td:nth-child(2) {
+	width:110px;
+}
+/*納品日*/
+.table-purchaseFixed thead th:nth-child(3),
+.table-purchaseFixed tbody td:nth-child(3) {
+	width:110px;
+}
+.table-purchaseFixed tbody td > p{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+/*定価単価*/
+.table-purchaseFixed thead th:nth-child(5),
+.table-purchaseFixed tbody td:nth-child(5) {
+	width:90px;
+}
+/*数量*/
+.table-purchaseFixed thead th:nth-child(6),
+.table-purchaseFixed tbody td:nth-child(6) {
+	width:90px;
+}
+/*納品金額*/
+.table-purchaseFixed thead th:nth-child(7),
+.table-purchaseFixed tbody td:nth-child(7) {
+	width:90px;
+}
+/*使用予算*/
+.table-purchaseFixed thead th:nth-child(8),
+.table-purchaseFixed tbody td:nth-child(8) {
+	width:170px;
+}
+/*発注依頼者*/
+.table-purchaseFixed thead th:nth-child(9),
+.table-purchaseFixed tbody td:nth-child(9) {
+	width:140px;
+}
+
+/*納品リストテーブル delivery*/
+.table-deliveryFixed {
+	margin-top:35px;
+	min-width:1600px;
+}
+.table-deliveryFixed td {
+	padding:3px 0.75rem !important;
+}
+/*削除ボタン*/
+.table-deliveryFixed thead th:nth-child(1),
+.table-deliveryFixed tbody td:nth-child(1) {
+	width:50px;
+}
+/*チェックボックス*/
+.table-deliveryFixed thead th:nth-child(2),
+.table-deliveryFixed tbody td:nth-child(2) {
+	width:50px;
+}
+.table-deliveryFixed tbody td > p{
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+/*発注先*/
+.table-deliveryFixed thead th:nth-child(4),
+.table-deliveryFixed tbody td:nth-child(4) {
+	width:170px;
+}
+/*注文No*/
+.table-deliveryFixed thead th:nth-child(5),
+.table-deliveryFixed tbody td:nth-child(5) {
+	width:120px;
+}
+/*納品日*/
+.table-deliveryFixed thead th:nth-child(6),
+.table-deliveryFixed tbody td:nth-child(6) {
+	width:110px;
+}
+.inpDeliveryDate {
+	width:85px;
+}
+/*納品済数*/
+.table-deliveryFixed thead th:nth-child(7),
+.table-deliveryFixed tbody td:nth-child(7) {
+	width:80px;
+}
+/*発注数*/
+.table-deliveryFixed thead th:nth-child(8),
+.table-deliveryFixed tbody td:nth-child(8) {
+	width:70px;
+}
+/*納品数*/
+.table-deliveryFixed thead th:nth-child(9),
+.table-deliveryFixed tbody td:nth-child(9) {
+	width:80px;
+}
+/*執行額*/
+.table-deliveryFixed thead th:nth-child(10),
+.table-deliveryFixed tbody td:nth-child(10) {
+	width:110px;
+}
+/*依頼者*/
+.table-deliveryFixed thead th:nth-child(11),
+.table-deliveryFixed tbody td:nth-child(11) {
+	width:130px;
+}
+/*予算科目*/
+.table-deliveryFixed thead th:nth-child(12),
+.table-deliveryFixed tbody td:nth-child(12) {
+	width:140px;
+}
+.spnSelectBudget {
+	width:100%;
+	display:inline-block;
+}
+.selSelectBudget {
+	width:120px;
+	display:none;
+}
+/*発注者*/
+.table-deliveryFixed thead th:nth-child(13),
+.table-deliveryFixed tbody td:nth-child(13) {
+	width:130px;
+}
+.table-deliveryFixed tbody td p {
+	margin:0;
+	padding:0;
+}
+
+
+
+/*発注テーブル orderProcessing*/
+.table-orderProcessingFixed {
+	margin-top:30px;
+	min-width:1180px;
+}
+.table-orderProcessingFixed td {
+	padding:3px 0.75rem !important;
+}
+/*削除ボタン*/
+.table-orderProcessingFixed thead th:nth-child(1),
+.table-orderProcessingFixed tbody td:nth-child(1) {
+	width:50px;
+}
+/*チェックボックス*/
+.table-orderProcessingFixed thead th:nth-child(2),
+.table-orderProcessingFixed tbody td:nth-child(2) {
+	width:50px;
+}
+/*発注先*/
+.table-orderProcessingFixed thead th:nth-child(3),
+.table-orderProcessingFixed tbody td:nth-child(3) {
+	width:170px;
+}
+/*発注額*/
+.table-orderProcessingFixed thead th:nth-child(5),
+.table-orderProcessingFixed tbody td:nth-child(5) {
+	width:90px;
+}
+/*予算科目*/
+.table-orderProcessingFixed thead th:nth-child(6),
+.table-orderProcessingFixed tbody td:nth-child(6) {
+	width:140px;
+}
+/*備考*/
+.table-orderProcessingFixed thead th:nth-child(7),
+.table-orderProcessingFixed tbody td:nth-child(7) {
+	width:190px;
+}
+/*依頼者*/
+.table-orderProcessingFixed thead th:nth-child(8),
+.table-orderProcessingFixed tbody td:nth-child(8) {
+	width:140px;
+}
+.table-orderProcessingFixed tbody td p {
+	margin:0;
+	padding:0;
+}
+
+
+/*発注テーブル order*/
+.table-orderFixed {
+	margin-top:30px;
+	min-width:1180px;
+}
+.table-orderFixed td {
+	padding:3px 0.75rem !important;
+}
+/*削除ボタン*/
+.table-orderFixed thead th:nth-child(1),
+.table-orderFixed tbody td:nth-child(1) {
+	width:50px;
+}
+/*種類*/
+.table-orderFixed thead th:nth-child(2),
+.table-orderFixed tbody td:nth-child(2) {
+	width:60px;
+}
+/*商品名*/
+.table-orderFixed thead th:nth-child(3),
+.table-orderFixed tbody td:nth-child(3) {
+	/*orderRequestScript.jsで設定*/
+}
+/*容量*/
+.table-orderFixed thead th:nth-child(4),
+.table-orderFixed tbody td:nth-child(4) {
+	width:120px;
+}
+/*規格*/
+.table-orderFixed thead th:nth-child(5),
+.table-orderFixed tbody td:nth-child(5) {
+	width:120px;
+}
+/*カタログコード*/
+.table-orderFixed thead th:nth-child(6),
+.table-orderFixed tbody td:nth-child(6) {
+	width:120px;
+}
+/*メーカー*/
+.table-orderFixed thead th:nth-child(7),
+.table-orderFixed tbody td:nth-child(7) {
+	width:140px;
+}
+/*単価*/
+.table-orderFixed thead th:nth-child(8),
+.table-orderFixed tbody td:nth-child(8) {
+	width:90px;
+}
+/*数量*/
+.table-orderFixed thead th:nth-child(9),
+.table-orderFixed tbody td:nth-child(9) {
+	width:90px;
+}
+/*金額*/
+.table-orderFixed thead th:nth-child(10),
+.table-orderFixed tbody td:nth-child(10) {
+	width:90px;
+}
+/*依頼者*/
+.table-orderFixed thead th:nth-child(11),
+.table-orderFixed tbody td:nth-child(11) {
+	width:140px;
+}
+#detailProductName{
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+	width:600px;
+}
+.table-fixed td {
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;	
+}
+.bottom-fixed-200{
+	width:100%;
+	margin-top:-3px;
+	padding:0 10px;
+}
+.toggle-fixed-40 {
+	height:33px;
+	width:100%;
+	padding:0 10px;
+}
+#toggle-button-order{
+	width:225px;
+	height:30px;
+	background-image: url("../images/yosanlist.png");
+	background-repeat: no-repeat;
+	cursor:pointer;
+}
+.table-yosan-under-list {
+	min-width:1390px;
+}
+.table-yosan-under-list thead tr {
+	background-color:#eee;
+}
+.table-yosan-under-list tbody {
+	height:100px;
+}
+.table-yosan-under-list thead tr th,
+.table-yosan-under-list tbody tr td{
+	font-size:0.80rem;
+	padding:0 3px 0 2px;
+	margin:0;
+}
+.table-yosan-under-list tbody tr td:not(:first-child){
+	width:150px;
+	text-align: right;
+}
+.table-yosan-under-list thead tr th {
+	text-align: center;
+}
+.table-yosan-under-list thead tr th:not(:first-child)  {
+	width:150px;
+}
+.budgetTree {
+	width:400px;
+	overflow-y: auto;
+	border: 1px solid #b8b8b8;
+	margin-top:32px;
+	padding:5px;
+}
+.budgetTree ul {
+	list-style: none;
+	padding:0;
+}
+.budgetTree span {
+	display: inline-block;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;	
+}
+
+.smalllabel {
+	font-size:0.65rem;
+}
+.parentBudget {
+	display:flex;
+	width:370px;
+	cursor: pointer;
+}
+.parentBudget > span:nth-child(1){
+	width:12px;
+	font-size: 1.0rem;
+}
+.parentBudget > span:nth-child(2) {
+	font-size:13px !important;
+	color:#e6b422;
+	padding-top:3px;
+	width:18px;
+}
+.parentBudget > span:nth-child(3){
+	flex:1;
+}
+.parentBudget > span:nth-child(4){
+	width:50px;
+}
+.parentBudget > span:nth-child(6) {
+	width:35px;
+}
+.parentBudget > span:nth-child(5) {
+	width:60px;
+	text-align: right;
+	padding-right:5px;	
+}
+.parentBudget > span:nth-child(7){
+	width:80px;
+	text-align: right;
+}
+.childBudget {
+	display:block;
+	margin-left:30px;
+	width:340px;
+}
+.childBudget > li {
+	display:flex;
+	cursor: default;
+}
+.childBudget > li > span {
+	font-size:0.7rem;
+}
+.childBudget > li > span:nth-child(1){
+	flex:1;
+}
+.childBudget > li > span:nth-child(2),
+.childBudget > li > span:nth-child(4){
+	width:70px;
+	text-align: right;
+}
+.childBudget > li > span:nth-child(3){
+	width:35px;
+	text-align: right;
+}
+.childBudget > li:hover {
+	background-color:#cfdff8 !important;
+}
+
+
+.divBudgetStatusHeaderButton{
+	position: absolute;
+	top:35x;
+	left:10px;
+}
+.divBudgetStatusHeaderButton > span {
+	display:inline-block;
+	padding:0 5px;
+}
+.divOrderHeaderButton{
+	position: absolute;
+	top:20px;
+	left:10px;
+}
+.divOrderHeaderButton label{
+	width:40px;
+	padding-left:5px;
+	cursor:pointer;
+}
+.divOrderHeaderButton input[type=radio]{
+	cursor:pointer;
+}
+.divNoData {
+	margin-top:30px;
+}
+
+.divCircleWrapper{
+	display:flex;
+	justify-content: center;
+}
+.btnCircle {
+	background-color: rgba(21,65,112,1.0);
+	/*border: 0.1875em solid #0F1C3F;*/
+	border-radius: 50%;
+	box-shadow: 0.175em 0.175em 0 0 rgba(15, 28, 63, 0.125);
+	height: 50px;
+	width: 50px;
+	cursor:pointer;
+	text-align: center;
+	margin:0 3px;
+	color:#fff;
+}
+.btnCircle:hover {
+	background-color: rgba(21,65,112,0.9);
+	color:#e6b422;
+}
+
+.btnCircle > span:first-child {
+	display:block;
+	font-size:1.5rem;
+	margin:6px 0 0 0;
+}
+.btnCircle > span:last-child {
+	display:block;
+	font-size:10px;
+}
+.spnOrderSelectSupplier {
+	display:inline-block;
+	margin:0 !important;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+}
+.selOrderSelectSupplier {
+	width:100%;
+	display: none;
+}
+.spnSupplierId {
+	display:none;
+}
+.loading {
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index:999;
+	background-color:rgba(255,255,255,0.9);
+	/*background-image:url('../images/navbarbackground.png');
+	background-repeat: repeat;*/
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+
+@-webkit-keyframes ball-grid-pulse {
+	0% {
+	  -webkit-transform: scale(1);
+			  transform: scale(1); }
+	50% {
+	  -webkit-transform: scale(0.5);
+			  transform: scale(0.5);
+	  opacity: 0.7; }
+	100% {
+	  -webkit-transform: scale(1);
+			  transform: scale(1);
+	  opacity: 1; } }
+  
+  @keyframes ball-grid-pulse {
+	0% {
+	  -webkit-transform: scale(1);
+			  transform: scale(1); }
+	50% {
+	  -webkit-transform: scale(0.5);
+			  transform: scale(0.5);
+	  opacity: 0.7; }
+	100% {
+	  -webkit-transform: scale(1);
+			  transform: scale(1);
+	  opacity: 1; } }
+
+.loadingwrapper {
+	padding:8px 5px 5px 15px;
+	height:60px;
+	width:200px;
+	background-color:RGBA(255,255,255,1.0);
+	border:1px solid #aaa;
+	box-shadow:10px 10px 10px 10px rgba(0,0,0,0.8);
+	display:flex;
+	z-index:999;
+}
+.ball-grid-pulse {
+	width: 45px;
+}
+.loadingtext {
+	line-height:45px;
+	color:#666666;
+	font-size:16px;
+	padding-left:10px;
+}
+	.ball-grid-pulse > div:nth-child(1) {
+	  -webkit-animation-delay: 0.22s;
+			  animation-delay: 0.22s;
+	  -webkit-animation-duration: 0.9s;
+			  animation-duration: 0.9s; }
+	.ball-grid-pulse > div:nth-child(2) {
+	  -webkit-animation-delay: 0.64s;
+			  animation-delay: 0.64s;
+	  -webkit-animation-duration: 1s;
+			  animation-duration: 1s; }
+	.ball-grid-pulse > div:nth-child(3) {
+	  -webkit-animation-delay: -0.15s;
+			  animation-delay: -0.15s;
+	  -webkit-animation-duration: 0.63s;
+			  animation-duration: 0.63s; }
+	.ball-grid-pulse > div:nth-child(4) {
+	  -webkit-animation-delay: -0.03s;
+			  animation-delay: -0.03s;
+	  -webkit-animation-duration: 1.24s;
+			  animation-duration: 1.24s; }
+	.ball-grid-pulse > div:nth-child(5) {
+	  -webkit-animation-delay: 0.08s;
+			  animation-delay: 0.08s;
+	  -webkit-animation-duration: 1.37s;
+			  animation-duration: 1.37s; }
+	.ball-grid-pulse > div:nth-child(6) {
+	  -webkit-animation-delay: 0.43s;
+			  animation-delay: 0.43s;
+	  -webkit-animation-duration: 1.55s;
+			  animation-duration: 1.55s; }
+	.ball-grid-pulse > div:nth-child(7) {
+	  -webkit-animation-delay: 0.05s;
+			  animation-delay: 0.05s;
+	  -webkit-animation-duration: 0.7s;
+			  animation-duration: 0.7s; }
+	.ball-grid-pulse > div:nth-child(8) {
+	  -webkit-animation-delay: 0.05s;
+			  animation-delay: 0.05s;
+	  -webkit-animation-duration: 0.97s;
+			  animation-duration: 0.97s; }
+	.ball-grid-pulse > div:nth-child(9) {
+	  -webkit-animation-delay: 0.3s;
+			  animation-delay: 0.3s;
+	  -webkit-animation-duration: 0.63s;
+			  animation-duration: 0.63s; }
+	.ball-grid-pulse > div {
+	  background-color: #154170;
+	  width: 10px;
+	  height: 10px;
+	  border-radius: 100%;
+	  margin: 2px;
+	  -webkit-animation-fill-mode: both;
+			  animation-fill-mode: both;
+	  display: inline-block;
+	  float: left;
+	  -webkit-animation-name: ball-grid-pulse;
+			  animation-name: ball-grid-pulse;
+	  -webkit-animation-iteration-count: infinite;
+			  animation-iteration-count: infinite;
+	  -webkit-animation-delay: 0;
+			  animation-delay: 0;
+}
+
+.lnkDetail{
+	color:#3490dc;
+	cursor:pointer;
+}
+.lnkDetail:hover {
+	text-decoration: underline;
+}
+
+section.exec{
+	width:100%;
+	padding:5px;
+	background-color:RGBA(255,255,255,1.0);
+	border:1px solid #b8b8b8;
+}
+.exec label {
+	text-align:right;
+	width:100px;
+	padding-right:10px;
+	vertical-align: top;
+}
+#txtExecDate,
+#txtExecPrice{
+	width:90px;
+}
+#txtExecRemark{
+	width:220px;
+}
+.exec input[type=submit],
+.exec input[type=button] {
+	width:60px;
+}
+.divPurchaseHeaderButton {
+	/*display:flex;
+	flex-wrap:wrap;*/
+	display:inline-block;
+	width:800px;
+}
+.divPurchaseHeaderButton > div {
+	display:inline-block;
+	margin-bottom:5px;
+}
+.divPurchaseHeaderButton label{
+	width:40px;
+	padding-left:5px;
+	cursor:pointer;
+}
+.divPurchaseHeaderButton .inpSearchWord{
+	width:408px;
+}
+.divPurchaseHeaderButton span{
+	display:inline-block;
+	padding:0 4px 0 15px;
+}
+.divPurchaseHeaderButton select{
+	width:200px;
+}
+.btn-width70 {
+	width:70px;
+}
+
+.newicon {
+	background-image:url("../images/new.gif");;
+	width:36px;
+	height:25px;
+    background-repeat: no-repeat;
+    background-position: center;
+    top: 0px;
+	right: 5px;
+	position: absolute;
+}
+.bulletinArticle {
+	position:relative;
+}
+#headerProductSearchArea{
+	position:absolute;
+	top:10px;
+	right:10px;
+}
+#headerProductSearchArea > .txtHeaderProductSearch{
+	width:350px;
+	margin-right:5px;
+}
+
+
+.loginTitle {
+	font-family: "Sawarabi Mincho";
+	color:#154170;
+	animation: loginTitle-color 2s linear forwards;
+	-webkit-animation: loginTitle-color 2s linear forwards ;
+	font-size:40px;
+	font-weight:400;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+	text-shadow: 0px 0px 8px rgb(148, 76, 135);
+	/*text-shadow: 
+		0.04em 0.02em 0 #ff8589, 
+		0.08em 0.05em 0 rgba(0, 0, 0, 0.6);*/
+}
+.loginSubTitle {
+	font-family: "Sawarabi Mincho";
+	color:#154170;
+	text-align:right;
+	padding-right:15px;
+	margin-bottom:20px;
+	animation: loginTitle-color 2s linear 0.5s forwards;
+	-webkit-animation: loginTitle-color 2s linear 0.5s forwards ;
+	font-size:25px;
+	font-weight:400;
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+	text-shadow: 0px 0px 5px  rgb(148, 76, 135);
+	/*text-shadow: 
+		0.04em 0.02em 0 #ff8589, 
+		0.08em 0.05em 0 rgba(0, 0, 0, 0.6);*/
+}
+@-webkit-keyframes loginTitle-color {
+	0% { color: #154170; }
+	50% { color: #4a91dd; }
+	100% { color: #ffffff; }
+}
+@keyframes loginTitle-color {
+	0% { color: #154170; }
+	50% { color: #4a91dd; }
+	100% { color: #ffffff; }
+}
+
+#frmLogin div.form-group {
+	display:flex;
+	flex: 1 0 100%;
+	flex-wrap: wrap;
+}
+#frmLogin div.form-group label.text-md-right{
+	line-height:37px;
+	padding-right:15px;
+}
+.wrapperCircleLoginButton{
+	position:absolute;
+	top:138px;
+	right:80px;
+}
+.circleLoginButton{
+	width: 70px;
+	height: 70px;
+	border-radius: 70px;
+	-moz-border-radius: 70px;
+	-webkit-border-radius: 70px;
+	display: block;
+	text-align: center;
+	font-weight: bold;
+	color:#154170;
+	text-shadow:1px 1px 1px #000000;
+	background-image: -webkit-radial-gradient(  50%   0%,  8% 50%, hsla(0,0%,100%,.5) 0%, hsla(0,0%,100%,0) 100%),
+    -webkit-radial-gradient(  50% 100%, 12% 50%, hsla(0,0%,100%,.6) 0%, hsla(0,0%,100%,0) 100%),
+    -webkit-radial-gradient(   0%  50%, 50%  7%, hsla(0,0%,100%,.5) 0%, hsla(0,0%,100%,0) 100%),
+    -webkit-radial-gradient( 100%  50%, 50%  5%, hsla(0,0%,100%,.5) 0%, hsla(0,0%,100%,0) 100%),
+    
+    -webkit-repeating-radial-gradient( 50% 50%, 100% 100%, hsla(0,0%,  0%,0) 0%, hsla(0,0%,  0%,0)   3%, hsla(0,0%,  0%,.1) 3.5%),
+    -webkit-repeating-radial-gradient( 50% 50%, 100% 100%, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0)   6%, hsla(0,0%,100%,.1) 7.5%),
+    -webkit-repeating-radial-gradient( 50% 50%, 100% 100%, hsla(0,0%,100%,0) 0%, hsla(0,0%,100%,0) 1.2%, hsla(0,0%,100%,.2) 2.2%),
+    
+    -webkit-radial-gradient( 50% 50%, 200% 50%, hsla(0,0%,90%,1) 5%, hsla(0,0%,85%,1) 30%, hsla(0,0%,60%,1) 100%);
+}
+.circleLoginButton::before{
+	transform: rotate( 65deg);
+}
+.circleLoginButton::after{
+	transform: rotate(-65deg);
+}
+.circleLoginButton::before,
+.circleLoginButton::after{
+	content: "";
+	top: 0;
+	left: 0;
+	position: absolute;
+	width: inherit;
+	height: inherit;
+	border-radius: inherit;
+	
+	/* fake conical gradients */
+	background-image: -webkit-radial-gradient(  50%   0%, 10% 50%, hsla(0,0%,0%,.1) 0%, hsla(0,0%,0%,0) 100%),
+	  -webkit-radial-gradient(  50% 100%, 10% 50%, hsla(0,0%,0%,.1) 0%, hsla(0,0%,0%,0) 100%),
+	  -webkit-radial-gradient(   0%  50%, 50% 10%, hsla(0,0%,0%,.1) 0%, hsla(0,0%,0%,0) 100%),
+	  -webkit-radial-gradient( 100%  50%, 50% 06%, hsla(0,0%,0%,.1) 0%, hsla(0,0%,0%,0) 100%);	
+}
+.circleLoginButton:hover{
+	color:#3b485a;
+	opacity:0.8;
+}
+.remember > div {
+	display:inline-block;
+	width:50%;
+}
+.forgetlink > a{
+	color:#fff;
+}
+#selOrderRequestUser {
+	max-width:400px;
+}
+.adjust label {
+	width:120px !important;
+
+}
+.userAuthorOverlay {
+	width:100%;
+	height:100%;
+	background-color:RGBA(255,255,255,0.2);
+	z-index:999;
+	position: absolute;
+}
