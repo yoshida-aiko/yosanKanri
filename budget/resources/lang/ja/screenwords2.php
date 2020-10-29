@@ -15,6 +15,14 @@ return [
     /*F*/
     'fax' => 'ファックス番号',
 
+    /*M*/
+    'makerName' => 'メーカー名',
+    'makerNameEp' => 'メーカー名(英名)',
+    'makerNameJp' => 'メーカー名(和名)',
+
+    /*p*/
+    'prioritySupplier' => '優先する発注先',   
+
     /*R*/
     'register' => '保存',
 

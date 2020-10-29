@@ -8,6 +8,7 @@ use App\Maker;
 use App\Supplier;
 use App\Rules\Exists;
 use App\Exceptions\ExclusiveLockException;
+use App\Condition;
 
 class MakerController extends Controller
 {
@@ -16,13 +17,21 @@ class MakerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $Makers = Maker::with(['supplier'])->get();
 
         $editMaker = new Maker();
         //発注先取得
-        $Suppliers = Supplier::select('id','SupplierNameJp')->get();
+        $Suppliers = Supplier::select('id','SupplierNameJp','SupplierNameEn')->get();
+        //設定マスタよりバイリンガル取得
+        $Condition = Condition::first();
+        $bilingual = 0;
+        if ($Condition != null) {
+            $bilingual = $Condition->bilingual;
+        }
+        $request->session()->put('bilingual', $bilingual);
+
         return view('Maker/index',compact('Makers','editMaker','Suppliers'));
     }
 
@@ -57,9 +66,10 @@ class MakerController extends Controller
             $isUpdate = true;
         }
 
-        $rules = [
-            'MakerNameJp' => ['required', 'string', 'max:255'],
-        ];
+        $rules['MakerNameJp'] = ['required', 'string', 'max:255'];
+        if ($request->session()->get('bilingual') == "1") {
+            $rules['MakerNameEn'] = ['required', 'string', 'max:255'];
+        }
         $this->validate($request, $rules);
 
         if ($isUpdate){
@@ -69,13 +79,14 @@ class MakerController extends Controller
             $Maker = new Maker();
         }
         $Maker->MakerNameJp = $request->MakerNameJp;
+        $Maker->MakerNameEn = $request->MakerNameEn;
         $Maker->MainSupplierId = $request->MainSupplierId;
         $Maker->CatalogUseFlag= 0;
 
         $Maker->save();
         $Makers = Maker::with(['supplier'])->get();
         $editMaker = new Maker();
-        $Suppliers = Supplier::select('id','SupplierNameJp')->get();
+        $Suppliers = Supplier::select('id','SupplierNameJp','SupplierNameEn')->get();
 
         return view('Maker/index',compact('Makers','editMaker','Suppliers'));
     }
@@ -95,7 +106,7 @@ class MakerController extends Controller
                 throw new ExclusiveLockException;
             }
             $editMaker = Maker::findOrFail($id);
-            $Suppliers = Supplier::select('id','SupplierNameJp')->get();
+            $Suppliers = Supplier::select('id','SupplierNameJp','SupplierNameEn')->get();
         
             return view('Maker/index',compact('Makers','editMaker','Suppliers'));
         } catch (ExclusiveLockException $e) {
@@ -113,18 +124,20 @@ class MakerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $rules = [
-            'MakerNameJp' => ['required', 'string', 'max:255'],
-        ];
+        $rules['MakerNameJp'] = ['required', 'string', 'max:255'];
+        if ($request->session()->get('bilingual') == "1") {
+            $rules['MakerNameEn'] = ['required', 'string', 'max:255'];
+        }
         $this->validate($request, $rules);
 
         $Maker = Maker::findOrFail($id);
         $Maker->MakerNameJp = $request->MakerNameJp;
+        $Maker->MakerNameEn = $request->MakerNameEn;
         $Maker->MainSupplierId = $request->MainSupplierId;
         $Maker->save();
  
         $editMaker = new Maker();
-        $Suppliers = Supplier::select('id','SupplierNameJp')->get();
+        $Suppliers = Supplier::select('id','SupplierNameJp','SupplierNameEn')->get();
 
         return view('Maker/index',compact('Makers','editMaker','Suppliers'));
     }

@@ -153,6 +153,8 @@ return [
         'ChargeUserJp' => 'Charge user name(Jp)',
         'SupplierTel' => 'Tel', //発注先マスタの電話番号
         'Fax' => 'Fax',
+        'MakerNameJp'  => 'Maker name(Jp)',
+        'MakerNameEn'  => 'Maker name(En)',
     ],
 
 ];

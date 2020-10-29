@@ -15,6 +15,14 @@ return [
     /*F*/
     'fax' => 'Fax',
 
+    /*M*/
+    'makerName' => 'Maker name',
+    'makerNameEp' => 'Maker name(En)',
+    'makerNameJp' => 'Maker name(Jp)',
+
+    /*p*/
+    'prioritySupplier' => 'Priority Supplier',  
+
     /*R*/
     'register' => 'Register',
 

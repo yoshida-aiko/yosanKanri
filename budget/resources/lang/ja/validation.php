@@ -167,7 +167,8 @@ return [
         'ChargeUserEn' => '担当者名(英名)',
         'SupplierTel' => '電話番号', //発注先マスタの電話番号
         'Fax' => 'ファックス番号',
-        'MakerNameJp'  => 'メーカー名',
+        'MakerNameJp'  => 'メーカー名(和名)',
+        'MakerNameEn'  => 'メーカー名(英名)',
         'budgetNameJp' => '予算名',
         'budgetAmount' => '予算額',
         'useStartDate' => '執行期間の開始日', 
