@@ -24,7 +24,7 @@ class HomeController extends Controller
     {
         //掲示板
         $today = date("Y/m/d");
-        $BulletinBoards = BulletinBoard::where('LimitDate','>=', $today)->orderBy('RegistDate','desc')->get();
+        $BulletinBoards = BulletinBoard::where('LimitDate','>=', $today)->orderBy('RegistDate','desc')->orderBy('id','desc')->get();
         $arrBulletin = array();
 
         //設定
@@ -127,7 +127,7 @@ class HomeController extends Controller
         $BulletinBoards = BulletinBoard::where('LimitDate','>=', $today)->get();
 
         //ビューの表示
-        return redirect()->route('Home.index');
+        return redirect()->route('home');
         //return view('home', compact('BulletinBoards','OrderRequests'));
 
     }

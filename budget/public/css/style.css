@@ -95,6 +95,7 @@ main {
 	text-overflow:ellipsis;
 	overflow:hidden;
 	white-space:nowrap;
+	max-width:230px;
 }
 .info > article > p {
 	word-wrap: break-word;

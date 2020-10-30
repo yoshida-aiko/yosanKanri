@@ -267,6 +267,21 @@ class SearchPageController extends Controller
         return redirect()->route('SearchPage.index');
     }
 
+    /*カートを削除する*/
+    public function deleteCart(Request $request) {
+
+        $response = array();
+        $response['status'] = 'OK';
+        try{
+            $Cart = Cart::findOrFail($request->cart_id);
+            $Cart->delete();
+        }
+        catch(Exception $e){
+            $response['status'] = $e->getMessage();
+        }
+        return Response::json($response);
+    }
+
     /*カート発注数を更新する*/
     public function updateCartOrderRequestNum(Request $request) {
 

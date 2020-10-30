@@ -45,7 +45,7 @@ jQuery (function ()
         }, 1000 );
         
     });
-
+    /*新商品入力　保存ボタン*/
     $("#submit_newProduct_save").click(function() {
         
         var message = "";
@@ -83,11 +83,13 @@ jQuery (function ()
             $("#divError").append(message);
             return false;
         }
-        var deferred = insertNewProduct();
-        deferred.done(function(){
-            $.unblockUI();
-            location.reload();
-        });  
+        if (confirm(confirmSave[selLang])){
+            var deferred = insertNewProduct();
+            deferred.done(function(){
+                $.unblockUI();
+                location.reload();
+            });
+        }
     });
     /*クリアボンタをクリック */
     $("#btnClear").click(function() {

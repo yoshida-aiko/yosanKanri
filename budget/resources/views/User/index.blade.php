@@ -96,7 +96,7 @@
             <div class="form-group">
                 <label for="author">権限</label>
                 <fieldset id="author" >
-                <div class="userAuthorOverlay" ></div>
+                <div class="userAuthorOverlay" @if (strpos(Auth::user()->UserAuthString,'Master') === false) style="display:block;" @endif></div>
                     <input type="checkbox" id="chkOrder" name="chkAuthor[]" value="Order" @if(strpos($editUser->UserAuthString,'Order') !== false) checked='checked' @endif >
                     <label for="chkOrder">発注</label>
 

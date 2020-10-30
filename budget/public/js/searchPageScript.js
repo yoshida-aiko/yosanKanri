@@ -24,6 +24,48 @@ jQuery (function ($)
         $("#chkShared").prop('checked',isShared);
     }
 
+    $("input[name=btnCartDelete]").click(function() {
+        if (confirm(confirmDelete[selLang])){
+            var cartid = $(this).parent().parent("article").find("input[name=CartId]").val();
+            var deferred = deleteCart(cartid);
+            deferred.done(function(){
+                $.unblockUI();
+                location.reload();
+            }); 
+                
+        }
+    });
+
+    function deleteCart(cartid){
+        processing();
+        var deferred = new $.Deferred();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: 'SearchPage/deleteCart',
+            type: 'GET',
+            datatype: 'json',
+            data : {'cart_id' : cartid}
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if (data['status'] !== 'OK') {
+                alert('データ更新に失敗しました');
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            alert('データ更新に失敗しました');
+        })
+        .always(function(data) {
+            deferred.resolve();           
+        });
+
+        return deferred;
+    }
+
+
     $(".numCartOrderRequestNumber").on('input', function() {
         var cartid = $(this).parent("div").children("input[name=CartId]").val();
         var ordernumber = $(this).val();

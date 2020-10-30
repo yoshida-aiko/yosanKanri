@@ -13,7 +13,8 @@ jQuery (function ()
         // バックスペースキーを制御する
         if (keyCode == 8) {
             // テキストボックス／テキストエリアを制御する
-            if ((obj.tagName.toUpperCase() == "INPUT" && obj.type.toUpperCase() == "TEXT")
+            if ((obj.tagName.toUpperCase() == "INPUT" 
+                && (obj.type.toUpperCase() != "BUTTON" && obj.type.toUpperCase() != "SUBMIT"))
                 || obj.tagName.toUpperCase() == "TEXTAREA") {
                 // 入力できる場合は制御しない
                 if (!obj.readOnly && !obj.disabled) {
@@ -465,7 +466,7 @@ var requireQuantity = ['数量は必須です','The Quantity field is required.'
 var numericQuantity = ['数量は「数字」のみ有効です','The Quantity must be a number.'];
 var maxAmountQuantity = ['数量は9,999以下のみ有効です','The Quantity may not be greater than 9,999.'];
 var requireRemark = ['備考は必須です','The remark field is required.'];
-var maxRemark = ['備考は100文字以下のみ有効ですす','The Remark may not be greater than 100 characters.'];
+var maxRemark = ['備考は100文字以下のみ有効です','The Remark may not be greater than 100 characters.'];
 var requireExcutionDate = ['執行日は必須です','The Excution date field is required.'];
 var requireExcutionAmount = ['執行額は必須です','The Excution amount field is required.'];
 var numericExcutionAmount = ['執行額は「数字」のみ有効です','The Excution amount must be a number.'];
@@ -477,11 +478,17 @@ var requireMaker = ['メーカーは必須です','The Maker field is required.'
 var requireUnitPrice = ['単価は必須です','The Unit price field is required.'];
 var numericUnitPrice = ['単価は「数字」のみ有効です','The Unit price must be a number.'];
 var maxAmountUnitPrice = ['単価は99,999,999以下のみ有効です','The Unit price may not be greater than 99,999,999.'];
+var requireTitle= ['タイトルは必須です','The Title field is required.'];
+var maxTitle = ['タイトルは50文字以下のみ有効です','The Title may not be greater than 50 characters.'];
+var requireContents= ['内容は必須です','The Contents field is required.'];
+var maxContents = ['内容は500文字以下のみ有効です','The Contents may not be greater than 500 characters.'];
+var requireLimitDate= ['表示期限は必須です','The Limit date field is required.'];
 
 var pleaseSelect = ['納品対象を選択してください','Please select the delivery target.'];
 var confirmRegist = ['納品処理を行いますか？【対象：{0}件】','Do you register?【target:{0} case(s)】'];
 var pleaseSelect = ['登録対象を選択してください','Please select the items(s) registration.'];
 var confirmRegist = ['登録しますか？【対象：{0}件】','Do you register?【target:{0} case(s)】'];
-
+var confirmSave = ['登録しますか？','Do you register?'];
+var confirmDelete = ['削除しますか？','Do you delete it?'];
 
 

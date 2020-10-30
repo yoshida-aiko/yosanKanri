@@ -8,7 +8,24 @@ jQuery (function ()
             event.preventDefault();
         }
     });
-
+    $("input[type=tel]").keypress(function(event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){//enter);
+            event.preventDefault();
+        }
+    });
+    $("input[type=email]").keypress(function(event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){//enter);
+            event.preventDefault();
+        }
+    });
+    $("input[type=checkbox]").keypress(function(event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){//enter);
+            event.preventDefault();
+        }
+    });
     /*ウィンドウの高さを取得して、グリッドの高さを指定*/
     settingGridHeight();
     $(".table-masterFixed").css('display','none').fadeIn(0);
