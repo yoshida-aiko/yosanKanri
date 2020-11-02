@@ -44,6 +44,17 @@ jQuery (function ()
         /*$(".table-masterFixed thead th:nth-child(2)").css('width',tblwidth + 'px');
         $(".table-masterFixed tbody td:nth-child(2)").css('width',tblwidth + 'px');*/
     }
+    //  設定画面のバイリンガルが使用するの場合、必須マークをつける
+    var bilingual = $('input:hidden[name="bilingual"]').val();
+    if (bilingual == '1') {
+        $("#lblUserNameEn").addClass('required');
+    }
+
+    var local = $('input:hidden[name="local"]').val();
+    if (local == 'en') {
+        $("#author > label").css('width','100');
+        $(".frmMasterInput >div.form-group > label").css('width','220');      
+    }
     
     /*ユーザーマスタ　クリアボタンクリック時*/
     $("#btn_user_clear").click(function() {

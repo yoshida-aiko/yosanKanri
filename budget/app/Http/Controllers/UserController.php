@@ -11,10 +11,11 @@ use App\User;// as Authenticatable;;
 use Auth;
 use App\Rules\Exists;
 use App\Exceptions\ExclusiveLockException;
+use App\Condition;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         /*
         if (strpos(Auth::user()->UserAuthString,'Master') === false){
@@ -28,6 +29,13 @@ class UserController extends Controller
         }*/
         
         [$Users,$editUser] = $this->getUserData();
+        //設定マスタよりバイリンガル取得
+        $Condition = Condition::first();
+        $bilingual = 0;
+        if ($Condition != null) {
+            $bilingual = $Condition->bilingual;
+        }
+        $request->session()->put('bilingual', $bilingual);
 
         return view('User/index',compact('Users','editUser'));
     }
@@ -97,23 +105,27 @@ class UserController extends Controller
         }
         if ($isUpdate){
             $account = $request->LoginAccount;
-            $rules = [
-                'LoginAccount' => ['required', 'string', 'max:50', Rule::unique('users', 'LoginAccount')->whereNull('deleted_at')->ignore($request->id)],
-                'UserNameJp' => ['required', 'string', 'max:100'],
-                'Tel' => ['nullable','string', 'max:20'],
-                'email' => ['required', 'string', 'email', 'max:255',Rule::unique('users', 'email')->whereNull('deleted_at')->ignore($request->id)],
-                'Signature' => ['nullable','max:1000']
-            ];
+            $rules['LoginAccount'] =  ['required', 'string', 'max:50', Rule::unique('users', 'LoginAccount')->whereNull('deleted_at')->ignore($request->id)];
+            $rules['UserNameJp'] = ['required', 'string', 'max:100'];
+             // 設定画面のバイリンガルが使用するの場合、ユーザ(英名)必須              
+            if ($request->session()->get('bilingual') == "1") {
+                $rules['UserNameEn'] = ['required', 'string', 'max:100'];
+            }
+            $rules['Tel'] = ['nullable','string', 'max:20'];
+            $rules['email'] = ['required', 'string', 'email', 'max:255',Rule::unique('users', 'email')->whereNull('deleted_at')->ignore($request->id)];
+            $rules['Signature'] = ['nullable','max:1000'];
         }
         else {
-            $rules = [
-                'LoginAccount' => ['required', 'string', 'max:50', Rule::unique('users', 'LoginAccount')->whereNull('deleted_at')],
-                'UserNameJp' => ['required', 'string', 'max:100'],
-                'password' => ['required', 'string', 'min:8'],
-                'Tel' => ['nullable','string', 'max:20'],
-                'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')],
-                'Signature' => ['nullable','max:1000']
-            ];
+            $rules['LoginAccount'] =  ['required', 'string', 'max:50', Rule::unique('users', 'LoginAccount')->whereNull('deleted_at')];
+            $rules['UserNameJp'] = ['required', 'string', 'max:100'];
+             // 設定画面のバイリンガルが使用するの場合、ユーザ(英名)必須              
+            if ($request->session()->get('bilingual') == "1") {
+                $rules['UserNameEn'] = ['required', 'string', 'max:100'];
+            }
+            $rules['password'] = ['required', 'string', 'min:8'];
+            $rules['Tel'] = ['nullable','string', 'max:20'];
+            $rules['email'] = ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')];
+            $rules['Signature'] = ['nullable','max:1000'];
         }
         $this->validate($request, $rules);
 
@@ -126,6 +138,7 @@ class UserController extends Controller
         }
         $User->LoginAccount = $request->LoginAccount;
         $User->UserNameJp = $request->UserNameJp;
+        $User->UserNameEn = $request->UserNameEn;
         $User->Tel = $request->Tel;
         $User->email = $request->email;
         $User->UserAuthString = $auth;

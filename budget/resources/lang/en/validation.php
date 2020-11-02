@@ -147,6 +147,13 @@ return [
     */
 
     'attributes' => [
+        'LoginAccount' => 'User ID',
+        'UserNameJp' => 'User name(Jp)',
+        'UserNameEn' => 'User name(En)',
+        'password' => 'Password',
+        'Tel' => 'Contact infomation(Carrying etc.)',
+        'email' => 'Email',
+        'Signature' => 'Signature',
         'Email' => 'Email',
         'SupplierNameJp' => 'Supplier name(Jp)',
         'SupplierNameEn' => 'Supplier name(En)',

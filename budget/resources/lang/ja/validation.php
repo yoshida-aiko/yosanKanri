@@ -156,7 +156,8 @@ return [
 
     'attributes' => [
         'LoginAccount' => 'ユーザーID',
-        'UserNameJp' => 'ユーザー名',
+        'UserNameJp' => 'ユーザー名(和名)',
+        'UserNameEn' => 'ユーザー名(英名)',
         'password' => 'パスワード',
         'Tel' => '連絡先（携帯等）',
         'email' => 'メールアドレス',
