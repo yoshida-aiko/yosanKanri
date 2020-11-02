@@ -173,20 +173,24 @@
                             <input type="text" id="newCatalogCode" name="newCatalogCode" value="{{old('newCatalogCode')}}" size="50">
                         </div>
                         <div class="form-group" >
-                            <label for="newMaker" class="required">{{ __('screenwords.maker') }}</label>
-                            <select id="newMaker" name="newMaker" required>
-                                @foreach($Makers as $Maker)
-                                <option value="{{ $Maker->id }}">
-                                    @if(App::getLocale()=='en') {{$Maker->MakerNameEn}}
-                                    @else {{$Maker->MakerNameJp}}
-                                    @endif
-                                </option>
-                                @endforeach
-                            </select>
+                            <label for="newMaker">{{ __('screenwords.maker') }}</label>
+                            <input type="text" id="newMaker" name="newMaker" value="{{old('newMaker')}}" size="50">
                         </div>
                         <div class="form-group" >
                             <label for="newUnitPrice" class="required">{{ __('screenwords.unitPrice') }}</label>
                             <input type="text" id="newUnitPrice" name="newUnitPrice" value="{{old('newUnitPrice')}}" required="required" style="width:100px;text-align:right;">&emsp;円
+                        </div>
+                        <div class="form-group" >
+                            <label for="newSupplier" class="required">{{ __('screenwords.prioritySupplier') }}</label>
+                            <select id="newSupplier" name="newSupplier" required>
+                                @foreach($Suppliers as $Supplier)
+                                <option value="{{ $Supplier->id }}">
+                                    @if(App::getLocale()=='en') {{$Supplier->SupplierNameEn}}
+                                    @else {{$Supplier->SupplierNameJp}}
+                                    @endif
+                                </option>
+                                @endforeach
+                            </select>
                         </div>
                         {{-- エラーメッセージ --}}
                         <div id="divError" class="alert alert-danger" style="display:none;" >
@@ -195,7 +199,8 @@
                     </section>
                 </div>
                 <div class="modal-footer">
-                    <input type="button" id="submit_newProduct_save" name="submit_newProduct" class="btn btn-width70 btn-primary" value="{{ __('screenwords.save') }}" />
+                    <input type="button" id="submit_newProduct_save" name="submit_newProduct" class="btn btn-width70 btn-primary" value="{{ __('screenwords.save') }}" 
+                        onClick="NewProductSave('{{ __('messages.confirmRegist') }}')" />
                     <button type="button" id="btnClear" class="btn btn-width70 btn-secondary" >{{ __('screenwords.clear') }}</button>
                     <button type="button" class="btn btn-width70 btn-secondary" data-dismiss="modal">{{ __('screenwords.close') }}</button>
                 </div>

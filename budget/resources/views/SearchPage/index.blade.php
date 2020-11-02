@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<script src="{{ asset('js/favoriteScript.js') }}" defer></script>
+<!--<script src="{{ asset('js/favoriteScript.js') }}" defer></script>-->
 <script src="{{ asset('js/searchPageScript.js') }}" defer></script>
 <div class="container">
 <div class="loading"><div class="loadingwrapper"><div class="ball-grid-pulse"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div><div class="loadingtext">loading...</div></div></div>
@@ -185,13 +185,7 @@
                     @if ($Cart->ItemClass==config('const.ItemClass.reagent'))
                     <article>
                         <div>
-                            <form action="{{ route('SearchPage.destroy', $Cart->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <input type="submit" value="&#xf1f8;" name="btnCartDelete" class="fa btn-cart-favorite-delete-icon"
-                                    onClick="if (!confirm({{ __('messages.confirmDelete') }})){ return false;} return true;">
-                                <input type="hidden" name="deleteType" value="delCartReagent" >
-                            </form>
+                            <input type="button" value="&#xf1f8;" name="btnCartDelete" class="fa btn-cart-favorite-delete-icon" >
                         </div>
                         <div>
                             <h6>
@@ -219,13 +213,9 @@
                 @foreach ($Carts as $Cart)
                     @if ($Cart->ItemClass==config('const.ItemClass.article'))
                     <article>
-                        <form action="{{ route('SearchPage.destroy', $Cart->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <input type="submit" value="&#xf1f8;" name="btnCartDelete" class="fa btn-cart-favorite-delete-icon"
-                                    onClick="if (!confirm({{ __('messages.confirmDelete') }})){ return false;} return true;">
-                            <input type="hidden" name="deleteType" value="delCartArticle" >
-                        </form>
+                        <div>
+                            <input type="button" value="&#xf1f8;" name="btnCartDelete" class="fa btn-cart-favorite-delete-icon" >
+                        </div>
                         <div>
                             <h6>{{$Cart->ItemNameJp}}</h6>                   
                             <div><span>{{$Cart->Standard}}</span><span>{{$Cart->CatalogCode}}</span><span>{{$Cart->AmountUnit}}</span></div>

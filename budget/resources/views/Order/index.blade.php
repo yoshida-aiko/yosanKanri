@@ -30,8 +30,10 @@
                 </span>
                 <span class="smalllabel" title="{{ __('screenwords.orderAmount') }}">{{ __('screenwords.orderAmount') }}:</span>
                 <span>\{{$arrBudget['orderFee']}}</span>
-                <span class="smalllabel" title="{{ __('screenwords.remain') }}">{{ __('screenwords.remain') }}:</span>
-                <span>\{{$arrBudget['remainFee']}}</span>
+                
+                <span class="smalllabel" title="{{ __('screenwords.remain') }}">@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) {{ __('screenwords.remain') }}:  @endif</span>
+                <span>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$arrBudget['remainFee']}}  @endif</span>
+               
             </div>
             @if ($arrBudget['children'] <> null)
             <ul class="childBudget">
@@ -316,11 +318,11 @@
                     @endif   
                 
                 </td>
-                <td>\{{$BudgetItem['BudgetAmount']}}</td>
-                <td>\{{$BudgetItem['BudgetUsed']}}</td>
-                <td>\{{$BudgetItem['BudgetScheduled']}}</td>
-                <td>\{{$BudgetItem['BudgetRemainBal']}}</td>
-                <td>\{{$BudgetItem['BudgetScheduledRemain']}}</td>
+                <td>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$BudgetItem['BudgetAmount']}} @endif</td>
+                <td>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$BudgetItem['BudgetUsed']}} @endif</td>
+                <td>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$BudgetItem['BudgetScheduled']}} @endif</td>
+                <td>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$BudgetItem['BudgetRemainBal']}} @endif</td>
+                <td>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$BudgetItem['BudgetScheduledRemain']}} @endif</td>
             </tr>
             @endforeach
 

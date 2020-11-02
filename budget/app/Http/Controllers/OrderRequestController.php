@@ -13,6 +13,7 @@ use App\Cart;
 use App\Item;
 use App\Favorite;
 use App\Maker;
+use App\Supplier;
 use App\User;
 use Auth;
 
@@ -32,12 +33,15 @@ class OrderRequestController extends Controller
         })->where('UserId','=',Auth::id())->sortable()->paginate(25);
         
         /*Makers*/
-        $Makers = Maker::all();
+        //$Makers = Maker::all();
+
+        /*Suppliers */
+        $Suppliers = Supplier::all();
 
         /*Users*/
         $Users = User::where('UserAuthString','like', '%Order%')->get();
 
-        return view('OrderRequest/index',compact('Carts','Makers','Users'));
+        return view('OrderRequest/index',compact('Carts','Suppliers','Users'));
     }
 
     public function getData_Favorite(Request $request){
@@ -144,11 +148,10 @@ class OrderRequestController extends Controller
             $Cart->UserId = Auth::id();
             $Cart->CatalogItemId = -1;
             $Cart->ItemClass = $request->ItemClass;
-            $targetMaker = Maker::findOrFail($request->MakerId);
-            $Cart->MakerId =$request->MakerId;
+            $Cart->SupplierId = $request->SupplierId;
             $Cart->CatalogCode = $request->CatalogCode;
-            $Cart->MakerNameJp = $targetMaker->MakerNameJp;
-            $Cart->MakerNameEn = $targetMaker->MakerNameEn;
+            $Cart->MakerNameJp =$request->MakerNameJp;
+            $Cart->MakerNameEn = $request->MakerNameJp;
             $Cart->ItemNameJp = $request->ItemNameJp;
             $Cart->ItemNameEn = $request->ItemNameJp;
             $Cart->AmountUnit = $request->AmountUnit;
@@ -156,7 +159,6 @@ class OrderRequestController extends Controller
             $Cart->CASNo = '';
             $Cart->UnitPrice = $request->UnitPrice;
             $Cart->OrderRequestNumber = 1;
-            $Cart->SupplierId = $targetMaker->MainSupplierId;
             $Cart->save();
         }
         catch(Exception $e){

@@ -135,7 +135,8 @@ jQuery (function ()
                 "data":jsondata,
                 "check_callback":function(operation,node,node_parent,node_position,more){
                     if (operation=="move_node"){
-                        if(node_parent.icon != "jstree-folder" && node_parent.id != "#"){
+                        console.log(operation + " node.icon:" + node.icon + " node_parent.id:" + node_parent.id);
+                        if(node.icon == "jstree-folder" && node_parent.id != "#"){
                             return false;
                         }
                     }
@@ -209,6 +210,10 @@ jQuery (function ()
                 }
             }
         }).on('move_node.jstree', function(e, data){
+            console.log("data.node.icon:" + data.node.icon);
+            if (data.node.icon == "jstree-folder" ) {
+                return false;
+            }
             /*移動したデータのFavoriteテーブルid*/
             movenodeKey = data.node.original.key;
             parentKey = '-1';
@@ -475,6 +480,7 @@ var requireItemClass = ['「試薬」か「物品」を選択して下さい','P
 var requireItemName = ['商品名は必須です','The Item name field is required.'];
 var maxlengthItemName = ['商品名は50文字以下のみ有効です','The Item name may not be greater than 50 characters.'];
 var requireMaker = ['メーカーは必須です','The Maker field is required.'];
+var requirePrioritySupplier = ['優先する発注先は必須です','The Priority supllier field is required.'];
 var requireUnitPrice = ['単価は必須です','The Unit price field is required.'];
 var numericUnitPrice = ['単価は「数字」のみ有効です','The Unit price must be a number.'];
 var maxAmountUnitPrice = ['単価は99,999,999以下のみ有効です','The Unit price may not be greater than 99,999,999.'];

@@ -55,7 +55,7 @@
                                 @else {{ $order->item->ItemNameJp }}
                                 @endif   
                             </p>
-                            <p>{{ __('screenwords.capacity') }}：{{$order->item->AmountUnit}} {{ __('screenwords.standard') }}：{{$order->item->Standard}} {{ __('screenwords.catalogcode') }}：{{$order->item->CatalogCode}} {{ __('screenwords.maker') }}：
+                            <p>{{ __('screenwords.capacity') }}：{{$order->item->AmountUnit}} {{ __('screenwords.standard') }}：{{$order->item->Standard}} {{ __('screenwords.catalogCode') }}：{{$order->item->CatalogCode}} {{ __('screenwords.maker') }}：
                                 @if(App::getLocale()=='en') {{$order->item->MakerNameEn}}
                                 @else {{$order->item->MakerNameJp}}
                                 @endif
@@ -78,7 +78,9 @@
                                     }
                                 }
                             ?>
-                            <input type="text" name="deliveryDate" class="inpDeliveryDate" value="{{$DeliveryDate}}">
+                            <input type="text" name="deliveryDate" class="inpDeliveryDate" value="{{$DeliveryDate}}" title="{{__('screenwords.deliveryDateRange')}}">
+                            <input type="hidden" name="hidUseEndDate" value="{{$order->UseEndDate}}">
+                            <input type="hidden" name="hidOrderDate" value="{{$order->OrderDate}}">
                         </td>
                         <td class="align-right">{{ $order->DeliveryNumber }}</td>
                         <td class="align-right">{{ $order->OrderNumber }}</td>
@@ -141,8 +143,8 @@
                             @endif   
                         </td>
                         <td class="tdSupplierName" style="display:none;">
-                            @if(App::getLocale()=='en') {{ $order->item->MainSupplierNameEn }}
-                            @else {{ $order->item->MainSupplierNameJp }}
+                            @if(App::getLocale()=='en') {{ $order->MainSupplierNameEn }}
+                            @else {{ $order->MainSupplierNameJp }}
                             @endif   
                         </td>
                         <td class="tdItemName" style="display:none;">
@@ -160,6 +162,7 @@
             @endcomponent
 
     </div>
+    
 </div>
 </div>
 

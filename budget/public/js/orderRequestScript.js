@@ -63,8 +63,8 @@ jQuery (function ()
                 message += '<li>' + maxlengthItemName[selLang] + '</li>';
             }
         }
-        if ($("#newMaker option:selected").val()==""){
-            message += '<li>' + requireMaker[selLang] + '</li>';
+        if ($("#newSupplier option:selected").val()==""){
+            message += '<li>' + requirePrioritySupplier[selLang] + '</li>';
         }
         if ($("#newUnitPrice").val()==""){
             message += '<li>' + requireUnitPrice[selLang] + '</li>';
@@ -99,7 +99,8 @@ jQuery (function ()
         $("#newStandard").val("");
         $("#newAmountUnit").val("");
         $("#newCatalogCode").val("");
-        $("#newMaker").prop('selectedIndex',0);
+        $("#newMaker").val("");
+        $("#newSupplier").prop('selectedIndex',0);
         $("#newUnitPrice").val("");
     });
     /*一覧の行をダブルクリック */
@@ -165,7 +166,11 @@ jQuery (function ()
             if (e.which == 13) {
                 if ($(this).val() !== "" && isFinite($(this).val())) {
                     var id=$(this).parent().parent().find('input[name=cartId]').val();
-                    $(this).parent().children('.spnOrderInputNumber').html('\\' + Number($(this).val()).toLocaleString());
+                    var val = Number($(this).val()).toLocaleString();
+                    if ($(this).hasClass("inpOrderUnitPrice")){
+                        val = '\\' + val;
+                    }
+                    $(this).parent().children('.spnOrderInputNumber').html(val);
                     $(this).css('display','none');
                     $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                     var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
@@ -183,7 +188,11 @@ jQuery (function ()
         "blur":function() {
             if ($(this).val() !== "" && isFinite($(this).val())) {
                 var id=$(this).parent().parent().find('input[name=cartId]').val();
-                $(this).parent().children('.spnOrderInputNumber').html('\\' + Number($(this).val()).toLocaleString());
+                var val = Number($(this).val()).toLocaleString();
+                if ($(this).hasClass("inpOrderUnitPrice")){
+                    val = '\\' + val;
+                }
+                $(this).parent().children('.spnOrderInputNumber').html(val);
                 $(this).css('display','none');
                 $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                 var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
@@ -322,7 +331,8 @@ jQuery (function ()
     function insertNewProduct(){
         var ref = {
             'ItemClass' : $("input[name=newItemClass]:checked").val(),
-            'MakerId' : $("#newMaker option:selected").val(),
+            'SupplierId' : $("#newSupplier option:selected").val(),
+            'MakerNameJp' : $("#newMaker").val(),
             'CatalogCode' : $("#newCatalogCode").val(),
             'ItemNameJp' : $("#newProductName").val(),
             'AmountUnit' : $("#newAmountUnit").val(),

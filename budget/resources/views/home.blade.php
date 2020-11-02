@@ -23,7 +23,10 @@
                 @if ($Bulletin['newicon'])
                     <div class="newicon"></div>
                 @endif
-                <h6>{{$Bulletin['Title']}}</h6>
+                <h6 title="{{$Bulletin['Title']}}">{{$Bulletin['Title']}}</h6>
+                @if ($Bulletin['UserId']==Auth::id())
+                    <div class="editicon" title="編集画面を表示します"></div>
+                @endif
                 <p>{{$Bulletin['Contents']}}</p>
                 <input type="hidden" name="BulletinBoadIdlist" value="{{$Bulletin['id']}}" >
                 <input type="hidden" name="RegistUserIdlist" value="{{$Bulletin['UserId']}}" >
@@ -42,49 +45,41 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="POST" action="{{action('HomeController@bulletinBoadStore')}}">   
                 <div class="modal-body">
                     <section class="update">
                         @csrf
                         <input type="hidden" id="BulletinBoadId" name="BulletinBoadId" >
                         <input type="hidden" id="RegistUserId" name="RegistUserId" >
-                        <input type="hidden" id="DeleteFlag" name="DeleteFlag" >
                         <div class="form-group" style="margin-top:10px;">
                             <label for="RegistDate">{{ __('screenwords.registerDate') }}</label>
                             <input type="text" id="RegistDate" name="RegistDate" value="{{old('RegistDate')}}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="Title" class="required">{{ __('screenwords.title') }}</label>
-                            <input type="text" id="Title" name="Title" value="{{old('Title')}}" required="required" size="50">
+                            <input type="text" id="Title" name="Title" value="{{old('Title')}}">
                         </div>
                         <div class="form-group">
                             <label for="Contents" class="required">{{ __('screenwords.content') }}</label>
-                            <textarea id="Contents" name="Contents" value="{{old('Contents')}}" rows="10" required="required" size="500"></textarea>
+                            <textarea id="Contents" name="Contents" value="{{old('Contents')}}" rows="10"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="LimitDate" class="required">{{ __('screenwords.displayLimit') }}</label>
-                            <input type="text" id="LimitDate" name="LimitDate" value="{{old('LimitDate')}}"  required="required">
+                            <input type="text" id="LimitDate" name="LimitDate" value="{{old('LimitDate')}}">
                         </div>
                         {{-- エラーメッセージ --}}
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                            </div>
-                        @endif
+                        <div id="divError" class="alert alert-danger" style="display:none;" >
+                        <ul></ul>
+                        </div>
                     </section>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" id="submit_bulletinboad_save" name="submit_bulletinboad" class="btn btn-width70 btn-primary" value="{{ __('screenwords.save') }}" />
-                    <input type="submit" id="submit_bulletinboad_delete" name="submit_bulletinboad" class="btn btn-width70 btn-primary" value="{{ __('screenwords.delete') }}" 
-                            onClick="if (!confirm('{{ __('messages.confirmDelete') }}')){ return false;} document.getElementById('DeleteFlag').value = '1'; return true;"  />
+                    <input type="button" id="btnBulletinboadSave" class="btn btn-width70 btn-primary" value="{{ __('screenwords.save') }}"
+                        onClick="BulletinboadSave('{{ __('messages.confirmRegist') }}')"  />
+                    <input type="button" id="btnBulletinboadDelete" class="btn btn-width70 btn-primary" value="{{ __('screenwords.delete') }}" 
+                        onClick="BulletinboadDelete('{{ __('messages.confirmDelete') }}')"  />
                     <input type="button" id="btnBulletinBoadClear" class="btn btn-secondary" value="{{ __('screenwords.clear') }}">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('screenwords.close') }}</button>
                </div>
-               </form>
             </div>
         </div>
         </div>

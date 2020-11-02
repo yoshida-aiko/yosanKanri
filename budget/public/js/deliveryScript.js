@@ -1,6 +1,5 @@
 jQuery (function ()
 {
-
     /*ウィンドウの高さを取得して、グリッドの高さを指定*/
     settingGridHeight();
  
@@ -21,6 +20,11 @@ jQuery (function ()
         }
     }
 
+    $('.inpDeliveryDate').datepicker({        
+        /*minDate : getDate( $(this).parent().children('input[name=hidOrderDate]').val()),
+        maxDate : getDate( $(this).parent().children('input[name=hidOrderDate]').val()),*/
+    });
+
     /*全て選択or解除チェック*/
     $("input[name=chkTargetAll").click(function() {
         if($(this).is(':checked')) {
@@ -29,8 +33,6 @@ jQuery (function ()
             $('input[name="chkTarget[]"]').prop('checked',false);
         }
     });
-
-    $('.inpDeliveryDate').datepicker();
 
     /*納品ボタンクリック*/
     $("#btnDelivery").click(function() {
@@ -133,12 +135,6 @@ jQuery (function ()
                 $(this).parent().children('.spnSelectBudget').html(seltext);
                 $(this).css('display','none');
                 $(this).parent().children('.spnSelectBudget').css('display','inline-block');
-                /*if (prevval != selval){
-                    var deferred = updateOrderInfo(id,-1,selval);
-                    deferred.done(function(){
-                        $.unblockUI();
-                    });
-                }*/
             }
         },
         "blur":function() {
@@ -150,12 +146,6 @@ jQuery (function ()
             $(this).parent().children('.spnSelectBudget').html(seltext);
             $(this).css('display','none');
             $(this).parent().children('.spnSelectBudget').css('display','inline-block');
-            /*if (prevval != selval){
-                var deferred = updateOrderInfo(id,-1,selval);
-                deferred.done(function(){
-                    $.unblockUI();
-                });
-            }*/
         }
     });    
     $(".tdBudget").click(function () {
@@ -177,7 +167,6 @@ jQuery (function ()
 
     function insertDelivery() {
         processing();
-
         var arrayOrderList = [];            
         $.each($("#table-deliveryFixed > tbody > tr"),function(index,tr){
 
@@ -223,4 +212,16 @@ jQuery (function ()
 })
 $(window).on("load", function(){
     loadingStart();
+
+    $("#table-deliveryFixed > tbody > tr").each(function() {
+        var orderDt = new Date($(this).find("input[name=hidOrderDate]").val());
+        var useEndDt = new Date($(this).find("input[name=hidUseEndDate]").val());
+        console.log("order:" + $(this).find("input[name=hidOrderDate]").val() + " useend" + $(this).find("input[name=hidUseEndDate]").val());
+        $(this).find("input[name=deliveryDate]").datepicker({
+            minDate : orderDt,
+            maxDate : useEndDt
+        });
+    });
+    
+
 });

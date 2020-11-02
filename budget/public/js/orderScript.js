@@ -198,7 +198,11 @@ jQuery (function ()
             if (e.which == 13) {
                 if ($(this).val() !== "" && isFinite($(this).val())) {
                     var id=$(this).parent().parent().find('input[name=orderreqId]').val();
-                    $(this).parent().children('.spnOrderInputNumber').html('\\' + Number($(this).val()).toLocaleString());
+                    var val = Number($(this).val()).toLocaleString();
+                    if ($(this).hasClass("inpOrderUnitPrice")){
+                        val = '\\' + val;
+                    }
+                    $(this).parent().children('.spnOrderInputNumber').html(val);
                     $(this).css('display','none');
                     $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                     var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
@@ -215,7 +219,11 @@ jQuery (function ()
         "blur":function() {
             if ($(this).val() !== "" && isFinite($(this).val())) {
                 var id=$(this).parent().parent().find('input[name=orderreqId]').val();
-                $(this).parent().children('.spnOrderInputNumber').html('\\' + Number($(this).val()).toLocaleString());
+                var val = Number($(this).val()).toLocaleString();
+                if ($(this).hasClass("inpOrderUnitPrice")){
+                    val = '\\' + val;
+                }
+                $(this).parent().children('.spnOrderInputNumber').html(val);
                 $(this).css('display','none');
                 $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                 var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
