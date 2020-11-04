@@ -100,7 +100,7 @@ main {
 .info > article > p {
 	word-wrap: break-word;
 }
-#btnModalBulletinBoad {
+#btnModalBulletinBoard {
 	position: absolute;
 	top:15px;
 	right:0;

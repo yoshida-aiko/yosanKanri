@@ -682,6 +682,9 @@
 .childBudget > li > span {
 	font-size:0.7rem;
 }
+.ui-tooltip {
+	font-size:8px !important;
+}
 .childBudget > li > span:nth-child(1){
 	flex:1;
 }
@@ -1120,5 +1123,33 @@ section.exec{
 }
 .editicon:hover{
 	color:#154170;
+}
+.h6-title-cart {
+	font-weight: bold;
+}
+.h6-title-cart::before{
+	font-family: 'FontAwesome';
+	content:"\f217";
+	padding-right:3px;
+	color:#154170;
+	font-size:1.1em;
+	font-weight: normal;
+}
+.h6-title-cart-pink::before{
+	color:#e95295;
+}
+.h6-title-favorite {
+	font-weight: bold;
+}
+.h6-title-favorite::before{
+	font-family: 'FontAwesome';
+	content:"\f005";
+	padding-right:3px;
+	color:#154170;
+	font-size:1.1em;
+	font-weight: normal;
+}
+.h6-title-cart-yellow::before{
+	color:#e6b422;
 }
 
