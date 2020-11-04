@@ -122,12 +122,21 @@ class UserController extends Controller
             if ($request->session()->get('bilingual') == "1") {
                 $rules['UserNameEn'] = ['required', 'string', 'max:100'];
             }
-            $rules['password'] = ['required', 'string', 'min:8'];
+            $rules['password'] =  ['required','string','min:8','regex:/[a-z]/','regex:/[A-Z]/','regex:/[a-z]/','regex:/[0-9]/','regex:/[@$!%*#?&]/'];
             $rules['Tel'] = ['nullable','string', 'max:20'];
             $rules['email'] = ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')];
             $rules['Signature'] = ['nullable','max:1000'];
         }
-        $this->validate($request, $rules);
+
+        $validator = Validator::make($request->all(),$rules);
+
+        if ($validator->fails()) {
+            if ($request->editpass == "resetLink") {
+                return redirect()->back()->withErrors($validator)->withInput();
+            }else{
+                return redirect()->route('User.index')->withErrors($validator)->withInput();
+            }               
+        }
 
         if ($isUpdate){
             $User = User::findOrFail($request->id);
@@ -146,11 +155,8 @@ class UserController extends Controller
         $User->Signature = $request->Signature;
         $User->save();
 
-        /*$Users = User::all();
-        $editUser = new User();*/
-
         [$Users,$editUser] = $this->getUserData();
-
+       
         return view('User/index',compact('Users','editUser'));
     }
 
