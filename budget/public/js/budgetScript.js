@@ -41,24 +41,15 @@ jQuery (function ()
             var start =   $(this).datepicker( 'getDate' );
             var preStart = $('#hidStatDt').val();
             var preStartDate = new Date(preStart);
-            var selLang = $("input[name=rdoLanguage]:checked").val()=="en" ? 1 : 0;
             if (id!="" && preStart < dateText) {
-                if (selLang == '0') {
-                    alert("現在入力されている日付("+ preStart +")以前の日付を選択して下さい");
-                }else{
-                    alert("Please specify before the original date(" + preStart + ")");
-                }               
+                alert(beforeOriginalDate[selLang].replace('{0}',preStart));              
                 $(this).datepicker( 'setDate' ,preStart);
                 return;
             }
             var end = $('#useEndDate').val();
             if (end!="" && dateText > end) {
-                //終了日より開始日が大きい場合               
-                if (selLang == '0') {
-                    alert("日付の範囲を選択してください");
-                }else{
-                    alert("Please specify the rang of the date");
-                } 
+                //終了日より開始日が大きい場合
+                alert(rangOfTheDate[selLang]);               
                 $(this).datepicker( 'setDate' ,preStart);
                 return;
             }

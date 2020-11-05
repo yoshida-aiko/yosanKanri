@@ -510,4 +510,6 @@ var confirmRegist = ['登録しますか？【対象：{0}件】','Do you regist
 var confirmSave = ['登録しますか？','Do you register?'];
 var confirmDelete = ['削除しますか？','Do you delete it?'];
 
+var beforeOriginalDate = ['現在入力されている日付({0})以前の日付を選択して下さい','Please specify before the original date ({0})']; 
+var rangOfTheDate = ['日付の範囲を選択してください','Please specify the rang of the date']; 
 
