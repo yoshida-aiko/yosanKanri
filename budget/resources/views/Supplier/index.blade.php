@@ -20,7 +20,7 @@
                         @csrf
                         @method('DELETE')
                         <input type="submit" value="&#xf1f8;" 
-                            onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="fa btn-delete-icon">
+                            onClick="if (!confirm('{{ __('messages.confirmDelete') }}')){ return false;} return true;" class="fa btn-delete-icon">
                     </form>
                 </td>
                 <td><a href="{{ route('Supplier.edit', $Supplier->id) }}">{{ App::getLocale()=='en' ? $Supplier->SupplierNameEn : $Supplier->SupplierNameJp}}</a></td>

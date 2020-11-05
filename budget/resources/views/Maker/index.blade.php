@@ -21,10 +21,10 @@
                         @method('DELETE')
                         @if ($Maker->CatalogUseFlag == "0")
                             <input type="submit" value="&#xf1f8;" 
-                                onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="fa btn-delete-icon">
+                                onClick="if (!confirm('{{ __('messages.confirmDelete') }}')){ return false;} return true;" class="fa btn-delete-icon">
                         @else
                             <input type="submit" value="&#xf1f8;" 
-                                onClick="if (!confirm('削除しますか？')){ return false;} return true;" class="btn-delete-icon resetLinkOff">
+                                onClick="if (!confirm('{{ __('messages.confirmDelete') }}')){ return false;} return true;" class="btn-delete-icon resetLinkOff">
                         @endif
                     </form>
                 </td>
