@@ -80,6 +80,17 @@ jQuery (function ()
         "keypress":function(e) {
             if (e.which == 13) {
                 if ($(this).val() !== "" && isFinite($(this).val())) {
+                    if($(this).hasClass('inpDeliveryExpectedNumber')){
+                        var maxnum = parseInt($(this).attr('max'));
+                        var minnum = parseInt($(this).attr('min'));
+                        var thisnum = parseInt($(this).val());
+                        if (thisnum > maxnum){
+                            $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                        }
+                        if (thisnum < minnum){
+                            $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                        }
+                    }
                     var target = $(this).hasClass('inpDeliveryExpectedNumber') ? Number($(this).val()).toLocaleString() : "\\" + Number($(this).val()).toLocaleString();
                     $(this).parent().children('.spnOrderInputNumber').html(target);
                     $(this).css('display','none');
@@ -96,6 +107,17 @@ jQuery (function ()
         },
         "blur":function() {
             if ($(this).val() !== "" && isFinite($(this).val())) {
+                if($(this).hasClass('inpDeliveryExpectedNumber')){
+                    var maxnum = parseInt($(this).attr('max'));
+                    var minnum = parseInt($(this).attr('min'));
+                    var thisnum = parseInt($(this).val());
+                    if (thisnum > maxnum){
+                        $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                    }
+                    if (thisnum < minnum){
+                        $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                    }
+                }
                 var target = $(this).hasClass('inpDeliveryExpectedNumber') ? Number($(this).val()).toLocaleString() : "\\" + Number($(this).val()).toLocaleString();
                 $(this).parent().children('.spnOrderInputNumber').html(target);
                 $(this).css('display','none');
@@ -212,16 +234,19 @@ jQuery (function ()
 })
 $(window).on("load", function(){
     loadingStart();
-
     $("#table-deliveryFixed > tbody > tr").each(function() {
         var orderDt = new Date($(this).find("input[name=hidOrderDate]").val());
         var useEndDt = new Date($(this).find("input[name=hidUseEndDate]").val());
-        console.log("order:" + $(this).find("input[name=hidOrderDate]").val() + " useend" + $(this).find("input[name=hidUseEndDate]").val());
+        /* 納品日範囲指定
+           発注日 <= [納品日] <= 執行期間の終了日*/
         $(this).find("input[name=deliveryDate]").datepicker({
             minDate : orderDt,
             maxDate : useEndDt
         });
+        var target = $(this).find(".inpDeliveryExpectedNumber");
+        var minnum = target.attr('min');
+        var maxnum = target.attr('max');
+        target.attr('title',betweenNumber[selLang].replace('{0}',minnum).replace('{1}',maxnum));
     });
-    
 
 });

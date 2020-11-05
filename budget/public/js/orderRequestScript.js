@@ -165,6 +165,17 @@ jQuery (function ()
         "keypress":function(e) {
             if (e.which == 13) {
                 if ($(this).val() !== "" && isFinite($(this).val())) {
+                    if($(this).hasClass('inpOrderRequestNumber')){
+                        var maxnum = parseInt($(this).attr('max'));
+                        var minnum = parseInt($(this).attr('min'));
+                        var thisnum = parseInt($(this).val());
+                        if (thisnum > maxnum){
+                            $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                        }
+                        if (thisnum < minnum){
+                            $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                        }
+                    }
                     var id=$(this).parent().parent().find('input[name=cartId]').val();
                     var val = Number($(this).val()).toLocaleString();
                     if ($(this).hasClass("inpOrderUnitPrice")){
@@ -187,6 +198,17 @@ jQuery (function ()
         },
         "blur":function() {
             if ($(this).val() !== "" && isFinite($(this).val())) {
+                if($(this).hasClass('inpOrderRequestNumber')){
+                    var maxnum = parseInt($(this).attr('max'));
+                    var minnum = parseInt($(this).attr('min'));
+                    var thisnum = parseInt($(this).val());
+                    if (thisnum > maxnum){
+                        $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                    }
+                    if (thisnum < minnum){
+                        $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                    }
+                }
                 var id=$(this).parent().parent().find('input[name=cartId]').val();
                 var val = Number($(this).val()).toLocaleString();
                 if ($(this).hasClass("inpOrderUnitPrice")){
@@ -268,7 +290,7 @@ jQuery (function ()
     }
     
     $("#favoriteTreeReagent").favoriteTreeCreate('OrderRequest','favoriteTree',false);
-        
+       
     
     function updateOrder(id,price,ordernum,remark) {
         processing();
@@ -369,4 +391,18 @@ jQuery (function ()
 })
 $(window).on("load", function(){
     loadingStart();
+    $("#table-orderRequestFixed > tbody > tr").each(function() {
+        var target = $(this).find(".inpOrderRequestNumber");
+        var minnum = target.attr('min');
+        var maxnum = target.attr('max');
+        target.attr('title',betweenNumber[selLang].replace('{0}',minnum).replace('{1}',maxnum));
+    });
+    
+    /*.tooltip({
+        content: function() {
+            console.log($(this).attr('title'));
+            return $(this).attr('title');
+        }
+    });*/
+
 });

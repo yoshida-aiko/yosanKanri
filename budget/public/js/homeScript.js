@@ -26,21 +26,21 @@ jQuery (function ()
     });
 
     /*掲示板新規作成ボタンクリック時*/
-    $("#btnModalBulletinBoad").click(function() {
+    $("#btnModalBulletinBoard").click(function() {
             
         $("#RegistDate").val(getToday('/'));
         $("#Title").val("");
         $("#Contents").val("");
         $("#LimitDate").val(getAddMonth('/',1));
-        $("#BulletinBoadId").val("");
+        $("#BulletinBoardId").val("");
         $("#RegistUserId").val("");
         $("#DeleteFlag").val("");
         
-        $("#btnBulletinboadDelete").css('display','none');
-        $("#modal-bulletinboad").modal('show');
+        $("#btnBulletinboardDelete").css('display','none');
+        $("#modal-bulletinboard").modal('show');
     });
     /*掲示板クリアボタン*/
-    $("#btnBulletinBoadClear").click(function() {
+    $("#btnBulletinBoardClear").click(function() {
         $("#Title").val("");
         $("#Contents").val("");
         $("#LimitDate").val(getAddMonth('/',1));       
@@ -53,18 +53,18 @@ jQuery (function ()
         var title = $(this).parent("article").children("h6").text();
         var contents = $(this).parent("article").children("p").text();
         var limitdate = $(this).parent("article").children("input[name='LimitDatelist']").val();
-        var id = $(this).parent("article").children("input[name='BulletinBoadIdlist']").val();
+        var id = $(this).parent("article").children("input[name='BulletinBoardIdlist']").val();
         $("#RegistDate").val(time);
         $("#Title").val(title);
         $("#Contents").val(contents);
         $("#LimitDate").val(limitdate);
         $("#LimitDate").prop("min",getToday('-'));
-        $("#BulletinBoadId").val(id);
+        $("#BulletinBoardId").val(id);
         $("#RegistUserId").val(userid);
         $("#DeleteFlag").val("");
 
-        $("#btnBulletinboadDelete").css('display','inline-block');
-        $("#modal-bulletinboad").modal('show');
+        $("#btnBulletinboardDelete").css('display','inline-block');
+        $("#modal-bulletinboard").modal('show');
     });
 
     /*選択したarticleに色を付ける*/
@@ -74,123 +74,130 @@ jQuery (function ()
         $(this).addClass("table-fixed-selectRow");
     });
     /*掲示板保存ボタンクリック時 */
-    $("#btnBulletinboadSave").click(function() {
-    var message = "";
-    $("#divError").css('display','none');
-    $("#divError li").remove();
-    
-    if ($("#Title").val()==""){
-        message += '<li>' + requireTitle[selLang] + '</li>';
-    }
-    else{
-        if($("#Title").val().length > 50){
-            message += '<li>' + maxTitle[selLang] + '</li>';
+    $("#btnBulletinboardSave").click(function() {
+        var message = "";
+        $("#divError").css('display','none');
+        $("#divError li").remove();
+        
+        if ($("#Title").val()==""){
+            message += '<li>' + requireTitle[selLang] + '</li>';
         }
-    }
-    if ($("#Contents").val()==""){
-        message += '<li>' + requireContents[selLang] + '</li>';
-    }
-    else{
-        if($("#Contents").val().length > 500){
-            message += '<li>' + maxContents[selLang] + '</li>';
+        else{
+            if($("#Title").val().length > 50){
+                message += '<li>' + maxTitle[selLang] + '</li>';
+            }
         }
-    }
-    if ($("#LimitDate").val()==""){
-        message += '<li>' + requireLimitDate[selLang] + '</li>';
-    }
-
-    if (message != ""){
-        $("#divError").css('display','block');
-        $("#divError").append(message);
-        return false;
-    }
-    if (confirm(confirmSave[selLang])){
-        var deferred = insertBulletinboad();
-        deferred.done(function(){
-            $.unblockUI();
-            location.reload();
-        });
-    }
-});
-
-/*掲示板削除ボタンクリック時 */
-$("#btnBulletinboadDelete").click(function() {
-    if (confirm(confirmDelete[selLang])){
-        var deferred = deleteBulletinboad();
-        deferred.done(function(){
-            $.unblockUI();
-            location.reload();
-        });
-    }
-});
-
-function insertBulletinboad(){
-    var ref = {
-        'BulletinBoadId' : $("#BulletinBoadId").val(),
-        'RegistDate' : $("#RegistDate").val(),
-        'Title' : $("#Title").val(),
-        'Contents' : $("#Contents").val(),
-        'LimitDate' : $("#LimitDate").val()
-    }
-    processing();
-    var deferred = new $.Deferred();
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: 'home/bulletinBoardStore',
-        type: 'GET',
-        datatype: 'json',
-        data : ref
-    })
-    // Ajaxリクエスト成功時の処理
-    .done(function(data) {
-        if (data['status'] !== 'OK') {
-            alert('データ更新に失敗しました' + data['status']);
+        if ($("#Contents").val()==""){
+            message += '<li>' + requireContents[selLang] + '</li>';
         }
-    })
-    // Ajaxリクエスト失敗時の処理
-    .fail(function(data) {
-        alert('データ更新に失敗しました' + data['status']);
-    })
-    .always(function(data) {
-        deferred.resolve();           
+        else{
+            if($("#Contents").val().length > 500){
+                message += '<li>' + maxContents[selLang] + '</li>';
+            }
+        }
+        if ($("#LimitDate").val()==""){
+            message += '<li>' + requireLimitDate[selLang] + '</li>';
+        }
+
+        if (message != ""){
+            $("#divError").css('display','block');
+            $("#divError").append(message);
+            return false;
+        }
+        if (confirm(confirmSave[selLang])){
+            var deferred = insertBulletinboard();
+            deferred.done(function(){
+                $.unblockUI();
+                location.reload();
+            });
+        }
     });
-    
-    return deferred;        
-}
 
-function deleteBulletinboad(){
-    var ref = {
-        'BulletinBoadId' : $("#BulletinBoadId").val()
-    }
-    processing();
-    var deferred = new $.Deferred();
-    $.ajax({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        url: 'home/bulletinBoardDestroy',
-        type: 'GET',
-        datatype: 'json',
-        data : ref
-    })
-    // Ajaxリクエスト成功時の処理
-    .done(function(data) {
-        if (data['status'] !== 'OK') {
-            alert('データ更新に失敗しました' + data['status']);
+    /*掲示板削除ボタンクリック時 */
+    $("#btnBulletinboardDelete").click(function() {
+        if (confirm(confirmDelete[selLang])){
+            var deferred = deleteBulletinboard();
+            deferred.done(function(){
+                $.unblockUI();
+                location.reload();
+            });
         }
-    })
-    // Ajaxリクエスト失敗時の処理
-    .fail(function(data) {
-        alert('データ更新に失敗しました' + data['status']);
-    })
-    .always(function(data) {
-        deferred.resolve();           
     });
-    
-    return deferred;        
-}    
+
+    /*掲示板閉じるボタンクリック時 */
+    $("#btnBulletinBoardClose").click(function() {
+        $("#divError").css('display','none');
+        $("#divError li").remove();
+        $("#modal-bulletinboard").modal('hide');
+    });
+
+    function insertBulletinboard(){
+        var ref = {
+            'BulletinBoardId' : $("#BulletinBoardId").val(),
+            'RegistDate' : $("#RegistDate").val(),
+            'Title' : $("#Title").val(),
+            'Contents' : $("#Contents").val(),
+            'LimitDate' : $("#LimitDate").val()
+        }
+        processing();
+        var deferred = new $.Deferred();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: 'home/bulletinBoardStore',
+            type: 'GET',
+            datatype: 'json',
+            data : ref
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if (data['status'] !== 'OK') {
+                alert('データ更新に失敗しました' + data['status']);
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            alert('データ更新に失敗しました' + data['status']);
+        })
+        .always(function(data) {
+            deferred.resolve();           
+        });
+        
+        return deferred;        
+    }
+
+    function deleteBulletinboard(){
+        var ref = {
+            'BulletinBoardId' : $("#BulletinBoardId").val()
+        }
+        processing();
+        var deferred = new $.Deferred();
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: 'home/bulletinBoardDestroy',
+            type: 'GET',
+            datatype: 'json',
+            data : ref
+        })
+        // Ajaxリクエスト成功時の処理
+        .done(function(data) {
+            if (data['status'] !== 'OK') {
+                alert('データ更新に失敗しました' + data['status']);
+            }
+        })
+        // Ajaxリクエスト失敗時の処理
+        .fail(function(data) {
+            alert('データ更新に失敗しました' + data['status']);
+        })
+        .always(function(data) {
+            deferred.resolve();           
+        });
+        
+        return deferred;        
+    }    
 
 
 })

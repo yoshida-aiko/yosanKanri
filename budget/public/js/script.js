@@ -110,6 +110,8 @@ jQuery (function ()
             $.unblockUI();
             deferred.resolve();
         });
+
+        return deferred;
     };
 
     /*ヘッダ部検索*/
@@ -128,6 +130,7 @@ jQuery (function ()
         }
     });
 
+
     function jsTreeCreate_sub(jsondata,url,id,isToCartDisabled) {
 
         $('#' + id).jstree({
@@ -135,7 +138,6 @@ jQuery (function ()
                 "data":jsondata,
                 "check_callback":function(operation,node,node_parent,node_position,more){
                     if (operation=="move_node"){
-                        console.log(operation + " node.icon:" + node.icon + " node_parent.id:" + node_parent.id);
                         if(node.icon == "jstree-folder" && node_parent.id != "#"){
                             return false;
                         }
@@ -210,23 +212,31 @@ jQuery (function ()
                 }
             }
         }).on('move_node.jstree', function(e, data){
-            console.log("data.node.icon:" + data.node.icon);
-            if (data.node.icon == "jstree-folder" ) {
-                return false;
-            }
             /*移動したデータのFavoriteテーブルid*/
             movenodeKey = data.node.original.key;
             parentKey = '-1';
             if (data.parent !== '#') {
                 parentKey = data.instance.get_node(data.node.parent).original.key;        
-            }
-    
+            }    
             var deferred = moveTreeAjax(url,movenodeKey,parentKey);
             deferred.done(function(){
                 $.unblockUI();
+            });         
+        }).bind("loaded.jstree", function (event, data) {
+            $("#wrapperFavoriteList a").tooltip({
+                content : function() {
+                    return $(this).attr('title');
+                }
             });
-            
+    
+        }).bind("open_node.jstree", function (event, data) { 
+            $("#wrapperFavoriteList ul.jstree-children a").tooltip({
+                content : function() {
+                    return $(this).attr('title');
+                }
+            });
         });
+        
     
     }
     
@@ -400,6 +410,7 @@ jQuery (function ()
     $("#btnFolderClear").click(function() {
         $("#FolderName").val("");
     });
+
     
     
 })
@@ -469,7 +480,8 @@ var selLang = $("input[name=rdoLanguage]:checked").val()=="en" ? 1 : 0;
 
 var requireQuantity = ['数量は必須です','The Quantity field is required.'];
 var numericQuantity = ['数量は「数字」のみ有効です','The Quantity must be a number.'];
-var maxAmountQuantity = ['数量は9,999以下のみ有効です','The Quantity may not be greater than 9,999.'];
+var maxAmountQuantity = ['数量は999以下のみ有効です','The Quantity may not be greater than 999.'];
+var minAmountQuantity = ['数量は1以上のみ有効です','The Quantity must be at least 1.'];
 var requireRemark = ['備考は必須です','The remark field is required.'];
 var maxRemark = ['備考は100文字以下のみ有効です','The Remark may not be greater than 100 characters.'];
 var requireExcutionDate = ['執行日は必須です','The Excution date field is required.'];
@@ -489,6 +501,7 @@ var maxTitle = ['タイトルは50文字以下のみ有効です','The Title may
 var requireContents= ['内容は必須です','The Contents field is required.'];
 var maxContents = ['内容は500文字以下のみ有効です','The Contents may not be greater than 500 characters.'];
 var requireLimitDate= ['表示期限は必須です','The Limit date field is required.'];
+var betweenNumber = ['{0} ～ {1} の数値が有効です','The Number must be between {0} and {1}.'];
 
 var pleaseSelect = ['納品対象を選択してください','Please select the delivery target.'];
 var confirmRegist = ['納品処理を行いますか？【対象：{0}件】','Do you register?【target:{0} case(s)】'];

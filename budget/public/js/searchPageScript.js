@@ -36,6 +36,31 @@ jQuery (function ($)
         }
     });
 
+    /*カートボタンhover時 */
+    $("input[name=btnCart]").hover(
+        function() {
+            $(".h6-title-cart").addClass('h6-title-cart-pink');
+        },
+        function() {
+            $(".h6-title-cart").removeClass('h6-title-cart-pink');
+        }
+    );
+    /*お気に入りボタンhover時 */
+    $("input[name=btnFavorite]").hover(
+        function() {
+            $(".h6-title-favorite").addClass('h6-title-cart-yellow');
+        },
+        function() {
+            $(".h6-title-favorite").removeClass('h6-title-cart-yellow');
+        }
+    );
+
+    $('.sectionOrderRequest > article > div.orderRequestContent >h6').tooltip({
+        content: function() {
+            return $(this).attr('title');
+        }
+    });
+
     function deleteCart(cartid){
         processing();
         var deferred = new $.Deferred();

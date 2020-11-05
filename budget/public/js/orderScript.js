@@ -79,6 +79,12 @@ jQuery (function ()
         }
     });
 
+    $('.childBudget > li > span:first-child').tooltip({
+        content: function() {
+            return $(this).attr('title');
+        }
+    });
+    
     function show_display(id) {
         if (id=='divOrderList'){
             $("#divOrderRequestList").hide();
@@ -197,6 +203,17 @@ jQuery (function ()
         "keypress":function(e) {
             if (e.which == 13) {
                 if ($(this).val() !== "" && isFinite($(this).val())) {
+                    if($(this).hasClass('inpOrderRequestNumber')){
+                        var maxnum = parseInt($(this).attr('max'));
+                        var minnum = parseInt($(this).attr('min'));
+                        var thisnum = parseInt($(this).val());
+                        if (thisnum > maxnum){
+                            $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                        }
+                        if (thisnum < minnum){
+                            $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                        }
+                    }
                     var id=$(this).parent().parent().find('input[name=orderreqId]').val();
                     var val = Number($(this).val()).toLocaleString();
                     if ($(this).hasClass("inpOrderUnitPrice")){
@@ -218,6 +235,17 @@ jQuery (function ()
         },
         "blur":function() {
             if ($(this).val() !== "" && isFinite($(this).val())) {
+                if($(this).hasClass('inpOrderRequestNumber')){
+                    var maxnum = parseInt($(this).attr('max'));
+                    var minnum = parseInt($(this).attr('min'));
+                    var thisnum = parseInt($(this).val());
+                    if (thisnum > maxnum){
+                        $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                    }
+                    if (thisnum < minnum){
+                        $(this).val($(this).parent().children('.spnOrderInputNumber').html());
+                    }
+                }
                 var id=$(this).parent().parent().find('input[name=orderreqId]').val();
                 var val = Number($(this).val()).toLocaleString();
                 if ($(this).hasClass("inpOrderUnitPrice")){
@@ -436,6 +464,12 @@ jQuery (function ()
 })
 $(window).on("load", function(){
     loadingStart();
+    $("#table-orderFixed > tbody > tr").each(function() {
+        var target = $(this).find(".inpOrderRequestNumber");
+        var minnum = target.attr('min');
+        var maxnum = target.attr('max');
+        target.attr('title',betweenNumber[selLang].replace('{0}',minnum).replace('{1}',maxnum));
+    });
 });
 
 /*発注依頼に予算IDを付与する*/

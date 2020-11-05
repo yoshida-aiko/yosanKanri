@@ -52,6 +52,7 @@ jQuery (function ()
         $("#modal-orderRequest").modal('show');
         $("#txtOrderNumber").focus();
     });
+    /*発注依頼ボタンクリック時*/
     $("#btnOrderRequest").click(function() {
         var message = "";
         $("#divError").css('display','none');
@@ -64,10 +65,13 @@ jQuery (function ()
             if (isNaN(intnum)){
                 message += '<li>' + numericQuantity[selLang] + '</li>';
             }
-            else if(intnum > 9999) {
+            else if(intnum > 999) {
                 message += '<li>' + maxAmountQuantity[selLang] + '</li>';
+            }
+            else if(intnum < 1) {
+                message += '<li>' + minAmountQuantity[selLang] + '</li>';
             }         
-        }        
+        }     
         if ($("#txtOrderRemark").val()!=""){
             if($("#txtOrderRemark").val().length > 100){
                 message += '<li>' + maxRemark[selLang] + '</li>';
@@ -76,12 +80,15 @@ jQuery (function ()
         if (message != ""){
             $("#divError").css('display','block');
             $("#divError").append(message);
-            return false;
         }
-        var deferred = insertOrderRequest();
-        deferred.done(function(){
-            $.unblockUI();
-        });
+        else {
+            if (confirm(confirmSave[selLang])) {
+                var deferred = insertOrderRequest();
+                deferred.done(function(){
+                    $.unblockUI();
+                });
+            }
+        }
     });
     $("#btnClear").click(function() {
         $("#divError").css('display','none');
