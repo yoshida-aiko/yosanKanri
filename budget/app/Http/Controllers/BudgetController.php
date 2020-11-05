@@ -8,6 +8,7 @@ use App\Budget;
 use Carbon\Carbon;
 use App\Rules\Exists;
 use App\Exceptions\ExclusiveLockException;
+use App\Condition;
 
 class BudgetController extends Controller
 {
@@ -43,6 +44,14 @@ class BudgetController extends Controller
         
         $editBudget = new Budget();
 
+        //設定マスタよりバイリンガル取得
+        $Condition = Condition::first();
+        $bilingual = 0;
+        if ($Condition != null) {
+            $bilingual = $Condition->bilingual;
+        }
+        $request->session()->put('bilingual', $bilingual);
+
         return view('Budget/index',compact('Budgets','editBudget','Nendo'));
     }
 
@@ -77,13 +86,14 @@ class BudgetController extends Controller
             $isUpdate = true;
         }
 
-        $rules = [
-            'budgetNameJp' => ['required', 'string', 'max:50'],
-            'budgetAmount' => ['required', 'numeric'],
-            'useStartDate' => ['required','date', 'date_format:Y/m/d','max:10'],
-            'useEndDate' =>  ['required','date', 'date_format:Y/m/d','after:yesterday','max:10'],
-            'displayOrder' => ['nullable', 'integer']
-        ];
+        $rules['budgetNameJp'] = ['required', 'string', 'max:50'];
+        if ($request->session()->get('bilingual') == "1") {
+            $rules['budgetNameEn'] = ['required', 'string', 'max:50'];
+        }
+        $rules['budgetAmount'] = ['required', 'numeric'];
+        $rules['useStartDate'] = ['required','date', 'date_format:Y/m/d','max:10'];
+        $rules['useEndDate'] = ['required','date', 'date_format:Y/m/d','after:yesterday','max:10'];
+        $rules['displayOrder'] = ['nullable', 'integer'];
         $this->validate($request, $rules);
 
         if ($isUpdate){
@@ -95,6 +105,7 @@ class BudgetController extends Controller
         $Nendo = $request->year;
         $Budget->fiscalYear = $Nendo;
         $Budget->budgetNameJp = $request->budgetNameJp;
+        $Budget->budgetNameEn = $request->budgetNameEn;
         $Budget->budgetAmount = $request->budgetAmount;
         $Budget->useStartDate = $request->useStartDate;
         $Budget->useEndDate = $request->useEndDate;
@@ -161,18 +172,20 @@ class BudgetController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $rules = [
-            'budgetNameJp' => ['required', 'string', 'max:50'],
-            'budgetAmount' => ['required', 'numeric'],
-            'useStartDate' => ['required','date', 'date_format:Y/m/d','max:10'],
-            'useEndDate' =>  ['required','date', 'date_format:Y/m/d','after:yesterday','max:10'],
-            'displayOrder' => ['nullable', 'integer']
-        ];
+        $rules['budgetNameJp'] = ['required', 'string', 'max:50'];
+        if ($request->session()->get('bilingual') == "1") {
+            $rules['budgetNameEn'] = ['required', 'string', 'max:50'];
+        }
+        $rules['budgetAmount'] = ['required', 'numeric'];
+        $rules['useStartDate'] = ['required','date', 'date_format:Y/m/d','max:10'];
+        $rules['useEndDate'] = ['required','date', 'date_format:Y/m/d','after:yesterday','max:10'];
+        $rules['displayOrder'] = ['nullable', 'integer'];
         $this->validate($request, $rules);
 
         $Budget = Budget::findOrFail($id);
         $Budget->fiscalYear = $request->year;
         $Budget->budgetNameJp = $request->budgetNameJp;
+        $Budget->budgetNameEn = $request->budgetNameEn;
         $Budget->budgetAmount = $request->budgetAmount;
         $Budget->useStartDate = $request->useStartDate;
         $Budget->useEndDate = $request->useEndDate;

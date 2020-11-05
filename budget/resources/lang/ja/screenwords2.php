@@ -7,6 +7,10 @@ return [
 
     /*B*/
     'budget' => '予算状況',
+    'budgetAmount' => '予算額',
+    'budgetNameEn' => '予算名(英名)',
+    'budgetNameJp' => '予算名(和名)',
+    'budgetSubject' => '予算科目',
 
     /*C*/
     'chargeUser' => '担当者',
@@ -17,10 +21,12 @@ return [
  
     /*D*/
     'delivery' => '納品',
+    'displayOrder' => '表示順',
 
     /*E*/
     'eMail' => 'メールアドレス',
     'eMailAnnotation' => '※カンマで区切り、CCアドレスを指定できます',
+    'excutionPeriod' => '執行期間',
 
     /*F*/
     'fax' => 'ファックス番号',
@@ -61,5 +67,8 @@ return [
     'userName' => 'ユーザー名',
     'userNameEn' => 'ユーザー名(英名)',
     'userNameJp' => 'ユーザー名(和名)',
+
+     /*Y*/
+     'yen' => '円',
 
 ];

@@ -7,6 +7,10 @@ return [
  
     /*B*/
     'budget' => 'Budget Status',
+    'budgetAmount' => 'Budget amount',
+    'budgetNameEn' => 'Budget name(En)',
+    'budgetNameJp' => 'Budget name(Jp)',
+    'budgetSubject' => 'Budget Subject',
 
     /*C*/
     'chargeUser' => 'Charge user',
@@ -17,10 +21,12 @@ return [
 
     /*D*/
     'delivery' => 'Delivery',
+    'displayOrder' => 'Display Order',
 
     /*E*/
     'eMail' => 'Email',
     'eMailAnnotation' => '※You can specify CC addresses separated by commas',
+    'excutionPeriod' => 'Excution period',
 
     /*F*/
     'fax' => 'Fax',
@@ -61,5 +67,8 @@ return [
     'userName' => 'User name',
     'userNameEn' => 'User name(En)',
     'userNameJp' => 'User name(Jp)',
+
+    /*Y*/
+    'yen' => 'Yen',
 
 ];

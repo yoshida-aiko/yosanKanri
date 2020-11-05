@@ -162,6 +162,12 @@ return [
         'Fax' => 'Fax',
         'MakerNameJp'  => 'Maker name(Jp)',
         'MakerNameEn'  => 'Maker name(En)',
+        'budgetNameJp' => 'Budget name(Jp)',
+        'budgetNameEn' => 'Budget name(En)',
+        'budgetAmount' => 'Budget amount',
+        'useStartDate' => 'Excution period(Start Date)', 
+        'useEndDate' => 'Excution period(End Date)', 
+        'displayOrder' => 'Display Order',
     ],
 
 ];

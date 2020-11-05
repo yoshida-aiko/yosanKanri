@@ -27,6 +27,12 @@ jQuery (function ()
         tblwidth = tblwidth - 120;
     }
 
+    //  設定画面のバイリンガルが使用するの場合、必須マークをつける
+    var bilingual = $('input:hidden[name="bilingual"]').val();
+    if (bilingual == '1') {
+      $("#lblBudgetNameEn").addClass('required');
+    }
+
     // 執行期間　datepicker
     $('#useStartDate').datepicker({
         onSelect: function(dateText) {         
@@ -35,15 +41,24 @@ jQuery (function ()
             var start =   $(this).datepicker( 'getDate' );
             var preStart = $('#hidStatDt').val();
             var preStartDate = new Date(preStart);
+            var selLang = $("input[name=rdoLanguage]:checked").val()=="en" ? 1 : 0;
             if (id!="" && preStart < dateText) {
-                alert("現在入力されている日付("+ preStart +")以前の日付を選択して下さい");
+                if (selLang == '0') {
+                    alert("現在入力されている日付("+ preStart +")以前の日付を選択して下さい");
+                }else{
+                    alert("Please specify before the original date(" + preStart + ")");
+                }               
                 $(this).datepicker( 'setDate' ,preStart);
                 return;
             }
             var end = $('#useEndDate').val();
             if (end!="" && dateText > end) {
-                //終了日より開始日が大きい場合
-                alert("日付の範囲を選択してください");
+                //終了日より開始日が大きい場合               
+                if (selLang == '0') {
+                    alert("日付の範囲を選択してください");
+                }else{
+                    alert("Please specify the rang of the date");
+                } 
                 $(this).datepicker( 'setDate' ,preStart);
                 return;
             }
