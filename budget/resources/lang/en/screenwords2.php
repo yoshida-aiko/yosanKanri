@@ -6,11 +6,15 @@ return [
     'authority' => 'Authority',
  
     /*B*/
+    'betweenDays' => 'Between days',
+    'bilingual' => 'Bilingual',
     'budget' => 'Budget Status',
     'budgetAmount' => 'Budget amount',
     'budgetNameEn' => 'Budget name(En)',
     'budgetNameJp' => 'Budget name(Jp)',
     'budgetSubject' => 'Budget Subject',
+    'bulletinBoard' => 'Bulletin board',
+    'bulletinTerm' => 'Notice days',  
 
     /*C*/
     'chargeUser' => 'Charge user',
@@ -21,15 +25,20 @@ return [
 
     /*D*/
     'delivery' => 'Delivery',
+    'deliveryBasis' => 'delivery',
     'displayOrder' => 'Display Order',
+    'dontUse' => "don't use",
 
     /*E*/
     'eMail' => 'Email',
     'eMailAnnotation' => '※You can specify CC addresses separated by commas',
+    'environmentalSetting' => 'Environmental setting',
+    'executionBasis' => 'Execution Basis',
     'excutionPeriod' => 'Excution period',
 
     /*F*/
     'fax' => 'Fax',
+    'fiscalStartMonth' => 'begin period month',
 
     /*L*/
     'loginAccount' => 'User ID',
@@ -39,12 +48,17 @@ return [
     'makerNameEp' => 'Maker name(En)',
     'makerNameJp' => 'Maker name(Jp)',
     'master' => 'Master',
+    'month' => 'month',
+    
+    /*N*/
+    'newBulletinTerm' => 'NEW！Display period', 
 
     /*O*/
     'order' => 'Order', 
 
     /*p*/
     'payment' => 'Payment', 
+    'paymentBasis' => 'payment', 
     'password' => 'Password', 
     'passwordReset' => 'password Reset',   
     'prioritySupplier' => 'Priority Supplier',  
@@ -59,6 +73,8 @@ return [
     'supplierName' => 'Supplier name',
     'supplierNameEn' => 'Supplier name(En)',
     'supplierNameJp' => 'Supplier name(Jp)',
+    'systemNameEn' => 'System name(En)',
+    'systemNameJp' => 'System name(Jp)',
     
     /*T*/
     'tel' => 'Tel',
@@ -67,6 +83,7 @@ return [
     'userName' => 'User name',
     'userNameEn' => 'User name(En)',
     'userNameJp' => 'User name(Jp)',
+    'uses' => 'uses',
 
     /*Y*/
     'yen' => 'Yen',

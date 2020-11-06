@@ -3,7 +3,7 @@
 	height:200px;
 	background-image: url("../images/favoritebutton.png");
 	background-repeat: no-repeat;
-	margin-top:49px;
+	margin-top:52px;
 }
 
 .modal-detail-table {
@@ -683,7 +683,7 @@
 	font-size:0.7rem;
 }
 .ui-tooltip {
-	font-size:8px !important;
+	font-size:8.5px !important;
 }
 .childBudget > li > span:nth-child(1){
 	flex:1;
@@ -981,34 +981,38 @@ section.exec{
 
 
 .loginTitle {
-	font-family: "Sawarabi Mincho";
-	color:#154170;
-	animation: loginTitle-color 2s linear forwards;
-	-webkit-animation: loginTitle-color 2s linear forwards ;
-	font-size:40px;
+	/*font-family: "Sawarabi Mincho";*/
+	/*color:#154170;*/
+	padding-top:20px;
+	color:#fff;
+	text-align: center;
+	/*animation: loginTitle-color 2s linear forwards;
+	-webkit-animation: loginTitle-color 2s linear forwards ;*/
+	font-size:25px;/*40px;*/
 	font-weight:400;
 	text-overflow:ellipsis;
 	overflow:hidden;
 	white-space:nowrap;
-	text-shadow: 0px 0px 8px rgb(148, 76, 135);
+	/*text-shadow: 0px 0px 8px rgb(148, 76, 135);*/
 	/*text-shadow: 
 		0.04em 0.02em 0 #ff8589, 
 		0.08em 0.05em 0 rgba(0, 0, 0, 0.6);*/
 }
 .loginSubTitle {
-	font-family: "Sawarabi Mincho";
-	color:#154170;
-	text-align:right;
+	/*font-family: "Sawarabi Mincho";*/
+	color:#fff;
+	text-align: center;
+	/*text-align:right;*/
 	padding-right:15px;
-	margin-bottom:20px;
-	animation: loginTitle-color 2s linear 0.5s forwards;
-	-webkit-animation: loginTitle-color 2s linear 0.5s forwards ;
-	font-size:25px;
+	margin-bottom:50px;
+	/*animation: loginTitle-color 2s linear 0.5s forwards;
+	-webkit-animation: loginTitle-color 2s linear 0.5s forwards ;*/
+	font-size:15px;/*25px;*/
 	font-weight:400;
 	text-overflow:ellipsis;
 	overflow:hidden;
 	white-space:nowrap;
-	text-shadow: 0px 0px 5px  rgb(148, 76, 135);
+	/*text-shadow: 0px 0px 5px  rgb(148, 76, 135);*/
 	/*text-shadow: 
 		0.04em 0.02em 0 #ff8589, 
 		0.08em 0.05em 0 rgba(0, 0, 0, 0.6);*/
@@ -1036,7 +1040,15 @@ section.exec{
 .wrapperCircleLoginButton{
 	position:absolute;
 	top:138px;
-	right:80px;
+	right:60px;
+}
+.transparentButton{
+	width:120px;
+	height:70px;
+	background:transparent;
+	border:1px solid #fff;
+	border-radius:5px;
+	color:#fff;
 }
 .circleLoginButton{
 	width: 70px;

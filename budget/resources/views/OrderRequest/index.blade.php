@@ -97,11 +97,11 @@
                         }
                         ?>
                         <span class="spnOrderInputNumber">\{{ $UnitPrice }}</span>
-                        <input type="text" class="inpOrderInputNumber inpOrderUnitPrice" pattern="[0-9]*" title="数字のみ" value="{{ $Cart->UnitPrice }}" >
+                        <input type="text" class="inpOrderInputNumber inpOrderUnitPrice" pattern="[0-9]*" title="{{__('screenwords.numbersOnly')}}" value="{{ $Cart->UnitPrice }}" >
                     </td>
                     <td class="align-right tdOrderInputNumber">
                         <span class="spnOrderInputNumber">{{ $Cart->OrderRequestNumber }}</span>
-                        <input type="number" class="inpOrderInputNumber inpOrderRequestNumber" pattern="[0-9]*"  title="数字のみ" min="1" value="{{ $Cart->OrderRequestNumber }}" >
+                        <input type="number" class="inpOrderInputNumber inpOrderRequestNumber" pattern="[0-9]*"  min="1" max="999" value="{{ $Cart->OrderRequestNumber }}" >
                     </td>
                     <td class="align-right tdOrderTotalFee">
                         <?php

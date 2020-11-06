@@ -151,7 +151,7 @@
                 <td class="align-right">
                 <?php
                     if ($CatalogItem->UnitPrice > 0) {
-                        $CatalogItem->UnitPrice = \number_format($CatalogItem->UnitPrice);
+                        $CatalogItem->UnitPrice = '\\'.number_format($CatalogItem->UnitPrice);
                     }
                     else{
                         $CatalogItem->UnitPrice = '';
@@ -175,7 +175,7 @@
     @endcomponent
     </div>
     <div class="leftside-fixed-280">
-        <h6 class="h6-title">{{ __('screenwords.orderRequestList') }}</h6>
+        <h6 class="h6-title-cart">{{ __('screenwords.orderRequestList') }}</h6>
         <div id="wrapperOrderRequestList" style="margin-bottom:20px;">
             <input type="radio" name="tabCart" id="tabCartReagent" value="{{config('const.ItemClass.reagent')}}" >
             <label class="tabLabel" for="tabCartReagent">{{ __('screenwords.reagent') }}</label>
@@ -187,8 +187,15 @@
                         <div>
                             <input type="button" value="&#xf1f8;" name="btnCartDelete" class="fa btn-cart-favorite-delete-icon" >
                         </div>
-                        <div>
-                            <h6>
+                        <?php
+                            $tooltip = (App::getLocale()=='en' ?$Cart->ItemNameEn : $Cart->ItemNameJp);
+                            $tooltip .= '<br>'.__('screenwords.capacity').'：'.$Cart->AmountUnit;
+                            $tooltip .= '<br>'.__('screenwords.standard').'：'.$Cart->Standard;
+                            $tooltip .= '<br>'.__('screenwords.maker').'：'.(App::getLocale()=='en' ? $Cart->MakerNameEn : $Cart->MakerNameJp);
+                            $tooltip .= '<br>'.__('screenwords.catalogCode').'：'.$Cart->CatalogCode;
+                        ?>
+                        <div class="orderRequestContent">
+                            <h6 title="{{$tooltip}}">
                             @if(App::getLocale()=='en') {{$Cart->ItemNameEn}}
                             @else {{$Cart->ItemNameJp}}
                             @endif
@@ -216,8 +223,19 @@
                         <div>
                             <input type="button" value="&#xf1f8;" name="btnCartDelete" class="fa btn-cart-favorite-delete-icon" >
                         </div>
-                        <div>
-                            <h6>{{$Cart->ItemNameJp}}</h6>                   
+                        <?php
+                            $tooltip = (App::getLocale()=='en' ?$Cart->ItemNameEn : $Cart->ItemNameJp);
+                            $tooltip .= '<br>'.__('screenwords.capacity').'：'.$Cart->AmountUnit;
+                            $tooltip .= '<br>'.__('screenwords.standard').'：'.$Cart->Standard;
+                            $tooltip .= '<br>'.__('screenwords.maker').'：'.(App::getLocale()=='en' ? $Cart->MakerNameEn : $Cart->MakerNameJp);
+                            $tooltip .= '<br>'.__('screenwords.catalogCode').'：'.$Cart->CatalogCode;
+                        ?>
+                        <div class="orderRequestContent" title="{{$tooltip}}">
+                        <h6>
+                            @if(App::getLocale()=='en') {{$Cart->ItemNameEn}}
+                            @else {{$Cart->ItemNameJp}}
+                            @endif
+                            </h6>                   
                             <div><span>{{$Cart->Standard}}</span><span>{{$Cart->CatalogCode}}</span><span>{{$Cart->AmountUnit}}</span></div>
                         </div>
                         <div>

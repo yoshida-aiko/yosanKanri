@@ -3,7 +3,7 @@
 @section('content')
 <script src="{{ asset('js/conditionScript.js') }}" defer></script>
 <div class="container">
-<h5 class="master-title">設定</h5>
+<h5 class="master-title">{{__('screenwords.master_setting')}}</h5>
 <div class="wrapper">
     <div class="divConditionInput">
     <form id="frmCondition" class="frmConditionInput" action="{{route('Condition.index')}}" method="POST">
@@ -42,47 +42,47 @@
 
             @csrf
             <fieldset>
-            <legend>環境設定</legend>
+            <legend>{{__('screenwords2.environmentalSetting')}}</legend>
                 <div class="form-group">
-                    <label for="bilingual" class="required">バイリンガル</label>
+                    <label for="bilingual" class="required">{{__('screenwords2.bilingual')}}</label>
                     <input type="radio" id="use" name="bilingual" value="1"  {{ $Condition->bilingual == 1 ? 'checked' : '' }}>
-                    <label for="use" class="radio1">使用する</label>
+                    <label for="use" class="radio1">{{__('screenwords2.uses')}}</label>
                     <input type="radio" id="notUse" name="bilingual" value="0" {{ $Condition->bilingual == 0 ? 'checked' : '' }}>
-                    <label for="notUse" class="radio1">使用しない</label>              
+                    <label for="notUse" class="radio1">{{__('screenwords2.dontUse')}}</label>              
                 </div>
                 <div class="form-group">
-                    <label for="SystemNameJp" class="required">システム名(和名)</label>
+                    <label for="SystemNameJp" class="required">{{__('screenwords2.systemNameJp')}}</label>
                     <input type="text" id="SystemNameJp" name="SystemNameJp" value="{{ $Condition->SystemNameJp }}" >
                 </div>
                 <div class="form-group">
-                    <label for="SystemNameEn" id="lblSystemNameEn">システム名(英名)</label>
+                    <label for="SystemNameEn" id="lblSystemNameEn">{{__('screenwords2.systemNameEn')}}</label>
                     <input type="text" id="SystemNameEn" name="SystemNameEn" value="{{ $Condition->SystemNameEn }}" {{ $Condition->bilingual == 0 ? 'readonly' : '' }}>
                 </div>
                 <div class="form-group">
-                    <label for="FiscalStartMonth" class="required">期首月</label>
+                    <label for="FiscalStartMonth" class="required">{{__('screenwords2.fiscalStartMonth')}}</label>
                     <input type="number" id="FiscalStartMonth" name="FiscalStartMonth" class="text-right" min="1" max="12" value="{{ $Condition->FiscalStartMonth }}">
-                    <span>月</span>
+                    <span>{{__('screenwords2.month')}}</span>
                 </div>              
            </fieldset>
 
            <fieldset>
-            <legend>掲示板</legend>
+            <legend>{{__('screenwords2.bulletinBoard')}}</legend>
                 <div class="form-group">
-                    <label for="BulletinTerm"  class="required">掲示日数</label>
+                    <label for="BulletinTerm"  class="required">{{__('screenwords2.bulletinTerm')}}</label>
                     <input type="number" id="BulletinTerm" name="BulletinTerm" class="text-right" min="1" max="999" value="{{ $Condition->BulletinTerm }}">
-                    <span>日間</span>
+                    <span>{{__('screenwords2.betweenDays')}}</span>
                 </div>
                 <div class="form-group">
-                    <label for="NewBulletinTerm"  class="required">NEW！表示期間</label>
+                    <label for="NewBulletinTerm"  class="required">{{__('screenwords2.newBulletinTerm')}}</label>
                     <input type="number" id="NewBulletinTerm" name="NewBulletinTerm" class="text-right" min="0" max="999" value="{{ $Condition->NewBulletinTerm }}">
-                    <span>日間</span>
+                    <span>{{__('screenwords2.betweenDays')}}</span>
                 </div>              
             </fieldset>
 
             <fieldset>
-            <legend>発注</legend>
+            <legend>{{__('screenwords2.order')}}</legend>
                 <div class="form-group">
-                    <label for="email" class="required">メールアドレス</label>
+                    <label for="email" class="required">{{__('screenwords2.eMail')}}</label>
                     <input type="text" id="EMail" name="email" value="{{ $Condition->EMail }}" >
                 </div>              
            </fieldset>
@@ -119,18 +119,18 @@
             --}}
 
             <fieldset>
-            <legend>執行基準</legend>
+            <legend>{{__('screenwords2.executionBasis')}}</legend>
                 <div class="form-group text-center" id="ExecutionBasisArea">
                     <input type="radio" id="deliveryBasis" name="ExecutionBasis" value="1"  {{ $Condition->ExecutionBasis == 1 ? 'checked' : '' }}>
-                    <label for="deliveryBasis" class="radio1">納品基準</label>
+                    <label for="deliveryBasis" class="radio1">{{__('screenwords2.deliveryBasis')}}</label>
                     <input type="radio" id="paymentBasis" name="ExecutionBasis" value="2"  {{ $Condition->ExecutionBasis == 2 ? 'checked' : '' }}>
-                    <label for="paymentBasis"  class="radio1">支払基準</label>              
+                    <label for="paymentBasis"  class="radio1">{{__('screenwords2.paymentBasis')}}</label>              
                 </div>           
            </fieldset>
 
             <div class="form-group text-center">
-                <button id="submit_condition_regist" name="send" class="btn btn-primary" type="submit" onClick="if (!confirm('登録しますか？')){ return false;} return true;">保存</button>
-                <input id="btn_condition_clear" type="submit" name="delete" class="btn btn-secondary" value="クリア">
+                <button id="submit_condition_regist" name="send" class="btn btn-primary" type="submit" onClick="if (!confirm('登録しますか？')){ return false;} return true;">{{__('screenwords2.register')}}</button>
+                <input id="btn_condition_clear" type="submit" name="delete" class="btn btn-secondary" value="{{__('screenwords2.clear')}}">
                 <input type="hidden" id="id" name="id" value="{{ $Condition->id }}" >
                 <input type="hidden" id="mode" name="mode" value="{{ $mode }}" >
             </div>

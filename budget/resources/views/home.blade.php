@@ -10,7 +10,7 @@
     <div class="leftside-fixed-280">
         <h6 class="h6-title">{{ __('screenwords.bulletinBoard') }}</h6>
         
-        <button type="button" id="btnModalBulletinBoad" class="btn btn-primary" >{{ __('screenwords.newRegister') }}</button>
+        <button type="button" id="btnModalBulletinBoard" class="btn btn-primary" >{{ __('screenwords.newRegister') }}</button>
         <section class="info">
         @foreach($arrBulletin as $Bulletin)
             <article class="bulletinArticle">
@@ -28,14 +28,14 @@
                     <div class="editicon" title="編集画面を表示します"></div>
                 @endif
                 <p>{{$Bulletin['Contents']}}</p>
-                <input type="hidden" name="BulletinBoadIdlist" value="{{$Bulletin['id']}}" >
+                <input type="hidden" name="BulletinBoardIdlist" value="{{$Bulletin['id']}}" >
                 <input type="hidden" name="RegistUserIdlist" value="{{$Bulletin['UserId']}}" >
                 <input type="hidden" name="LimitDatelist" value="{{$Bulletin['LimitDate']}}" >
             </article>
         @endforeach
         </section>
         
-        <div id="modal-bulletinboad" class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
+        <div id="modal-bulletinboard" class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="Modal" aria-hidden="true">
         <!--以下modal-dialogのCSSの部分で modal-lgやmodal-smを追加するとモーダルのサイズを変更することができる-->
         <div  class="modal-dialog modal-sm100" role="document">
             <div class="modal-content">
@@ -48,7 +48,7 @@
                 <div class="modal-body">
                     <section class="update">
                         @csrf
-                        <input type="hidden" id="BulletinBoadId" name="BulletinBoadId" >
+                        <input type="hidden" id="BulletinBoardId" name="BulletinBoardId" >
                         <input type="hidden" id="RegistUserId" name="RegistUserId" >
                         <div class="form-group" style="margin-top:10px;">
                             <label for="RegistDate">{{ __('screenwords.registerDate') }}</label>
@@ -73,12 +73,10 @@
                     </section>
                 </div>
                 <div class="modal-footer">
-                    <input type="button" id="btnBulletinboadSave" class="btn btn-width70 btn-primary" value="{{ __('screenwords.save') }}"
-                        onClick="BulletinboadSave('{{ __('messages.confirmRegist') }}')"  />
-                    <input type="button" id="btnBulletinboadDelete" class="btn btn-width70 btn-primary" value="{{ __('screenwords.delete') }}" 
-                        onClick="BulletinboadDelete('{{ __('messages.confirmDelete') }}')"  />
-                    <input type="button" id="btnBulletinBoadClear" class="btn btn-secondary" value="{{ __('screenwords.clear') }}">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('screenwords.close') }}</button>
+                    <input type="button" id="btnBulletinboardSave" class="btn btn-width70 btn-primary" value="{{ __('screenwords.save') }}"/>
+                    <input type="button" id="btnBulletinboardDelete" class="btn btn-width70 btn-primary" value="{{ __('screenwords.delete') }}"/>
+                    <input type="button" id="btnBulletinBoardClear" class="btn btn-secondary" value="{{ __('screenwords.clear') }}">
+                    <button type="button" id="btnBulletinBoardClose" class="btn btn-secondary">{{ __('screenwords.close') }}</button>
                </div>
             </div>
         </div>
@@ -141,7 +139,7 @@
                 @else {{$OrderRequest->item->MakerNameJp}}
                 @endif
             </td>
-            <td class="align-right">{{$OrderRequest->UnitPrice}}</td>
+            <td class="align-right">\{{number_format($OrderRequest->UnitPrice)}}</td>
             <td class="align-right">{{$OrderRequest->RequestNumber}}</td>
             <td class="align-center">
                 @if($OrderRequest->RequestProgress==config('const.RequestProgress.ordered'))
