@@ -35,11 +35,13 @@ return [
     'delete' => 'Delete',
     'delivery' => 'Delivery',
     'deliveryDate' => 'Delivery date',
+    'deliveryDateRange' => 'Order date ≦ Delivery date ≦ Excution end date',
     'deliveryNumber' => 'Delivery number',
     'deliveryList' => 'Delivery list',
     'display' => 'Display',
     'displayLimit' => 'Display limit',
-    
+    'displayEdit' => 'Display the edit screen',
+
     'excution' => 'Excution',
     'excutionAmount' => 'Excution amount',
     'excutionDate' => 'Excution date',
@@ -66,6 +68,7 @@ return [
     
     'newItemInput' => 'New item input',
     'newRegister' => 'New Register',
+    'numbersOnly' => 'Numbers only',
     'noData' => 'There is no data.',
     
     'orderAmount' => 'Order amount',

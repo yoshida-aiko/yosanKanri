@@ -35,10 +35,12 @@ return [
     'delete' => '削除',
     'delivery' => '納品',
     'deliveryDate' => '納品日',
+    'deliveryDateRange' => '発注日 ≦ 納品日 ≦ 執行終了日',
     'deliveryNumber' => '納品数',
     'deliveryList' => '納品リスト',
     'display' => '表示',
     'displayLimit' => '表示期限',
+    'displayEdit' => '編集画面を表示します',
     
     'excution' => '執行',
     'excutionAmount' => '執行額',
@@ -66,6 +68,7 @@ return [
     
     'newItemInput' => '新商品入力',
     'newRegister' => '新規登録',
+    'numbersOnly' => '数字のみ',
     'noData' => 'データがありません',
 
     
@@ -110,7 +113,6 @@ return [
     'save' => '保存',
     'searchHeaderPlaceholder' => '商品名またはカタログコードの一部で検索します',
     'supplierName' => '発注先',
-
     'sortBudgetName' => 'BudgetNameJp',
     'sortItemName' => 'ItemNameJp',
     'sortItemNameFromItem' => 'item.ItemNameJp',

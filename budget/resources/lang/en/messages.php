@@ -8,4 +8,5 @@ return [
     |-----------------------------------------------------------------
     */
     'confirmDelete' => 'Do you delete it?',
+    'confirmRegist' => 'Do you regist it?',
 ];
