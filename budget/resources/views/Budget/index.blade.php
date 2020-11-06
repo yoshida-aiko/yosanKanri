@@ -10,7 +10,7 @@
         <form id="frmBudgetNendo" action="{{action('BudgetController@index')}}" method="get">
         @csrf
         <div class="form-group text-right prev-masterTable">
-            <label for="fiscalYear">年度</label>
+            <label for="fiscalYear">{{__('screenwords2.fiscalYear')}}</label>
             <input type="number" id="fiscalYear" name="fiscalYear" min="2001" max="2100" value="{{$Nendo}}" onchange="submit(this.form)">
         </div>
         </form>

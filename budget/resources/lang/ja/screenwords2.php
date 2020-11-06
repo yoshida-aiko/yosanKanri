@@ -39,6 +39,7 @@ return [
     /*F*/
     'fax' => 'ファックス番号',
     'fiscalStartMonth' => '期首月',
+    'fiscalYear' => '年度',
 
     /*L*/
     'loginAccount' => 'ユーザーID',

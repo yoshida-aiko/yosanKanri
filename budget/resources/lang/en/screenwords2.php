@@ -39,6 +39,7 @@ return [
     /*F*/
     'fax' => 'Fax',
     'fiscalStartMonth' => 'begin period month',
+    'fiscalYear' => 'Fiscal year',
 
     /*L*/
     'loginAccount' => 'User ID',
