@@ -134,7 +134,6 @@
                 <input id="btn_user_clear" type="button" class="btn btn-secondary" value="{{__('screenwords2.clear')}}" @if (strpos(Auth::user()->UserAuthString,'Master') === false) disabled="disabled" @endif>
                 <input type="hidden" id="id" name="id" value="{{ $editUser->id }}" >
                 <input type="hidden" id="bilingual" name="bilingual" value="{{ session('bilingual') }}" >
-                <input type="hidden" id="local" name="local" value="{{ App::getLocale()=='en' ? 'en' : 'jp'}}" >
                 <input type="hidden" id="editpass" name="editpass" value="{{ $editUser->password }}" >
             </div>
 
