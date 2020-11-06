@@ -50,8 +50,8 @@ jQuery (function ()
         $("#lblUserNameEn").addClass('required');
     }
 
-    var local = $('input:hidden[name="local"]').val();
-    if (local == 'en') {
+    // 英語の場合、スタイル調整
+    if (selLang == 1) {
         $("#author > label").css('width','100');
         $(".frmMasterInput >div.form-group > label").css('width','220');      
     }
