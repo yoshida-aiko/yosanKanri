@@ -3,7 +3,7 @@
 	background-color: -webkit-linear-gradient(to top, #292E49, #536976, #BBD2C5);
 	background-color: linear-gradient(to top, #292E49, #536976, #BBD2C5);*/
 	background-color:#154170;
-	background-image:url('../images/bubble.png');
+	/*background-image:url('../images/bubble.png');*/
 	background-size: cover;
 }
 
@@ -386,6 +386,7 @@ h5{
 	border-right:1px solid #a6a6a6;
 	border-radius:3px 3px 0 0;
 	margin:0;
+	cursor: pointer;
 }
 input[name="searchFormTab"] {
 	display: none;
@@ -444,7 +445,7 @@ input[name="tabFavorite"]:checked + .tabLabel + .tabContent {
 	height:200px;
 	background-image: url("../images/detailsearchbutton.png");
 	background-repeat: no-repeat;
-	margin-top:49px;
+	margin-top:47px;
 }
 .maker-checkbox-group {
 	height:300px;

@@ -88,14 +88,13 @@
                             <?php
                             if ($order->DeliveryNumber >= 0) {
                                 $DeliveryExpectedNumber = $order->OrderNumber - $order->DeliveryNumber;
-                                $DeliveryExpectedNumberFormat = number_format($order->OrderNumber - $order->DeliveryNumber);
                             }
                             else{
                                 $DeliveryExpectedNumber = '1';
                             }
                             ?>
-                            <span class="spnOrderInputNumber">{{ $DeliveryExpectedNumberFormat }}</span>
-                            <input type="number" class="inpOrderInputNumber inpDeliveryExpectedNumber" pattern="[0-9]*" title="数字のみ" value="{{ $DeliveryExpectedNumber }}" min="1" max="{{$order->OrderNumber}}">
+                            <span class="spnOrderInputNumber">{{ $DeliveryExpectedNumber }}</span>
+                            <input type="number" class="inpOrderInputNumber inpDeliveryExpectedNumber" pattern="[0-9]*" value="{{ $DeliveryExpectedNumber }}" min="1" max="{{$DeliveryExpectedNumber}}">
                             <input type="hidden" class="hidUnitPrice" value="{{$order->UnitPrice}}">
                         </td>
                         <td class="align-right tdOrderInputNumber tdSummaryPrice">
@@ -104,7 +103,7 @@
                                 $SummaryFormat = number_format($order->UnitPrice * intval($DeliveryExpectedNumber));
                             ?>
                             <span class="spnOrderInputNumber">\{{ $SummaryFormat }}</span>
-                            <input type="text" class="inpOrderInputNumber inpSummaryPrice" pattern="[0-9]*"  title="数字のみ" min="1" value="{{ $Summary }}" >
+                            <input type="text" class="inpOrderInputNumber inpSummaryPrice" pattern="[0-9]*"  title="{{__('screenwords.numbersOnly')}}" min="1" value="{{ $Summary }}" >
                         </td>
                         <td>
                             @if(App::getLocale()=='en') {{ $order->RequestUserNameEn }}

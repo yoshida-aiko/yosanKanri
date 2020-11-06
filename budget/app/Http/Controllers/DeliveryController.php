@@ -56,7 +56,7 @@ class DeliveryController extends Controller
             $join->on('orders.OrderSlipId','=','order_slips.id');
         })->leftjoin('users as recusers', function($join) {
             $join->on('order_slips.UserId','=','recusers.id');
-        })->where('DeliveryProgress','=',0)->sortable()->paginate(25);
+        })->where('DeliveryProgress','=',config('const.DeliveryProgress.unpaid'))->sortable()->paginate(25);
 
         //予算マスタ
         $Budgets = Budget::all();
@@ -111,7 +111,7 @@ class DeliveryController extends Controller
                 $UpdateOrder->DeliveryNumber += $expectednum;//納品済み数の計算　[発注]納品済数 + [発注]予定納品数
                 
                 if ( $UpdateOrder->DeliveryNumber >= $ordernum){
-                    $UpdateOrder->DeliveryProgress = 1;//完納
+                    $UpdateOrder->DeliveryProgress = config('const.DeliveryProgress.payingcomp');//完納
                     //OrderRequestテーブルの削除
                     $orderRequestDelete[] = $orderrequestid;
                 }

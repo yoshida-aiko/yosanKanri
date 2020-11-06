@@ -168,6 +168,11 @@ return [
         'useStartDate' => 'Excution period(Start Date)', 
         'useEndDate' => 'Excution period(End Date)', 
         'displayOrder' => 'Display Order',
+        'SystemNameJp' => 'System name(Jp)',
+        'SystemNameEn' => 'System name(En)',
+        'FiscalStartMonth' => 'begin period month',
+        'BulletinTerm' => 'Notice days', 
+        'NewBulletinTerm' => 'NEW！Display period', 
     ],
 
 ];

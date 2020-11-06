@@ -34,7 +34,7 @@ class BudgetStatusController extends Controller
             $endDate = $request->endDate;
         }
 
-        $Budgets = Budget::where('useStartDate','>=',$startDate)->where('useEndDate','<=',$endDate)->sortable()->get();
+        $Budgets = Budget:: where('useStartDate','<=',$endDate)->where('useEndDate','>=',$startDate)->sortable()->get();
         
         $BudgetLists = array();
         foreach($Budgets as $Budget){
@@ -44,14 +44,7 @@ class BudgetStatusController extends Controller
             $BudgetScheduledRemain = 0;
             //DB::enableQueryLog();
             $remain_D = Delivery::where('BudgetId','=',$Budget->id)->sum('DeliveryPrice');
-                        /*->where('DeliveryDate','>=',$startDate)
-                        ->where('DeliveryDate','<=',$endDate)->sum('DeliveryPrice');*/
-            
-                        //dd(DB::getQueryLog());
-
             $remain_O = Order::where('BudgetId','=',$Budget->id)->sum(DB::raw('UnitPrice * (OrderNumber - DeliveryNumber)'));
-                        /*->where('OrderDate','>=',$startDate)
-                        ->where('OrderDate','<=',$endDate)->sum(DB::raw('UnitPrice * (OrderNumber - DeliveryNumber)'));*/
             
             /*執行額をセット*/
             if ($remain_D != null) {
@@ -142,7 +135,7 @@ class BudgetStatusController extends Controller
             ])->leftjoin('order_requests', function($join) {
                 $join->on('orders.OrderRequestId','=','order_requests.id');
             })->where('orders.BudgetId','=',$selectBudgetId)
-            ->where('orders.DeliveryProgress','<>',1)
+            ->where('orders.DeliveryProgress','<>',config('const.DeliveryProgress.payingcomp'))
             ->where('orders.OrderDate','>=',$startDate)
             ->where('orders.OrderDate','<=',$endDate)
             ->orderBy('orders.OrderDate')->get();

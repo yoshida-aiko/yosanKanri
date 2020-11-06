@@ -40,14 +40,14 @@
             @foreach ($arrBudget['children'] as $arrChild)
                 <?php
                     $tooltip = (App::getLocale()=='en' ? $arrChild['ProductNameEn'] : $arrChild['ProductNameJp']);
-                    $tooltip .= '【'.__('screenwords.capacity').'】';$arrChild['AmountUnit'];
-                    $tooltip .= '【'.__('screenwords.standard').'】'.$arrChild['Standard'];
-                    $tooltip .= '【'.__('screenwords.maker').'】'.(App::getLocale()=='en' ? $arrChild['MakerNameEn'] : $arrChild['MakerNameJp']);
-                    $tooltip .= '【'.__('screenwords.catalogCode').'】'.$arrChild['CatalogCode'];
-                    $tooltip .= '【'.__('screenwords.client').'】'.(App::getLocale()=='en' ? $arrChild['RequestUserNameEn'] : $arrChild['RequestUserNameJp']);
+                    $tooltip .= '<br>'.__('screenwords.capacity').'：'.$arrChild['AmountUnit'];
+                    $tooltip .= '<br>'.__('screenwords.standard').'：'.$arrChild['Standard'];
+                    $tooltip .= '<br>'.__('screenwords.maker').'：'.(App::getLocale()=='en' ? $arrChild['MakerNameEn'] : $arrChild['MakerNameJp']);
+                    $tooltip .= '<br>'.__('screenwords.catalogCode').'：'.$arrChild['CatalogCode'];
+                    $tooltip .= '<br>'.__('screenwords.client').'：'.(App::getLocale()=='en' ? $arrChild['RequestUserNameEn'] : $arrChild['RequestUserNameJp']);
                 ?>
                 <li>
-                    <span data-toggle="tooltip" title="{{$tooltip}}">
+                    <span title="{{$tooltip}}">
                         @if(App::getLocale()=='en') {{$arrChild['ProductNameEn']}}
                         @else {{$arrChild['ProductNameJp']}}
                         @endif
@@ -136,11 +136,11 @@
                             }
                             ?>
                             <span class="spnOrderInputNumber">\{{ $UnitPrice }}</span>
-                            <input type="text" class="inpOrderInputNumber inpOrderUnitPrice" pattern="[0-9]*" title="数字のみ" value="{{ $OrderRequest->UnitPrice }}" >
+                            <input type="text" class="inpOrderInputNumber inpOrderUnitPrice" pattern="[0-9]*" title="{{__('screenwords.numbersOnly')}}" value="{{ $OrderRequest->UnitPrice }}" >
                         </td>
                         <td class="align-right tdOrderInputNumber">
                             <span class="spnOrderInputNumber">{{ $OrderRequest->RequestNumber }}</span>
-                            <input type="number" class="inpOrderInputNumber inpOrderRequestNumber" pattern="[0-9]*"  title="数字のみ" min="1" value="{{ $OrderRequest->RequestNumber }}" >
+                            <input type="number" class="inpOrderInputNumber inpOrderRequestNumber" pattern="[0-9]*"  min="1" max="999" value="{{ $OrderRequest->RequestNumber }}" >
                         </td>
                         <td class="align-right tdOrderTotalFee">
                             <?php
@@ -320,8 +320,8 @@
                 </td>
                 <td>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$BudgetItem['BudgetAmount']}} @endif</td>
                 <td>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$BudgetItem['BudgetUsed']}} @endif</td>
-                <td>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$BudgetItem['BudgetScheduled']}} @endif</td>
                 <td>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$BudgetItem['BudgetRemainBal']}} @endif</td>
+                <td>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$BudgetItem['BudgetScheduled']}} @endif</td>
                 <td>@if (strpos(Auth::user()->UserAuthString,'Budget') !== false) \{{$BudgetItem['BudgetScheduledRemain']}} @endif</td>
             </tr>
             @endforeach

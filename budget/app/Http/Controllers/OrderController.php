@@ -196,18 +196,18 @@ class OrderController extends Controller
                 $remain_D = Delivery::where('BudgetId','=',$parentBudget->id)
                     ->sum('DeliveryPrice');
                 /*執行予定額を取得 */
-                $remain_O_getdatas = Order::where('BudgetId','=',$parentBudget->id);
-                $remain_O = 0;
-                foreach($remain_O_getdatas as $getdata){
+                /*$remain_O_getdatas = Order::where('BudgetId','=',$parentBudget->id);*/
+                $remain_O = Order::where('BudgetId','=',$parentBudget->id)->sum(DB::raw('UnitPrice * (OrderNumber - DeliveryNumber)'));;
+                /*foreach($remain_O_getdatas as $getdata){
                     $remain_O = $remain_O + ($getdata->UnitPrice * ($getdata->OrderNumber - $getdata->DeliveryNumber));
-                }
+                }*/
 
                 /*執行額をセット*/
-                if ($remain_D !== null) {
+                if ($remain_D != null) {
                     $BudgetUsed = $remain_D;
                 }
                 /*執行予定額をセット*/
-                if ($remain_O !== null) {
+                if ($remain_O != null) {
                     $BudgetScheduled = $remain_O;
                 }
                 /*執行済残高（[残予算]予算－[残予算]執行額*/
@@ -448,7 +448,7 @@ class OrderController extends Controller
                     $Order->UnitPrice = $forOrder->UnitPrice;
                     $Order->OrderNumber = $forOrder->RequestNumber;
                     $Order->DeliveryNumber = 0;
-                    $Order->DeliveryProgress = 0;//0：未納
+                    $Order->DeliveryProgress = config('const.DeliveryProgress.unpaid');//0：未納
                     $Order->save();
 
                     $item_c = [

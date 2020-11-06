@@ -16,8 +16,8 @@ class BulletinBoardController extends Controller
         $response['status'] = 'OK';
 
         try{
-            if ($request->has('BulletinBoadId') && $request->BulletinBoadId != ""){
-                $BulletinBoard = BulletinBoard::findOrFail($request->BulletinBoadId);
+            if ($request->has('BulletinBoardId') && $request->BulletinBoardId != ""){
+                $BulletinBoard = BulletinBoard::findOrFail($request->BulletinBoardId);
             }
             else {
                 $BulletinBoard = new BulletinBoard();
@@ -44,10 +44,14 @@ class BulletinBoardController extends Controller
         $response['status'] = 'OK';
 
         try{
-            if ($request->has('BulletinBoadId') && $request->BulletinBoadId != ""){
-                $BulletinBoard = BulletinBoard::findOrFail($request->BulletinBoadId);
+            if ($request->has('BulletinBoardId') && $request->BulletinBoardId != ""){
+                $BulletinBoard = BulletinBoard::findOrFail($request->BulletinBoardId);
+                $BulletinBoard->delete();
             }
-            $BulletinBoard->delete();
+            else {
+                $response['status'] = 'NG';
+                $response['errorMsg'] = "no data";    
+            }
         }
         catch(Exception $e){
             $response['status'] = 'NG';
