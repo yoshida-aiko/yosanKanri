@@ -1,5 +1,12 @@
 jQuery (function ()
 {
+    // ページ読み込み時　システム名(英名) 必須マーク
+    var bilingual = $('input:radio[name="bilingual"]:checked').val();
+    if (bilingual == '1') {
+      $("#lblSystemNameEn").addClass('required');
+    }else{
+      $('#lblSystemNameEn').removeClass('required');
+    }
     // バイリンガル　ラジオボタン選択イベント
     $(function() {
         $('[name="bilingual"]:radio').change( function() {

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
 use Request as PostRequest;
+use App;
 use App\Condition;
 
 
@@ -19,8 +20,8 @@ class ConditionController extends Controller
                 return redirect()->route('Condition.index');
             }  
             list($Condition,$mode) = $this->store($request);
-            // Session::put('completeMessage', '登録完了しました'); 
-            $request->session()->flash('completeMessage', '登録完了しました');
+            $msg = App::getLocale()=='en' ? 'It registered' : '登録完了しました';
+            $request->session()->flash('completeMessage', $msg);
 
         }else if ($request->has('delete')) {
             // クリアボタン
@@ -102,6 +103,8 @@ class ConditionController extends Controller
             $rules['SMTPAccount'] = ['required', 'string', 'max:100'];
             $rules['SMTPPassword'] = ['required', 'string', 'min:50'];
         } */
+        $sorter = ['SystemNameJp','SystemNameEn','FiscalStartMonth','BulletinTerm','NewBulletinTerm','email'];
+        $rules = array_merge(array_flip($sorter),$rules);
         $this->validate($request, $rules);
 
         $Condition->VersionNo = 0;

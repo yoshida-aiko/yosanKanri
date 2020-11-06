@@ -870,55 +870,55 @@ label.required:after {
 	padding:2px 15px;
 	background-color: RGBA(255,255,255,1.0);
 }
-.frmConditionInput {
+#frmCondition {
 	padding-top:10px;
 	min-width:600px;
 }
-.frmConditionInput > fieldset >div.form-group > label {
-	width:150px;
+#frmCondition > fieldset >div.form-group > label {
+	width:160px;
 	text-align: right;
 	padding-right:10px;
 	vertical-align: top;
 }
-.frmConditionInput >fieldset >div.form-group >label.radio1{
+#frmCondition >fieldset >div.form-group >label.radio1{
 	width: 6em;
     text-align: left;
 }
-.frmConditionInput >fieldset >div.form-group >label.chk1{
+#frmCondition >fieldset >div.form-group >label.chk1{
 	width: 20em;
 	text-align: left;
 }
-.frmConditionInput > fieldset > legend {
+#frmCondition > fieldset > legend {
 	font-size: 1.3em;
 }
-.frmConditionInput  > fieldset > div.form-group > input[type=text]{
+#frmCondition  > fieldset > div.form-group > input[type=text]{
 	width:400px;
 }
-.frmConditionInput  > fieldset > div.form-group > input[type=checkbox]{
+#frmCondition  > fieldset > div.form-group > input[type=checkbox]{
 	margin-left: 154px;
 }
-.frmConditionInput > fieldset >div.form-group > span {
+#frmCondition > fieldset >div.form-group > span {
 	margin-left: 0.5em;
 }
-.frmConditionInput  > fieldset > div.form-group > input[type=text]:read-only {
+#frmCondition  > fieldset > div.form-group > input[type=text]:read-only {
     cursor: normal;
     background-color: #f8f8f8;
 	color: #999;
 	border:1px solid #666;
 }
-.frmConditionInput  > fieldset > div.readonly {
+#frmCondition  > fieldset > div.readonly {
 	color: #999;
 }
 
 /* スピンボタン 非表示 */
 /* Chrome、Safari Edge*/
-.frmConditionInput  > fieldset > div.form-group > input[type=number]::-webkit-outer-spin-button,
-.frmConditionInput  > fieldset > div.form-group > input[type=number]::-webkit-inner-spin-button
+#frmCondition  > fieldset > div.form-group > input[type=number]::-webkit-outer-spin-button,
+#frmCondition  > fieldset > div.form-group > input[type=number]::-webkit-inner-spin-button
 {
 	-webkit-appearance: none;
     margin: 0;
 }
 /* Firefox、IE */
-.frmConditionInput > fieldset > div.form-group > input[type=number]{
+#frmCondition > fieldset > div.form-group > input[type=number]{
 	-moz-appearance:textfield;
 }

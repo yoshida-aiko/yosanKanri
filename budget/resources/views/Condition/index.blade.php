@@ -6,7 +6,7 @@
 <h5 class="master-title">{{__('screenwords.master_setting')}}</h5>
 <div class="wrapper">
     <div class="divConditionInput">
-    <form id="frmCondition" class="frmConditionInput" action="{{route('Condition.index')}}" method="POST">
+    <form id="frmCondition"  action="{{route('Condition.index')}}" method="POST">
             {{-- エラーメッセージ --}}
             @if ($errors->any())
                 <div class="alert alert-danger">
@@ -129,7 +129,7 @@
            </fieldset>
 
             <div class="form-group text-center">
-                <button id="submit_condition_regist" name="send" class="btn btn-primary" type="submit" onClick="if (!confirm('登録しますか？')){ return false;} return true;">{{__('screenwords2.register')}}</button>
+                <button id="submit_condition_regist" name="send" class="btn btn-primary" type="submit" onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;">{{__('screenwords2.register')}}</button>
                 <input id="btn_condition_clear" type="submit" name="delete" class="btn btn-secondary" value="{{__('screenwords2.clear')}}">
                 <input type="hidden" id="id" name="id" value="{{ $Condition->id }}" >
                 <input type="hidden" id="mode" name="mode" value="{{ $mode }}" >
