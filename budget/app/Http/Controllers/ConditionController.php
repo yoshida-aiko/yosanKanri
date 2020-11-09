@@ -84,27 +84,20 @@ class ConditionController extends Controller
         if (!$isUpdate){
             $Condition = new Condition(); 
         }
-
-        $rules = [
-            'SystemNameJp' => ['required', 'string', 'max:50'],
-            'FiscalStartMonth' => ['required', 'integer'],
-            'BulletinTerm' => ['required', 'integer'],
-            'NewBulletinTerm' => ['required', 'integer'],
-            'email' => ['required', 'string', 'email', 'max:100'],
-            // SMTP項目は　.envに設定するためコメント化
-            /* 'SMTPServerId' => ['required', 'string', 'max:100'],
-            'SMTPServerPort' => ['required', 'integer'], */
-        ];
+        $rules['SystemNameJp'] = ['required', 'string', 'max:50'];
         if ($request['bilingual'] == "1") {
             $rules['SystemNameEn'] = ['required', 'string', 'max:50'];
         }
-        // SMTP項目は　.envに設定するためコメント化
-        /* if ($request['SMTPAuthFlag'] == "1") {
-            $rules['SMTPAccount'] = ['required', 'string', 'max:100'];
-            $rules['SMTPPassword'] = ['required', 'string', 'min:50'];
-        } */
-        $sorter = ['SystemNameJp','SystemNameEn','FiscalStartMonth','BulletinTerm','NewBulletinTerm','email'];
-        $rules = array_merge(array_flip($sorter),$rules);
+        $rules['FiscalStartMonth'] = ['required', 'integer'];
+        $rules['BulletinTerm'] = ['required', 'integer'];
+        $rules['NewBulletinTerm'] = ['required', 'integer'];
+        /* emailは新システムでは使用しないためコメント化
+            SMTP項目は　.envに設定するためコメント化
+        $rules['email'] =  ['required', 'string', 'email', 'max:100'];
+        $rules['SMTPServerId'] =  ['required', 'string', 'max:100'];
+        $rules['SMTPServerPort'] =  ['required', 'integer']; 
+        */
+
         $this->validate($request, $rules);
 
         $Condition->VersionNo = 0;
@@ -132,7 +125,8 @@ class ConditionController extends Controller
         // $Condition->SMTPConnectMethod = 2;
         $Condition->Organization = "インフォグラム";
         $Condition->Department = "福岡本社";
-        $Condition->EMail = $request->email;
+        // emailは新システムでは使用しないためコメント化
+        // $Condition->EMail = $request->email;
         $Condition->ExecutionBasis = $request->ExecutionBasis;
        
         $Condition->save();

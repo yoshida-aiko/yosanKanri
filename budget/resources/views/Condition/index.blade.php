@@ -23,7 +23,7 @@
                 $Condition->FiscalStartMonth = old('FiscalStartMonth');
                 $Condition->BulletinTerm = old('BulletinTerm');
                 $Condition->NewBulletinTerm = old('NewBulletinTerm');
-                $Condition->EMail = old('email');               
+                // $Condition->EMail = old('email');               
                 /* SMTP項目　コメント化
                 $Condition->SMTPServerId = old('SMTPServerId');
                 $Condition->SMTPServerPort = old('SMTPServerPort');
@@ -79,6 +79,7 @@
                 </div>              
             </fieldset>
 
+            {{-- 　SMTP項目、発注　コメント化
             <fieldset>
             <legend>{{__('screenwords2.order')}}</legend>
                 <div class="form-group">
@@ -87,7 +88,6 @@
                 </div>              
            </fieldset>
 
-           {{-- 　SMTP項目　コメント化
            <fieldset>
             <legend>SMTPサーバー</legend>
                 <div class="form-group">
