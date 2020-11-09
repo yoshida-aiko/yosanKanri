@@ -60,6 +60,13 @@
                 </ul>
             </div>
             @endif
+            @isset ($status)
+            <div class="alert alert-success">
+                <ul>
+                    <li>{{__('screenwords2.registered')}}</li>
+                </ul>
+            </div>
+            @endisset
             
             @csrf
             <div class="form-group">
@@ -130,7 +137,7 @@
                 <div class="alert-string" style="margin-left:150px;">{{__('screenwords2.signatureAnnotation')}}</div>
             </div>
             <div class="form-group text-center">
-                <button id="submit_user_regist" type="submit" name="submit_user_regist" class="btn btn-primary" >{{__('screenwords2.register')}}</button>
+                <button id="submit_user_regist" type="submit" name="submit_user_regist" class="btn btn-primary" onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;" >{{__('screenwords2.register')}}</button>
                 <input id="btn_user_clear" type="button" class="btn btn-secondary" value="{{__('screenwords2.clear')}}" @if (strpos(Auth::user()->UserAuthString,'Master') === false) disabled="disabled" @endif>
                 <input type="hidden" id="id" name="id" value="{{ $editUser->id }}" >
                 <input type="hidden" id="bilingual" name="bilingual" value="{{ session('bilingual') }}" >

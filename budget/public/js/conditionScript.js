@@ -49,5 +49,8 @@ jQuery (function ()
           event.preventDefault();
       }
   });
+  
+  // ２秒後に登録成功のブロックを非表示 
+  $(".alert-success").fadeOut( 2000 );
 
 })

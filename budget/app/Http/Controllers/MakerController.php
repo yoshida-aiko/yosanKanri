@@ -87,8 +87,9 @@ class MakerController extends Controller
         $Makers = Maker::with(['supplier'])->get();
         $editMaker = new Maker();
         $Suppliers = Supplier::select('id','SupplierNameJp','SupplierNameEn')->get();
+        $status = true;
 
-        return view('Maker/index',compact('Makers','editMaker','Suppliers'));
+        return view('Maker/index',compact('Makers','editMaker','Suppliers','status'));
     }
 
     /**
@@ -138,8 +139,9 @@ class MakerController extends Controller
  
         $editMaker = new Maker();
         $Suppliers = Supplier::select('id','SupplierNameJp','SupplierNameEn')->get();
+        $status = true;
 
-        return view('Maker/index',compact('Makers','editMaker','Suppliers'));
+        return view('Maker/index',compact('Makers','editMaker','Suppliers','status'));
     }
 
     /**

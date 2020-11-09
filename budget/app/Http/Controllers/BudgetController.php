@@ -121,8 +121,9 @@ class BudgetController extends Controller
         }
         
         $editBudget = new Budget();
+        $status = true;
 
-        return view('Budget/index',compact('Budgets','editBudget','Nendo'));
+        return view('Budget/index',compact('Budgets','editBudget','Nendo','status'));
     }
 
     /**
@@ -193,8 +194,9 @@ class BudgetController extends Controller
         $Budget->save();
  
         $editBudget = new Budget();
+        $status = true;
 
-        return view('Budget/index',compact('Budgets','editBudget'));
+        return view('Budget/index',compact('Budgets','editBudget','status'));
     }
 
     /**

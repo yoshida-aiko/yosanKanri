@@ -94,8 +94,9 @@ class SupplierController extends Controller
         $Suppliers = Supplier::all();
         $editSupplier = new Supplier();
         $bilingual = $request->bilingual;
+        $status = true;
 
-        return view('Supplier/index',compact('Suppliers','editSupplier','bilingual'));
+        return view('Supplier/index',compact('Suppliers','editSupplier','bilingual','status'));
     }
 
     /**
@@ -155,8 +156,9 @@ class SupplierController extends Controller
  
         $editSupplier = new Supplier();
         $bilingual = $request->bilingual;
+        $status = true;
 
-        return view('Supplier/index',compact('Suppliers','editSupplier','bilingual'));
+        return view('Supplier/index',compact('Suppliers','editSupplier','bilingual','status'));
     }
 
     /**

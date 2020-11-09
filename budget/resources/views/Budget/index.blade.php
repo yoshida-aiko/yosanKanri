@@ -71,6 +71,13 @@
                 </ul>
             </div>
             @endif
+            @isset ($status)
+            <div class="alert alert-success">
+                <ul>
+                    <li>{{__('screenwords2.registered')}}</li>
+                </ul>
+            </div>
+            @endisset
             
             @csrf
             <div class="form-group">
@@ -95,7 +102,7 @@
                 <input type="number" id="displayOrder" name="displayOrder" class="text-right" min="0" max="999" value="{{ $editBudget->displayOrder }}">
             </div>
             <div class="form-group text-center">
-                <button id="submit_Budget_regist" name="submit_Budget_regist" class="btn btn-primary" >{{__('screenwords2.register')}}</button>
+                <button id="submit_Budget_regist" name="submit_Budget_regist" class="btn btn-primary"  onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;" >{{__('screenwords2.register')}}</button>
                 <input id="btn_Budget_clear" type="button" class="btn btn-secondary" value="{{__('screenwords2.clear')}}">
                 <input type="hidden" id="id" name="id" value="{{ $editBudget->id }}" >
                 <input type="hidden" id="year" name="year" value="{{$Nendo}}" >

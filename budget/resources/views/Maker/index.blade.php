@@ -64,6 +64,13 @@
                 </ul>
             </div>
             @endif
+            @isset ($status)
+            <div class="alert alert-success">
+                <ul>
+                    <li>{{__('screenwords2.registered')}}</li>
+                </ul>
+            </div>
+            @endisset
             
             @csrf
             <div class="form-group">
@@ -85,7 +92,7 @@
                 </select>
             </div>
             <div class="form-group text-center">
-                <button id="submit_Maker_regist" name="submit_Maker_regist" class="btn btn-primary" >{{__('screenwords2.register')}}</button>
+                <button id="submit_Maker_regist" name="submit_Maker_regist" class="btn btn-primary" onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;" >{{__('screenwords2.register')}}</button>
                 <input id="btn_Maker_clear" type="button" class="btn btn-secondary" value="{{__('screenwords2.clear')}}">
                 <input type="hidden" id="id" name="id" value="{{ $editMaker->id }}" >
                 <input type="hidden" id="bilingual" name="bilingual" value="{{ session('bilingual') }}" >

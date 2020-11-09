@@ -32,13 +32,13 @@
                 $Condition->SMTPAuthFlag = old('SMTPAuthFlag'); */
                 ?>
             @endif
-            @if (session('completeMessage'))
-                <div class="alert alert-success">
-                    <ul>
-                    {{ session('completeMessage') }}
-                    </ul>
-                </div>
-            @endif
+            @isset ($status)
+            <div class="alert alert-success">
+                <ul>
+                    <li>{{__('screenwords2.registered')}}</li>
+                </ul>
+            </div>
+            @endisset
 
             @csrf
             <fieldset>

@@ -67,6 +67,7 @@ return [
 
     /*R*/
     'register' => 'Register',
+    'registered' => 'It registered.',
 
     /*S*/
     'signature' => 'Signature',

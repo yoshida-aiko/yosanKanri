@@ -55,7 +55,10 @@ jQuery (function ()
         $("#author > label").css('width','100');
         $(".frmMasterInput >div.form-group > label").css('width','220');      
     }
-    
+          
+    // ２秒後に登録成功のブロックを非表示 
+    $(".alert-success").fadeOut( 2000 );
+
     /*ユーザーマスタ　クリアボタンクリック時*/
     $("#btn_user_clear").click(function() {
         $("#frmUserMaster > div.form-group > input[type=text]").val("");

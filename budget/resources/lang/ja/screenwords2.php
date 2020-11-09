@@ -67,6 +67,7 @@ return [
 
     /*R*/
     'register' => '保存',
+    'registered' => '更新しました',
 
     /*S*/
     'signature' => '署名',

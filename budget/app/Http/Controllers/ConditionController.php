@@ -20,8 +20,8 @@ class ConditionController extends Controller
                 return redirect()->route('Condition.index');
             }  
             list($Condition,$mode) = $this->store($request);
-            $msg = App::getLocale()=='en' ? 'It registered' : '登録完了しました';
-            $request->session()->flash('completeMessage', $msg);
+            $status = true;
+            return view('Condition/index',compact('Condition','mode','status'));
 
         }else if ($request->has('delete')) {
             // クリアボタン
@@ -37,9 +37,6 @@ class ConditionController extends Controller
      */
     public function index(Request $request)
     {
-        // セッション削除
-        $request->session()->forget('completeMessage');
-
        $Condition = Condition::first();
         if ($Condition == null) {
             $Condition = $this->initialize();

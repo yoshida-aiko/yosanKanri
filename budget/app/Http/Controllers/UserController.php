@@ -122,7 +122,7 @@ class UserController extends Controller
             if ($request->session()->get('bilingual') == "1") {
                 $rules['UserNameEn'] = ['required', 'string', 'max:100'];
             }
-            $rules['password'] =  ['required','string','min:8','regex:/[a-z]/','regex:/[A-Z]/','regex:/[a-z]/','regex:/[0-9]/','regex:/[@$!%*#?&]/'];
+            $rules['password'] =  ['required','string','min:8','regex:/^[0-9a-zA-Z@$!%*#?&]+$/'];
             $rules['Tel'] = ['nullable','string', 'max:20'];
             $rules['email'] = ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')];
             $rules['Signature'] = ['nullable','max:1000'];
@@ -156,8 +156,9 @@ class UserController extends Controller
         $User->save();
 
         [$Users,$editUser] = $this->getUserData();
+        $status = true;
        
-        return view('User/index',compact('Users','editUser'));
+        return view('User/index',compact('Users','editUser','status'));
     }
 
 
