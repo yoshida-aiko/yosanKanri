@@ -5,17 +5,20 @@ return [
     /*
     spec columns
     */
-    'columns'                       => [
+    'columns'   => [
         'alpha'   => [
-            'rows'  => ['ItemNameJp','Standard','description', 'CatalogCode','MakerNameJp','email', 'name', 'slug'],
+            'rows'  => ['ItemClass','ItemNameJp','Standard','description','RequestProgress', 'UserNameJp',
+                        'CatalogCode','MakerNameJp','email', 'name', 'slug','SupplierNameJp','OrderSlipNo',
+                        'RequestUserNameJp','BudgetNameJp','RecieveUserNameJp'],
             'class' => 'fa fa-sort-alpha',
         ],
         'amount'  => [
-            'rows'  => ['AmountUnit','amount', 'price'],
+            'rows'  => ['AmountUnit','amount', 'price','DeliveryDate','OrderPrice','OrderDate','OrderReqDate'],
             'class' => 'fa fa-sort-amount',
         ],
         'numeric' => [
-            'rows'  => ['UnitPrice','created_at', 'updated_at', 'level', 'id', 'phone_number'],
+            'rows'  => ['RequestNumber','UnitPrice','created_at', 'updated_at', 'level', 'id', 'phone_number',
+                        'DeliveryNumber','OrderNumber','OrderRequestNumber'],
             'class' => 'fa fa-sort-numeric',
         ],
     ],
