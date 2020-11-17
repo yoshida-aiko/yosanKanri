@@ -19,7 +19,9 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'auth'], function() {
     Route::get('/home', 'HomeController@index')->name('home');
-    Route::post('/home' , 'HomeController@bulletinBoadStore')->name('home');
+
+    Route::get('/home/bulletinBoardStore' , 'BulletinBoardController@bulletinBoardStore');
+    Route::get('/home/bulletinBoardDestroy' , 'BulletinBoardController@bulletinBoardDestroy');
 
     Route::resource('/SearchPage', 'SearchPageController', ['only' => ['index', 'update', 'destroy']]); 
     Route::get('/SearchPage/updateCartOrderRequestNum', 'SearchPageController@updateCartOrderRequestNum');
@@ -29,6 +31,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/SearchPage/cartAddProcess', 'SearchPageController@cartAddProcess');
     Route::get('/SearchPage/favoriteAddProcess', 'SearchPageController@favoriteAddProcess');
     Route::get('/SearchPage/getData_Favorite', 'SearchPageController@getData_Favorite');
+    Route::get('/SearchPage/deleteCart', 'SearchPageController@deleteCart');
 
     Route::resource('/OrderRequest', 'OrderRequestController',['only' => ['index', 'update', 'destroy']]);
     Route::get('/OrderRequest/updateListPrice', 'OrderRequestController@updateListPrice');
@@ -65,9 +68,11 @@ Route::group(['middleware' => 'auth'], function() {
     Route::resource('/Condition', 'ConditionController', ['only' => ['index', 'create', 'store', 'destroy']]); 
     Route::post('/Condition', 'ConditionController@judge');
     
-    Route::get('pdf','PDFController@index');
+    /*Route::get('pdf','PDFController@index');*/
 
     Route::get('/Init','InitController@passwordHash');
+
+    Route::get('/Error/systemError','ErrorController@systemError');
     
     Route::get('lang/{lang}', ['as'=>'lang.switch', 'uses'=>'LanguageController@switchLang']);
     

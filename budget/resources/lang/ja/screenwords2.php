@@ -75,6 +75,7 @@ return [
     'supplierName' => '発注先',
     'supplierNameEn' => '発注先(英名)',
     'supplierNameJp' => '発注先(和名)',
+    'systemError' => 'システムエラーが発生しました。管理者にお問い合わせください。',
     'systemNameEn' => 'システム名(英名)',
     'systemNameJp' => 'システム名(和名)',
 

@@ -75,6 +75,7 @@ return [
     'supplierName' => 'Supplier name',
     'supplierNameEn' => 'Supplier name(En)',
     'supplierNameJp' => 'Supplier name(Jp)',
+    'systemError' => 'A system error has occurred. Please contact the administrator.',
     'systemNameEn' => 'System name(En)',
     'systemNameJp' => 'System name(Jp)',
     

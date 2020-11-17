@@ -19,7 +19,11 @@ class ConditionController extends Controller
             if($request->action === 'back') {
                 return redirect()->route('Condition.index');
             }  
-            list($Condition,$mode) = $this->store($request);
+            list($Condition,$mode,$systemError) = $this->store($request);
+            if ($systemError == true) {
+                $errorMsg = "システムエラーが発生しました。";
+                return redirect()->back()->withErrors(__('screenwords2.systemError'))->withInput();
+            }
             $status = true;
             return view('Condition/index',compact('Condition','mode','status'));
 
@@ -47,7 +51,6 @@ class ConditionController extends Controller
             $Condition->SMTPPassword = Crypt::decryptString($Condition->SMTPPassword); */
             $mode = 'edit';
         } 
-
         return view('Condition/index',compact('Condition','mode'));
     }
 
@@ -96,44 +99,50 @@ class ConditionController extends Controller
         */
 
         $this->validate($request, $rules);
-
-        $Condition->VersionNo = 0;
-        $Condition->bilingual = $request->bilingual;
-        $Condition->SystemNameJp = $request->SystemNameJp;
-        if ($request->SystemNameEn == NULL) {
-            $request->SystemNameEn  = '';
-        }
-        $Condition->SystemNameEn = $request->SystemNameEn;
-        $Condition->FiscalStartMonth = $request->FiscalStartMonth;
-        $Condition->NewBulletinTerm = $request->NewBulletinTerm;
-        $Condition->BulletinTerm = $request->BulletinTerm;
-        /* SMTP項目は　.envに設定するためコメント化
-        $Condition->SMTPServerId = $request->SMTPServerId;
-        $Condition->SMTPServerPort = $request->SMTPServerPort;
-        $Condition->SMTPAccount = $request->SMTPAccount;
-        $Condition->SMTPPassword =  Crypt::encryptString($request->SMTPPassword);
-        if ($request->SMTPAuthFlag =="") {
-            $Condition->SMTPAuthFlag = 0;
-        }else {
-            $Condition->SMTPAuthFlag = 1;
-        } 
-        */
+        try {
+            $systemError = false;
+            // $Condition->VersionNo = 0;
+            $Condition->ErrorVersionNo = 0;
+            $Condition->bilingual = $request->bilingual;
+            $Condition->SystemNameJp = $request->SystemNameJp;
+            if ($request->SystemNameEn == NULL) {
+                $request->SystemNameEn  = '';
+            }
+            $Condition->SystemNameEn = $request->SystemNameEn;
+            $Condition->FiscalStartMonth = $request->FiscalStartMonth;
+            $Condition->NewBulletinTerm = $request->NewBulletinTerm;
+            $Condition->BulletinTerm = $request->BulletinTerm;
+            /* SMTP項目は　.envに設定するためコメント化
+            $Condition->SMTPServerId = $request->SMTPServerId;
+            $Condition->SMTPServerPort = $request->SMTPServerPort;
+            $Condition->SMTPAccount = $request->SMTPAccount;
+            $Condition->SMTPPassword =  Crypt::encryptString($request->SMTPPassword);
+            if ($request->SMTPAuthFlag =="") {
+                $Condition->SMTPAuthFlag = 0;
+            }else {
+                $Condition->SMTPAuthFlag = 1;
+            } 
+            */
+            
+            // $Condition->SMTPConnectMethod = 2;
+            $Condition->Organization = "インフォグラム";
+            $Condition->Department = "福岡本社";
+            // emailは新システムでは使用しないためコメント化
+            // $Condition->EMail = $request->email;
+            $Condition->ExecutionBasis = $request->ExecutionBasis;
         
-        // $Condition->SMTPConnectMethod = 2;
-        $Condition->Organization = "インフォグラム";
-        $Condition->Department = "福岡本社";
-        // emailは新システムでは使用しないためコメント化
-        // $Condition->EMail = $request->email;
-        $Condition->ExecutionBasis = $request->ExecutionBasis;
-       
-        $Condition->save();
+            $Condition->save();
 
-        $query = Condition::first();
-        // SMTP項目は　.envに設定するためコメント化
-        // $Condition->SMTPPassword = Crypt::decryptString($query->SMTPPassword);
-        $mode = 'edit';
-
-        return [$Condition,$mode];
+            // SMTP項目は　.envに設定するためコメント化
+            // $query = Condition::first();
+            // $Condition->SMTPPassword = Crypt::decryptString($query->SMTPPassword);
+               
+        } catch (\Exception $e) {
+            logger()->error($e->getMessage());
+            $systemError = true;           
+        }
+        $mode = 'edit';            
+        return [$Condition,$mode,$systemError];
     }
 
     /**

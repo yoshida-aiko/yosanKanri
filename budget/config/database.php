@@ -15,7 +15,9 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    // 'default' => env('DB_CONNECTION', 'mysql'),
+    // 'default' => 'mysql_error',
+    'default' => 'mysql',
 
     /*
     |--------------------------------------------------------------------------
@@ -48,7 +50,8 @@ return [
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST', 'mysql5b.xserver.jp'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'infogramx_budget'),
+            // 'database' => env('DB_DATABASE', 'infogramx_budget'),
+            'database' => 'infogramx_budget02',
             'username' => env('DB_USERNAME', 'infogramx_budget'),
             'password' => env('DB_PASSWORD', 'budget2020'),
             'unix_socket' => env('DB_SOCKET', ''),

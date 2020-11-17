@@ -40,6 +40,7 @@
             </div>
             @endisset
 
+
             @csrf
             <fieldset>
             <legend>{{__('screenwords2.environmentalSetting')}}</legend>
