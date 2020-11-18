@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use App\Http\Controllers\Controller;
 use App\Budget;
 use Carbon\Carbon;
@@ -95,35 +96,42 @@ class BudgetController extends Controller
         $rules['useEndDate'] = ['required','date', 'date_format:Y/m/d','after:yesterday','max:10'];
         $rules['displayOrder'] = ['nullable', 'integer'];
         $this->validate($request, $rules);
-
-        if ($isUpdate){
-            $Budget = Budget::findOrFail($request->id);
-        }
-        else {
-            $Budget = new Budget();
-        }
-        $Nendo = $request->year;
-        $Budget->fiscalYear = $Nendo;
-        $Budget->budgetNameJp = $request->budgetNameJp;
-        $Budget->budgetNameEn = $request->budgetNameEn;
-        $Budget->budgetAmount = $request->budgetAmount;
-        $Budget->useStartDate = $request->useStartDate;
-        $Budget->useEndDate = $request->useEndDate;
-        $Budget->displayOrder = $request->displayOrder;
-
-        $Budget->save();
-        $Budgets = Budget::where('fiscalYear','=', $Nendo)
-                ->orderByRaw('displayOrder IS NULL ASC')
-                ->orderBy('displayOrder', 'asc')
-                ->get();
-        foreach ($Budgets as $Budget) {
-            $Budget->budgetAmount = number_format($Budget->budgetAmount);
-        }
         
-        $editBudget = new Budget();
-        $status = true;
+        try {
+            if ($isUpdate){
+                $Budget = Budget::findOrFail($request->id);
+            }
+            else {
+                $Budget = new Budget();
+            }
+            $Nendo = $request->year;
+            $Budget->fiscalYear = $Nendo;
+            // $Budget->budgetNameJp = $request->budgetNameJp;
+            $Budget->ErrbudgetNameJp = $request->budgetNameJp;
+            $Budget->budgetNameEn = $request->budgetNameEn;
+            $Budget->budgetAmount = $request->budgetAmount;
+            $Budget->useStartDate = $request->useStartDate;
+            $Budget->useEndDate = $request->useEndDate;
+            $Budget->displayOrder = $request->displayOrder;
 
-        return view('Budget/index',compact('Budgets','editBudget','Nendo','status'));
+            $Budget->save();
+            $Budgets = Budget::where('fiscalYear','=', $Nendo)
+                    ->orderByRaw('displayOrder IS NULL ASC')
+                    ->orderBy('displayOrder', 'asc')
+                    ->get();
+            foreach ($Budgets as $Budget) {
+                $Budget->budgetAmount = number_format($Budget->budgetAmount);
+            }
+            
+            $editBudget = new Budget();
+            $status = true;
+
+            return view('Budget/index',compact('Budgets','editBudget','Nendo','status'));
+
+        } catch (QueryException $e) {
+            logger()->error("予算マスタ保存処理　QueryException"); 
+            throw $e;       
+        }      
     }
 
     /**
@@ -160,43 +168,7 @@ class BudgetController extends Controller
             return view('Budget/index',compact('Budgets','editBudget','Nendo'));
         } catch (ExclusiveLockException $e) {
             throw $e;
-        }  
-        
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $rules['budgetNameJp'] = ['required', 'string', 'max:50'];
-        if ($request->session()->get('bilingual') == "1") {
-            $rules['budgetNameEn'] = ['required', 'string', 'max:50'];
-        }
-        $rules['budgetAmount'] = ['required', 'numeric'];
-        $rules['useStartDate'] = ['required','date', 'date_format:Y/m/d','max:10'];
-        $rules['useEndDate'] = ['required','date', 'date_format:Y/m/d','after:yesterday','max:10'];
-        $rules['displayOrder'] = ['nullable', 'integer'];
-        $this->validate($request, $rules);
-
-        $Budget = Budget::findOrFail($id);
-        $Budget->fiscalYear = $request->year;
-        $Budget->budgetNameJp = $request->budgetNameJp;
-        $Budget->budgetNameEn = $request->budgetNameEn;
-        $Budget->budgetAmount = $request->budgetAmount;
-        $Budget->useStartDate = $request->useStartDate;
-        $Budget->useEndDate = $request->useEndDate;
-        $Budget->displayOrder = $request->displayOrder;
-        $Budget->save();
- 
-        $editBudget = new Budget();
-        $status = true;
-
-        return view('Budget/index',compact('Budgets','editBudget','status'));
+        }        
     }
 
     /**

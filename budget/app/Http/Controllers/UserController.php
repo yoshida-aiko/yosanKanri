@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -137,28 +138,34 @@ class UserController extends Controller
                 return redirect()->route('User.index')->withErrors($validator)->withInput();
             }               
         }
-
-        if ($isUpdate){
-            $User = User::findOrFail($request->id);
+        try {
+            if ($isUpdate){
+                $User = User::findOrFail($request->id);
+            }
+            else {
+                $User = new User();
+                $User->password = Hash::make($request->password);
+            }
+            $User->LoginAccount = $request->LoginAccount;
+            // $User->UserNameJp = $request->UserNameJp;
+            $User->ErrUserNameJp = $request->UserNameJp;
+            $User->UserNameEn = $request->UserNameEn;
+            $User->Tel = $request->Tel;
+            $User->email = $request->email;
+            $User->UserAuthString = $auth;
+            $User->BuiltinUser = false;
+            $User->Signature = $request->Signature;
+            $User->save();
+    
+            [$Users,$editUser] = $this->getUserData();
+            $status = true;
+           
+            return view('User/index',compact('Users','editUser','status'));
+        } catch (QueryException $e) {
+            logger()->error("ユーザーマスタ保存処理　QueryException"); 
+            throw $e;
         }
-        else {
-            $User = new User();
-            $User->password = Hash::make($request->password);
-        }
-        $User->LoginAccount = $request->LoginAccount;
-        $User->UserNameJp = $request->UserNameJp;
-        $User->UserNameEn = $request->UserNameEn;
-        $User->Tel = $request->Tel;
-        $User->email = $request->email;
-        $User->UserAuthString = $auth;
-        $User->BuiltinUser = false;
-        $User->Signature = $request->Signature;
-        $User->save();
-
-        [$Users,$editUser] = $this->getUserData();
-        $status = true;
-       
-        return view('User/index',compact('Users','editUser','status'));
+        
     }
 
 

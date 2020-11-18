@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use App\Http\Controllers\Controller;
 use App\Supplier;
 use App\Maker;
@@ -76,27 +77,34 @@ class SupplierController extends Controller
         $rules['email'] = ['required', 'string', 'max:100'];
         $this->validate($request, $rules);
 
-        if ($isUpdate){
-            $Supplier = Supplier::findOrFail($request->id);
-        }
-        else {
-            $Supplier = new Supplier();
-        }
-        $Supplier->SupplierNameJp = $request->SupplierNameJp;
-        $Supplier->SupplierNameEn = $request->SupplierNameEn;
-        $Supplier->ChargeUserJp = $request->ChargeUserJp;
-        $Supplier->ChargeUserEn = $request->ChargeUserEn;
-        $Supplier->Tel = $request->SupplierTel;
-        $Supplier->Fax = $request->Fax;
-        $Supplier->EMail = $request->email;
+        try {
+            if ($isUpdate){
+                $Supplier = Supplier::findOrFail($request->id);
+            }
+            else {
+                $Supplier = new Supplier();
+            }            
+            // $Supplier->SupplierNameJp = $request->SupplierNameJp;
+            $Supplier->ErrSupplierNameJp = $request->SupplierNameJp;
+            $Supplier->SupplierNameEn = $request->SupplierNameEn;
+            $Supplier->ChargeUserJp = $request->ChargeUserJp;
+            $Supplier->ChargeUserEn = $request->ChargeUserEn;
+            $Supplier->Tel = $request->SupplierTel;
+            $Supplier->Fax = $request->Fax;
+            $Supplier->EMail = $request->email;
 
-        $Supplier->save();
-        $Suppliers = Supplier::all();
-        $editSupplier = new Supplier();
-        $bilingual = $request->bilingual;
-        $status = true;
+            $Supplier->save();
+            $Suppliers = Supplier::all();
+            $editSupplier = new Supplier();
+            $bilingual = $request->bilingual;
+            $status = true;
 
-        return view('Supplier/index',compact('Suppliers','editSupplier','bilingual','status'));
+            return view('Supplier/index',compact('Suppliers','editSupplier','bilingual','status'));
+        } catch (QueryException $e) {
+            logger()->error("発注先マスタ保存処理　QueryException"); 
+            throw $e;       
+        }
+        
     }
 
     /**
@@ -121,44 +129,6 @@ class SupplierController extends Controller
         } catch (ExclusiveLockException $e) {
             throw $e;
         }     
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $rules['SupplierNameJp'] = ['required', 'string', 'max:50'];
-        if ($request->session()->get('bilingual') == "1") {
-            $rules['SupplierNameEn'] = ['required', 'string', 'max:50'];
-        }
-        $rules['ChargeUserJp'] =  ['nullable', 'string', 'max:50'];
-        if ($request->session()->get('bilingual') == "1") {
-            $rules['ChargeUserEn'] = ['nullable', 'string', 'max:50'];
-        }
-        $rules['SupplierTel'] = ['nullable', 'string', 'max:20'];
-        $rules['Fax'] = ['nullable', 'string', 'max:20'];
-        $rules['email'] = ['required', 'string', 'email', 'max:100'];
-        $this->validate($request, $rules);
-
-        $Supplier = Supplier::findOrFail($id);
-        $Supplier->SupplierNameJp = $request->SupplierNameJp;
-        $Supplier->SupplierNameEn = $request->SupplierNameEn;
-        $Supplier->ChargeUserJp = $request->ChargeUserJp;
-        $Supplier->Tel = $request->SupplierTel;
-        $Supplier->Fax = $request->Fax;
-        $Supplier->EMail = $request->email;
-        $Supplier->save();
- 
-        $editSupplier = new Supplier();
-        $bilingual = $request->bilingual;
-        $status = true;
-
-        return view('Supplier/index',compact('Suppliers','editSupplier','bilingual','status'));
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 use App\Maker;
 use App\Supplier;
 use App\Rules\Exists;
@@ -71,25 +72,31 @@ class MakerController extends Controller
             $rules['MakerNameEn'] = ['required', 'string', 'max:255'];
         }
         $this->validate($request, $rules);
+        try {
+            if ($isUpdate){
+                $Maker = Maker::findOrFail($request->id);
+            }
+            else {
+                $Maker = new Maker();
+            }
+            // $Maker->MakerNameJp = $request->MakerNameJp;
+            $Maker->ErrMakerNameJp = $request->MakerNameJp;
+            $Maker->MakerNameEn = $request->MakerNameEn;
+            $Maker->MainSupplierId = $request->MainSupplierId;
+            $Maker->CatalogUseFlag= 0;
 
-        if ($isUpdate){
-            $Maker = Maker::findOrFail($request->id);
+            $Maker->save();
+            $Makers = Maker::with(['supplier'])->get();
+            $editMaker = new Maker();
+            $Suppliers = Supplier::select('id','SupplierNameJp','SupplierNameEn')->get();
+            $status = true;
+
+            return view('Maker/index',compact('Makers','editMaker','Suppliers','status'));
+        } catch (QueryException $e) {
+            logger()->error("メーカーマスタ保存処理　QueryException"); 
+            throw $e;     
         }
-        else {
-            $Maker = new Maker();
-        }
-        $Maker->MakerNameJp = $request->MakerNameJp;
-        $Maker->MakerNameEn = $request->MakerNameEn;
-        $Maker->MainSupplierId = $request->MainSupplierId;
-        $Maker->CatalogUseFlag= 0;
-
-        $Maker->save();
-        $Makers = Maker::with(['supplier'])->get();
-        $editMaker = new Maker();
-        $Suppliers = Supplier::select('id','SupplierNameJp','SupplierNameEn')->get();
-        $status = true;
-
-        return view('Maker/index',compact('Makers','editMaker','Suppliers','status'));
+        
     }
 
     /**
@@ -114,34 +121,6 @@ class MakerController extends Controller
             throw $e;
         }  
         
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $rules['MakerNameJp'] = ['required', 'string', 'max:255'];
-        if ($request->session()->get('bilingual') == "1") {
-            $rules['MakerNameEn'] = ['required', 'string', 'max:255'];
-        }
-        $this->validate($request, $rules);
-
-        $Maker = Maker::findOrFail($id);
-        $Maker->MakerNameJp = $request->MakerNameJp;
-        $Maker->MakerNameEn = $request->MakerNameEn;
-        $Maker->MainSupplierId = $request->MainSupplierId;
-        $Maker->save();
- 
-        $editMaker = new Maker();
-        $Suppliers = Supplier::select('id','SupplierNameJp','SupplierNameEn')->get();
-        $status = true;
-
-        return view('Maker/index',compact('Makers','editMaker','Suppliers','status'));
     }
 
     /**

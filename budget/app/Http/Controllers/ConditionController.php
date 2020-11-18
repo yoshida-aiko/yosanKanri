@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
 use Request as PostRequest;
@@ -19,11 +20,7 @@ class ConditionController extends Controller
             if($request->action === 'back') {
                 return redirect()->route('Condition.index');
             }  
-            list($Condition,$mode,$systemError) = $this->store($request);
-            if ($systemError == true) {
-                $errorMsg = "システムエラーが発生しました。";
-                return redirect()->back()->withErrors(__('screenwords2.systemError'))->withInput();
-            }
+            list($Condition,$mode) = $this->store($request);
             $status = true;
             return view('Condition/index',compact('Condition','mode','status'));
 
@@ -100,7 +97,6 @@ class ConditionController extends Controller
 
         $this->validate($request, $rules);
         try {
-            $systemError = false;
             // $Condition->VersionNo = 0;
             $Condition->ErrorVersionNo = 0;
             $Condition->bilingual = $request->bilingual;
@@ -137,12 +133,12 @@ class ConditionController extends Controller
             // $query = Condition::first();
             // $Condition->SMTPPassword = Crypt::decryptString($query->SMTPPassword);
                
-        } catch (\Exception $e) {
-            logger()->error($e->getMessage());
-            $systemError = true;           
+        } catch (QueryException $e) {
+            logger()->error("設定画面保存処理　QueryException"); 
+            throw $e;             
         }
         $mode = 'edit';            
-        return [$Condition,$mode,$systemError];
+        return [$Condition,$mode];
     }
 
     /**

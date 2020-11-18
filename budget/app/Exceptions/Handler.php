@@ -67,6 +67,11 @@ class Handler extends ExceptionHandler
             return redirect()->back()->with('exclusiveError', $msg);
         } 
 
+        // DBエラー　QueryException
+        if(get_class($exception) == 'Illuminate\Database\QueryException') {
+            return response(view('Error/systemError'));
+        } 
+
         
         return parent::render($request, $exception);
     }
