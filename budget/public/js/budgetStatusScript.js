@@ -1,13 +1,29 @@
 jQuery (function ()
 {
-
+    var selectedId = $("[name=hidSelectedBudgetId]").val();
+    var selectedRow = sessionStorage.getItem('budgetStatusListSelectedRow');
+    
+    if (selectedRow == null ){
+        selectedRow = 0;
+        sessionStorage.setItem('budgetStatusListSelectedRow',0);
+    }
+    if ($(".table-budgetFixed > tbody > tr").length <= selectedRow){
+        selectedRow = 0;
+        sessionStorage.setItem('budgetStatusListSelectedRow',0);
+    }
     $(".table-budgetFixed > tbody > tr").each(function(index,elem){
-        if ($(elem).find("[name=hidBudgetId]").val()==$("[name=hidSelectedBudgetId]").val()){
-            $(".table-budgetFixed-tr").removeClass("table-fixed-selectRow");
+        //if ($(elem).find("[name=hidBudgetId]").val()==$("[name=hidSelectedBudgetId]").val()){
+        if (index == selectedRow){
             $(elem).addClass("table-fixed-selectRow");
+            var selectedId = $(elem).find("[name=hidBudgetId]").val();
+            var deferred = getDetail(selectedId);
+            deferred.done(function(){
+                $.unblockUI();
+            });
             return false;
         }
     });
+    
 
     /*ウィンドウの高さを取得して、グリッドの高さを指定*/
     settingGridHeight();
@@ -50,7 +66,10 @@ jQuery (function ()
         maxDate: new Date(),
     }).datepicker('setDate',new Date());
 
+    /*詳細リストを表示する */
     $(".lnkDetail").click(function() {
+        var rownum = $(".table-budgetFixed-tr").index($(this).parent("td").parent("tr"));
+        sessionStorage.setItem('budgetStatusListSelectedRow',rownum);
         var id = $(this).next('input').val();
         $("#hidSelectedBudgetId").val(id);
         var deferred = getDetail(id);
@@ -85,7 +104,11 @@ jQuery (function ()
         $("#txtExecRemark").val("");
         $("#txtExecPrice").val("");
     });
-    /*残高調整実行*/
+    $('#txtExecPrice').keypress(function(e) {
+        return onlyNumber(e);
+    });
+    
+   /*残高調整実行*/
     $("#btnBalanceExec").click(function() {
 
         var message = "";
@@ -153,7 +176,7 @@ jQuery (function ()
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' +  alert(data['errorMsg']));
+            alert(processingFailed[selLang] +  alert(data['errorMsg']));
         })
         .always(function(data) {
             deferred.resolve();           
@@ -194,7 +217,7 @@ jQuery (function ()
                     html +=  '<td>' + datas[i].ItemNameJp + '</td>';
                     html +=  '<td class="align-right">' + datas[i].UnitPrice + '</td>';
                     html +=  '<td class="align-right">' + datas[i].ExecNumber + '</td>';
-                    html +=  '<td class="align-right">' + datas[i].ExecPrice + '</td></tr>';
+                    html +=  '<td class="align-right">\\' + datas[i].ExecPrice + '</td></tr>';
                     tbody.append(html);
                 }
                 settingGridWidth();
@@ -202,7 +225,7 @@ jQuery (function ()
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' +  alert(data['errorMsg']));
+            alert(processingFailed[selLang] +  alert(data['errorMsg']));
         })
         .always(function(data) {
             deferred.resolve();           

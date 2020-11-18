@@ -52,6 +52,9 @@ jQuery (function ()
         $("#modal-orderRequest").modal('show');
         $("#txtOrderNumber").focus();
     });
+    $('#txtOrderNumber').keypress(function(e) {
+        return onlyNumber(e);
+    });
     /*発注依頼ボタンクリック時*/
     $("#btnOrderRequest").click(function() {
         var message = "";
@@ -144,7 +147,7 @@ jQuery (function ()
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' +  alert(data['errorMsg']));
+            alert(processingFailed[selLang] + data['errorMsg']);
         })
         .always(function(data) {
             deferred.resolve();           

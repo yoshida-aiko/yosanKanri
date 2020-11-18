@@ -79,6 +79,7 @@ jQuery (function ()
         }
     });
 
+    /*ToolTipの設定 */
     $('.childBudget > li > span:first-child').tooltip({
         content: function() {
             return $(this).attr('title');
@@ -203,7 +204,7 @@ jQuery (function ()
         "keypress":function(e) {
             if (e.which == 13) {
                 if ($(this).val() !== "" && isFinite($(this).val())) {
-                    if($(this).hasClass('inpOrderRequestNumber')){
+                    /*if($(this).hasClass('inpOrderRequestNumber')){*/
                         var maxnum = parseInt($(this).attr('max'));
                         var minnum = parseInt($(this).attr('min'));
                         var thisnum = parseInt($(this).val());
@@ -213,7 +214,7 @@ jQuery (function ()
                         if (thisnum < minnum){
                             $(this).val($(this).parent().children('.spnOrderInputNumber').html());
                         }
-                    }
+                    /*}*/
                     var id=$(this).parent().parent().find('input[name=orderreqId]').val();
                     var val = Number($(this).val()).toLocaleString();
                     if ($(this).hasClass("inpOrderUnitPrice")){
@@ -231,6 +232,9 @@ jQuery (function ()
                     var totalfee = (price * ordernum).toLocaleString();
                     $(this).parent().nextAll('.tdOrderTotalFee').html('\\' + totalfee);
                 }
+            }
+            else {
+                return onlyNumber(e);
             }
         },
         "blur":function() {
@@ -353,6 +357,7 @@ jQuery (function ()
         }
         else {
             if (confirm('発注処理を行いますか？' + '【対象：' + arrayChecked.length + '件】')) {
+                $("#modal-howto-order").modal('hide');
                 arrayChecked.each(function (index,element){
                     arrayOrderRequestIds.push($(element).parent().parent().find('input[name=orderreqId]').val());
                 });
@@ -393,7 +398,7 @@ jQuery (function ()
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' +  alert(data['errorMsg']));
+            alert(processingFailed[selLang] +  alert(data['errorMsg']));
         })
         .always(function(data) {
             deferred.resolve();           
@@ -417,12 +422,12 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました' + data['status']);
+                alert(processingFailed[selLang] + data['status']);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' + data['status']);
+            alert(processingFailed[selLang] + data['status']);
         })
         .always(function(data) {
             deferred.resolve();           
@@ -445,12 +450,12 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました' + data['status']);
+                alert(processingFailed[selLang] + data['status']);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' + data['status']);
+            alert(processingFailed[selLang] + data['status']);
         })
         .always(function(data) {
             deferred.resolve();           
@@ -488,12 +493,12 @@ function updateOrderRequestGiveBudget(budgetid,orderrequestid){
     // Ajaxリクエスト成功時の処理
     .done(function(data) {
         if (data['status'] !== 'OK') {
-            alert('データ更新に失敗しました' + data['status']);
+            alert(processingFailed[selLang] + data['status']);
         }
     })
     // Ajaxリクエスト失敗時の処理
     .fail(function(data) {
-        alert('データ更新に失敗しました' + data.message);
+        alert(processingFailed[selLang] + data.message);
     })
     .always(function(data) {
         deferred.resolve();           

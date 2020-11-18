@@ -153,12 +153,12 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました' + data['status']);
+                alert(processingFailed[selLang] + data['status']);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' + data['status']);
+            alert(processingFailed[selLang] + data['status']);
         })
         .always(function(data) {
             deferred.resolve();           
@@ -185,12 +185,12 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました' + data['status']);
+                alert(processingFailed[selLang] + data['status']);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' + data['status']);
+            alert(processingFailed[selLang] + data['status']);
         })
         .always(function(data) {
             deferred.resolve();           

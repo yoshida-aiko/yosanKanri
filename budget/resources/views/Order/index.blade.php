@@ -136,7 +136,7 @@
                             }
                             ?>
                             <span class="spnOrderInputNumber">\{{ $UnitPrice }}</span>
-                            <input type="text" class="inpOrderInputNumber inpOrderUnitPrice" pattern="[0-9]*" title="{{__('screenwords.numbersOnly')}}" value="{{ $OrderRequest->UnitPrice }}" >
+                            <input type="text" class="inpOrderInputNumber inpOrderUnitPrice" max="99999999" min="0" pattern="[0-9]*" title="{{__('screenwords.numbersOnly')}}" value="{{ $OrderRequest->UnitPrice }}" >
                         </td>
                         <td class="align-right tdOrderInputNumber">
                             <span class="spnOrderInputNumber">{{ $OrderRequest->RequestNumber }}</span>

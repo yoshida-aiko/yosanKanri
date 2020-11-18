@@ -99,12 +99,12 @@ jQuery (function ()
                 jsTreeCreate_sub($.parseJSON(data['jsonFavoriteTreeArticle']),url,id_Article,isToCartDisabled);
             }
             else {
-                alert('データ取得に失敗しました' + data['status']);
+                alert(processingFailed[selLang] + data['status']);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ取得に失敗しました' + data['status']);
+            alert(processingFailed[selLang] + data['status']);
         })
         .always(function(data) {
             $.unblockUI();
@@ -260,12 +260,12 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました');
+                alert(processingFailed[selLang]);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました');
+            alert(processingFailed[selLang]);
         })
         .always(function(data) {
             deferred.resolve();           
@@ -291,11 +291,11 @@ jQuery (function ()
         .done(function(data) {
             if (data['status'] !== 'OK') {
                 if (data['status']=='404') {
-                    alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
+                    alert(otheruserprocessing[selLang]);
                     location.reload();
                 }
                 else{
-                    alert('データ更新に失敗しました ' + data['status']);
+                    alert(processingFailed[selLang] + data['status']);
                 }
             }
             else{
@@ -304,7 +304,7 @@ jQuery (function ()
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました');
+            alert(processingFailed[selLang]);
         })
         .always(function(data) {
             deferred.resolve();           
@@ -331,11 +331,11 @@ jQuery (function ()
         .done(function(data) {
             if (data['status'] !== 'OK') {
                 if (data['status']=='404') {
-                    alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
+                    alert(otheruserprocessing[selLang]);
                     location.reload();
                 }
                 else{
-                    alert('データ削除に失敗しました ' + data['status']);
+                    alert(processingFailed[selLang] + data['status']);
                 }
             }
             else{
@@ -345,11 +345,11 @@ jQuery (function ()
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
             if (data['status']=='404') {
-                alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
+                alert(otheruserprocessing[selLang]);
                 location.reload();
             }
             else {
-                alert('データ削除に失敗しました' + data['status']);
+                alert(processingFailed[selLang] + data['status']);
             }
         })
         .always(function(data) {
@@ -375,22 +375,22 @@ jQuery (function ()
         .done(function(data) {
             if (data['status'] !== 'OK') {
                 if (data['status']=='404') {
-                    alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
+                    alert(otheruserprocessing[selLang]);
                     location.reload();
                 }
                 else{
-                    alert('データ更新に失敗しました ' + data['status']);
+                    alert(processingFailed[selLang] + data['status']);
                 }
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
             if (data['status']=='404') {
-                alert('別ユーザーにより更新された可能性があります。操作をやり直してください。');
+                alert(otheruserprocessing[selLang]);
                 location.reload();
             }
             else {
-                alert('データ更新に失敗しました ' + data['status']);
+                alert(processingFailed[selLang] + data['status']);
             }
         })
         .always(function(data) {
@@ -476,6 +476,14 @@ function setLogout() {
     sessionStorage.removeItem('selectedNavMenu');
 }
 
+function onlyNumber(e){
+    var ret = true;
+    var st = String.fromCharCode(e.which);
+    if ("0123456789".indexOf(st,0) < 0) {
+        ret = false;
+    }
+    return ret;
+}
 var selLang = $("input[name=rdoLanguage]:checked").val()=="en" ? 1 : 0;
 
 var requireQuantity = ['数量は必須です','The Quantity field is required.'];
@@ -502,6 +510,8 @@ var requireContents= ['内容は必須です','The Contents field is required.']
 var maxContents = ['内容は500文字以下のみ有効です','The Contents may not be greater than 500 characters.'];
 var requireLimitDate= ['表示期限は必須です','The Limit date field is required.'];
 var betweenNumber = ['{0} ～ {1} の数値が有効です','The Number must be between {0} and {1}.'];
+var processingFailed = ['処理に失敗しました','Processing failed.'];
+var otheruserprocessing = ['別ユーザーにより更新された可能性があります。操作をやり直してください','It may have been updated by another user. Please try again.'];
 
 var pleaseSelect = ['納品対象を選択してください','Please select the delivery target.'];
 var confirmRegist = ['納品処理を行いますか？【対象：{0}件】','Do you register?【target:{0} case(s)】'];
@@ -509,6 +519,7 @@ var pleaseSelect = ['登録対象を選択してください','Please select the
 var confirmRegist = ['登録しますか？【対象：{0}件】','Do you register?【target:{0} case(s)】'];
 var confirmSave = ['登録しますか？','Do you register?'];
 var confirmDelete = ['削除しますか？','Do you delete it?'];
+var confirmReorder = ['同じ商品が既に発注依頼されています。登録しますか？','Already the item was order-requested. Do you register?'];
 
 var beforeOriginalDate = ['現在入力されている日付({0})以前の日付を選択して下さい','Please specify before the original date ({0})']; 
 var rangOfTheDate = ['日付の範囲を選択してください','Please specify the rang of the date']; 

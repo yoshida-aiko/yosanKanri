@@ -161,6 +161,10 @@ jQuery (function ()
 
     });
 
+    $('#newUnitPrice').keypress(function(e) {
+        return onlyNumber(e);
+    });
+    
     $('.inpOrderInputNumber').on({
         "keypress":function(e) {
             if (e.which == 13) {
@@ -194,6 +198,9 @@ jQuery (function ()
                     var totalfee = (price * ordernum).toLocaleString();
                     $(this).parent().nextAll('.tdOrderTotalFee').html('\\' + totalfee);
                 }
+            }
+            else {
+                return onlyNumber(e);
             }
         },
         "blur":function() {
@@ -307,12 +314,12 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました' + data['status']);
+                alert(processingFailed[selLang] + data['status']);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' + data.message);
+            alert(processingFailed[selLang] + data.message);
         })
         .always(function(data) {
             deferred.resolve();           
@@ -336,12 +343,12 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました' + data['status']);
+                alert(processingFailed[selLang] + data['status']);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' + data['status']);
+            alert(processingFailed[selLang] + data['status']);
         })
         .always(function(data) {
             deferred.resolve();           
@@ -375,12 +382,12 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました' + data['status']);
+                alert(processingFailed[selLang] + data['status']);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' + data['status']);
+            alert(processingFailed[selLang] + data['status']);
         })
         .always(function(data) {
             deferred.resolve();           

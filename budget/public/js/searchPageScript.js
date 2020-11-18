@@ -76,12 +76,12 @@ jQuery (function ($)
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました');
+                alert(processingFailed[selLang]);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました');
+            alert(processingFailed[selLang]);
         })
         .always(function(data) {
             deferred.resolve();           
@@ -118,12 +118,12 @@ jQuery (function ($)
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert('データ更新に失敗しました');
+                alert(processingFailed[selLang]);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました');
+            alert(processingFailed[selLang]);
         })
         .always(function(data) {
             deferred.resolve();           
@@ -290,12 +290,12 @@ jQuery (function ($)
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if(data['status'] == 'NG'){
-                alert('データ更新に失敗しました');
+                alert(processingFailed[selLang]);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' + data['status']);
+            alert(processingFailed[selLang] + data['status']);
             result = false;
         })
         .always(function(data) {
@@ -310,7 +310,7 @@ jQuery (function ($)
         var ret = new Object();
         processing();
         var deferred = new $.Deferred();
-        var result = true;
+        ret.result = false;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -323,26 +323,24 @@ jQuery (function ($)
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] == 'Duplicate') {
-                if (!confirm("同じ商品が既に発注依頼されています。登録しますか？")){
-                    result = false;
+                if (confirm(confirmReorder[selLang])){
+                    ret.result = true;                    
                 }
             }
             else if(data['status'] == 'NG'){
-                alert('データ更新に失敗しました');
+                alert(processingFailed[selLang]);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データチェックに失敗しました' + data['status']);
+            alert(processingFailed[selLang] + data['status']);
             result = false;
         })
         .always(function(data) {
             deferred.resolve();
         });
-        
-        ret.result = result;
+                
         ret.deferred = deferred;
-
         return ret;
 
     }
@@ -374,12 +372,12 @@ jQuery (function ($)
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if(data['status'] == 'NG'){
-                alert('データ更新に失敗しました');
+                alert(processingFailed[selLang]);
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert('データ更新に失敗しました' + data['status']);
+            alert(processingFailed[selLang] + data['status']);
             result = false;
         })
         .always(function(data) {

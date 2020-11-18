@@ -334,6 +334,7 @@ class OrderController extends Controller
         return Response::json($response);
     }
 
+    /*発注書理 */
     public function orderExec(Request $request){
 
         $response = array();
@@ -350,15 +351,6 @@ class OrderController extends Controller
                     case 0: //Mail
                         $msg = $this->orderSendMail($arrayOrderInformation);
                         break;
-                    
-                    //case 1:
-                    //    $filename = $this->createPDF($arrayOrderInformation);
-                        /*$headers = [['Content-Type' => 'application/pdf']];
-                        $ret = Response::download($fileinfo[0],$fileinfo[1],$headers);
-                        return $pdf->download('order.pdf');*/
-                   //     $response['filename'] = $filename;
-                    //    break;
-                    
                     default: //Other
                         break;
                 }
@@ -377,11 +369,10 @@ class OrderController extends Controller
             $response['status'] = 'NG';
             $response['errorMsg'] = $e->getMessage();
         }
-
         return Response::json($response);
-        
     }
 
+    /*発注更新処理*/
     public function orderProcessing($arrayOrderRequestIds,$howToOrder){
         
         $ret = "";
@@ -482,6 +473,7 @@ class OrderController extends Controller
                     'FromUserMailAddress' => $authUser->email,
                     'FromUserSignature' => $authUser->Signature,
                     'OrderRequests' => $arraychild,
+                    'SystemName' => config(['app.name']),
                 ];
                 $arraychild = [];
                 array_push($arrayOrderInformation,$item_p);
@@ -500,7 +492,7 @@ class OrderController extends Controller
     }
 
 
-    //public function createPDF($arrayOrderRequestIds) {
+    /*発注PDF作成*/
     public function createPDF(Request $request) {    
         try{
             
@@ -525,44 +517,36 @@ class OrderController extends Controller
             throw $e;
         }
 
-        /*$now = Carbon::now();
-        $timesmp = $now->format('YmdHis');
-        $path = storage_path('pdf/');
-        $headers = array(
-            "Content-Type"=> "application/pdf"
-        );
-        $filename = 'order_'.Auth::id().'_'.$timesmp.'.pdf';
-        $fullpath = $path.$filename;
-        $pdf->save($fullpath);*/
-        //return Response::download($path,$filename,$headers);
-        //return $filename;
-
-        /*return Response::json($response);*/
-
         return $pdf->download('order.pdf');
     }
 
+    /*発注メール送信処理*/
     public function orderSendMail($arrayOrderInformation){
 
         $retMessage = "";
-        foreach($arrayOrderInformation as $orderInformation){
-            $arrayMailAddress = explode(",", $orderInformation['SupplierMailAddress']);
-            $arrayMailAddress = array_map('trim', $arrayMailAddress);
-            $strMailAddress = implode(",",$arrayMailAddress);
-            $to = [];
-            foreach($arrayMailAddress as $emailaddr){
-                $item =[
-                    'email' => $emailaddr
+        try{
+            foreach($arrayOrderInformation as $orderInformation){
+                $arrayMailAddress = explode(",", $orderInformation['SupplierMailAddress']);
+                $arrayMailAddress = array_map('trim', $arrayMailAddress);
+                $strMailAddress = implode(",",$arrayMailAddress);
+                $to = [];
+                foreach($arrayMailAddress as $emailaddr){
+                    $item =[
+                        'email' => $emailaddr
+                    ];
+                    array_push($to,$item);
+                }
+                $cc = [
+                    $orderInformation['FromUserMailAddress']
                 ];
-                array_push($to,$item);
+                Mail::to($to)->cc($cc)->send(new OrderEmail($orderInformation));
             }
-            $cc = [
-                $orderInformation['FromUserMailAddress']
-            ];
-            Mail::to($to)->cc($cc)->send(new OrderEmail($orderInformation));
+        }
+        catch(Exception $e){
+            $retMessage = $e->getMessage();
         }
         if(count(Mail::failures()) > 0){
-            $retMessage = "メール送信エラーアドレス：".Mail::failures();
+            $retMessage .= "メール送信エラーアドレス：".Mail::failures();
         }
         return $retMessage;
     }
