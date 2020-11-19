@@ -263,10 +263,15 @@ jQuery (function ($)
     /* お気に入りへ移動*/
     $("input[name=btnFavorite]").click(function() {
         var id = $(this).parent('td').children('.hidUpdateId').val();
-        var deferred = favoriteAddAjax(id);
-        deferred.done(function(){
-            $.unblockUI();
-            location.reload();
+        var ret = favoriteAddAjax(id);     
+        ret.deferred.done(function(){
+            console.log(ret.result);
+                if (ret.result){
+                    location.reload();
+                }
+                else {
+                    location.href = './Error/systemError';
+                }
         });
     });
 
@@ -277,6 +282,8 @@ jQuery (function ($)
         if (sessionStorage.getItem('IsFavoriteSharedChecked')!==null){
             isShared = sessionStorage.getItem('IsFavoriteSharedChecked')=='true'? true : false;
         }
+        var ret = new Object();
+        ret.result = true;
         var deferred = new $.Deferred();
         $.ajax({
             headers: {
@@ -290,7 +297,8 @@ jQuery (function ($)
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if(data['status'] == 'NG'){
-                alert(processingFailed[selLang]);
+                ret.result = false;
+                // alert(processingFailed[selLang]);
             }
         })
         // Ajaxリクエスト失敗時の処理
@@ -302,8 +310,8 @@ jQuery (function ($)
             deferred.resolve();
         });
     
-        return deferred.promise();
-
+        ret.deferred = deferred.promise();
+        return ret;
     }
 
     function checkOrderRequest(id) {
