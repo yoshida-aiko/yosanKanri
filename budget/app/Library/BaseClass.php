@@ -4,19 +4,34 @@
 namespace App\Library;
 
 use Auth;
+use App;
+use Illuminate\Support\Facades\DB;
 use App\CatalogItem;
 use App\Cart;
 use App\Favorite;
 use App\Item;
+use App\Condition;
+use Carbon\Carbon;
 
 class BaseClass
 {
-    public static function getFavoriteTree() {
+    public static function getFavoriteTree($isShared) {
 
         /*お気に入りTreeを取得*/
-        $favoriteUserId =  Auth::id();
-        $ParentFavorite = Favorite::where('UserId','=', $favoriteUserId)->where('ParentId','=', -1)->orderBy('id','asc')->get();
-
+        $favoriteUserId = Auth::id();
+        $nodata = App::getLocale()=='en' ? 'Thre is no data.' : 'データがありません';
+        $ParentFavorite = Favorite::where('ParentId','=', -1)
+            ->where(function($ParentFavorite) use ($isShared,$favoriteUserId) {
+                if ($isShared!='true'){//共用の場合ユーザーID指定なし
+                    $ParentFavorite->where('UserId','=', $favoriteUserId);
+                }
+                if ($isShared!='true'){
+                    $ParentFavorite->where('IsShared','<>',1);
+                }
+                else {
+                    $ParentFavorite->where('IsShared','=',1);
+                }
+            })->orderBy('id','asc')->get();
         $jsonFavoriteTreeReagent = array();
         $jsonFavoriteTreeArticle = array();
         $parentTree = array();
@@ -28,15 +43,25 @@ class BaseClass
             if ($parent->FolderName !== NULL && $parent->FolderName !== '') {
                 $jtreeicon = 'jstree-folder';
                 $jtreename = str_replace(' ','',$parent->FolderName);
+                $attr = '';
             }
             else{
                 $jtreeicon = 'jstree-file';
-                $jtreename = str_replace(' ','',$parent->item->ItemNameJp);
+                $itemnm = App::getLocale()=='en' ? $parent->item->ItemNameEn : $parent->item->ItemNameJp;
+                $jtreename = str_replace(' ','',$itemnm);
+                $tooltip = $itemnm;
+                $tooltip .= '<br>'.__('screenwords.capacity').'：'.$parent->item->AmountUnit;
+                $tooltip .= '<br>'.__('screenwords.standard').'：'.$parent->item->Standard;
+                $tooltip .= '<br>'.__('screenwords.maker').'：'.(App::getLocale()=='en' ? $parent->item->MakerNameEn : $parent->item->MakerNameJp);
+                $tooltip .= '<br>'.__('screenwords.catalogCode').'：'.$parent->item->CatalogCode;
+                $attr = ['title'=>$tooltip];
             }
+            
             $parentTree = array(
                 'key'=>$parent->id,
                 'text'=>$jtreename,
                 'icon'=>$jtreeicon,
+                'a_attr'=>$attr,
                 'children'=>array()
             );
 
@@ -44,13 +69,22 @@ class BaseClass
             
                 $FavoriteChild = Favorite::where('ParentId','=',$parent->id)->orderBy('id','asc')->get();
                 foreach($FavoriteChild as $child) {
+                    $itemnm = App::getLocale()=='en' ? $child->item->ItemNameEn : $child->item->ItemNameJp;
+                    $makernm = App::getLocale()=='en' ? $child->item->MakerNameEn : $child->item->MakerNameJp;
+                    
+                    $tooltip = $itemnm;
+                    $tooltip .= '<br>'.__('screenwords.capacity').'：'.$child->item->AmountUnit;
+                    $tooltip .= '<br>'.__('screenwords.standard').'：'.$child->item->Standard;
+                    $tooltip .= '<br>'.__('screenwords.maker').'：'.$makernm;
+                    $tooltip .= '<br>'.__('screenwords.catalogCode').'：'.$child->item->CatalogCode;
+                    $attr = ['title'=>$tooltip];
+
                     $childTree = array(
                         'key'=>$child->id,
-                        'text'=>$child->item->ItemNameJp,
-                        'icon'=>'jstree-file'
+                        'text'=>$itemnm,
+                        'icon'=>'jstree-file',
+                        'a_attr'=>$attr
                     );
-                    
-                    
                     array_push($parentTree['children'],$childTree);
                     $childTree = array();
                 }
@@ -64,6 +98,25 @@ class BaseClass
             $parentTree = array();
         }
         
+        if (!is_array($jsonFavoriteTreeReagent) || count($jsonFavoriteTreeReagent) <= 0){
+            $parentTree = array(
+                'key'=>-100,
+                'text'=>$nodata,
+                'icon'=>'jstree-file',
+                'children'=>array()
+            );
+            array_push($jsonFavoriteTreeReagent,$parentTree);
+        }
+
+        if (!is_array($jsonFavoriteTreeArticle) || count($jsonFavoriteTreeArticle) <= 0){
+            $parentTree = array(
+                'key'=>-100,
+                'text'=>$nodata,
+                'icon'=>'jstree-file',
+                'children'=>array()
+            );
+            array_push($jsonFavoriteTreeArticle,$parentTree);
+        }
         $jsonFavoriteTreeReagent = json_encode($jsonFavoriteTreeReagent, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
         $jsonFavoriteTreeReagent = str_replace('¥u0022', '¥¥¥"', $jsonFavoriteTreeReagent);
         $jsonFavoriteTreeArticle = json_encode($jsonFavoriteTreeArticle, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);        
@@ -80,6 +133,7 @@ class BaseClass
             'UserId' => Auth::id()];
        
         $Cart = Cart::where($where)->first();
+
         if($Cart == NULL){
             //登録
             $CatalogItem = CatalogItem::findOrFail($id);
@@ -101,6 +155,7 @@ class BaseClass
             $Cart->Remark1 = $CatalogItem->Remark1;
             $Cart->Remark2 = $CatalogItem->Remark2;
             $Cart->OrderRequestNumber = 1;
+            $Cart->SupplierId = $CatalogItem->maker->supplier->id;
         }
         else {
             //更新カウントアップ
@@ -112,7 +167,7 @@ class BaseClass
     }    
 
     /*お気に入り追加*/
-    public static function favoriteAdd($id) {
+    public static function favoriteAdd($id,$favoriteUserId,$isShared) {
 
         $CatalogItem = CatalogItem::findOrFail($id);
 
@@ -141,13 +196,6 @@ class BaseClass
             $Item->save();
         }       
 
-        $favoriteUserId =  Auth::id();
-        /*$chkShared = $request->input('submit_chkSharedKey');
-        if (!empty($chkShared)) {
-            if(in_array('共用',$chkShared,true)) {
-                $favoriteUserId = -1;
-            }
-        }*/
         /*Favorites登録*/
         $where = [
             'UserId'    => $favoriteUserId,
@@ -155,6 +203,14 @@ class BaseClass
             'ItemClass' => $CatalogItem->ItemClass,
             'ItemId'    => $Item->id
         ];
+        if ($isShared) {
+            $where = [
+                'IsShared'  => 1,
+                'ParentId'  => -1,
+                'ItemClass' => $CatalogItem->ItemClass,
+                'ItemId'    => $Item->id
+            ];
+        }
         $Favorites = Favorite::where($where)->get();
 
         if ($Favorites->count() < 1) {
@@ -162,20 +218,63 @@ class BaseClass
             $Favorite->UserId = $favoriteUserId;
             $Favorite->ItemId = $Item->id;/*追加したデータのidを取得*/
             $Favorite->ItemClass = $CatalogItem->ItemClass;
+            if ($isShared) {
+                $Favorite->IsShared = 1;
+            }
             $Favorite->save();
         }
     }
 
     /*フォルダー追加*/
-    public static function folderAdd($ItemClass,$FolderName) {
+    public static function folderAdd($ItemClass,$FolderName,$IsShared) {
 
         $Favorite = new Favorite();
         $Favorite->UserId = Auth::id();
         $Favorite->ParentId = -1;
-        $Favorite->ItemId = 1;
+        $Favorite->ItemId = 0;
         $Favorite->ItemClass = $ItemClass;
         $Favorite->FolderName = $FolderName;
+        if ($IsShared=='true') {
+            $Favorite->IsShared = 1;
+        }
         $Favorite->save();
 
     }
+
+
+    /*本日日付取得*/
+    public static function getToday_ymd(){
+        $today = Carbon::today();
+        return $today->format('Y/m/d');
+    }
+
+    /*年度開始日取得*/
+    public static function getKishuYMD(){
+        $today = Carbon::today();
+        $Condition = Condition::first();
+        $FiscalStartMonth = 4;
+        if ($Condition->FiscalStartMonth != null){
+            $FiscalStartMonth = $Condition->FiscalStartMonth;
+        }
+        $strMonth = sprintf('%02d', $FiscalStartMonth);
+        if($today->month < $FiscalStartMonth){
+            $today->subYear();
+        }
+        return $today->year.'/'.$strMonth.'/01';
+    }
+
+    public static function setMailConfig($ref){
+        $config = array(
+            'transport' => 'smtp',
+            'host' => $ref['host'],
+            'port' => $ref['port'],
+            'encryption' => $ref['encryption'],
+            'username' => $ref['username'],
+            'password' => $ref['password'],
+            'timeout' => null,
+            'auth_mode' => null,
+        );
+        Config::set('mail.mailers.smtp',$config);       
+    }
+
 }
