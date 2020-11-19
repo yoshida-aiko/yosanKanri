@@ -25,15 +25,8 @@ jQuery (function ($)
     }
 
     $("input[name=btnCartDelete]").click(function() {
-        if (confirm(confirmDelete[selLang])){
-            var cartid = $(this).parent().parent("article").find("input[name=CartId]").val();
-            var deferred = deleteCart(cartid);
-            deferred.done(function(){
-                $.unblockUI();
-                location.reload();
-            }); 
-                
-        }
+        var cartid = $(this).parent().parent("article").find("input[name=CartId]").val();
+        cartListDelete(cartid);
     });
 
     /*カートボタンhover時 */
@@ -60,35 +53,6 @@ jQuery (function ($)
             return $(this).attr('title');
         }
     });
-
-    function deleteCart(cartid){
-        processing();
-        var deferred = new $.Deferred();
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: 'SearchPage/deleteCart',
-            type: 'GET',
-            datatype: 'json',
-            data : {'cart_id' : cartid}
-        })
-        // Ajaxリクエスト成功時の処理
-        .done(function(data) {
-            if (data['status'] !== 'OK') {
-                alert(processingFailed[selLang]);
-            }
-        })
-        // Ajaxリクエスト失敗時の処理
-        .fail(function(data) {
-            alert(processingFailed[selLang]);
-        })
-        .always(function(data) {
-            deferred.resolve();           
-        });
-
-        return deferred;
-    }
 
 
     $(".numCartOrderRequestNumber").on('input', function() {
@@ -263,15 +227,16 @@ jQuery (function ($)
     /* お気に入りへ移動*/
     $("input[name=btnFavorite]").click(function() {
         var id = $(this).parent('td').children('.hidUpdateId').val();
-        var ret = favoriteAddAjax(id);     
-        ret.deferred.done(function(){
+        var ret = favoriteAddAjax(id);
+        var deferred =  ret.deferred;
+        deferred.done(function(){
             console.log(ret.result);
-                if (ret.result){
-                    location.reload();
-                }
-                else {
-                    location.href = './Error/systemError';
-                }
+            if (ret.result){
+                location.reload();
+            }
+            else {
+                location.href = './Error/systemError';
+            }
         });
     });
 
@@ -318,7 +283,7 @@ jQuery (function ($)
         var ret = new Object();
         processing();
         var deferred = new $.Deferred();
-        ret.result = false;
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
