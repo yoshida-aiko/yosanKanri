@@ -161,6 +161,13 @@ jQuery (function ()
 
     });
 
+
+    $("input[name=btnListDelete]").click(function() {
+        var cartid = $(this).next("input[name=cartId]").val();
+        cartListDelete(cartid);
+    });
+
+
     $('#newUnitPrice').keypress(function(e) {
         return onlyNumber(e);
     });

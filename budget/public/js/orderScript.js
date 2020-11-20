@@ -334,6 +334,13 @@ jQuery (function ()
         $('.spnOrderSelectSupplier').css('display','inline-block');
     });
 
+    //リスト削除
+    $("input[name=btnListOrderDelete]").click(function() {
+        if (confirm(confirmDelete[selLang])){
+            $(this).parent("form").submit();
+        }
+    });
+
     /*発注方法ポップアップ画面表示*/
     $("#btnHowToOrder").click(function() {
         $("#modal-howto-order").modal('show');

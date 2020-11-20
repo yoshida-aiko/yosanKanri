@@ -160,9 +160,13 @@ jQuery (function ()
                             "action": function (obj) {
                                 if (confirm('削除しますか？')){
                                     deletekey = $node.original.key;
-                                    var deferred = deleteTreeAjax(url,deletekey,tree,$node);
+                                    var ret = deleteTreeAjax(url,deletekey,tree,$node);
+                                    var deferred = ret.deferred;
                                     deferred.done(function(){
                                         $.unblockUI();
+                                        if (!ret.result){
+                                            location.href = './Error/systemError';
+                                        }
                                     });
                                 }
                             }
@@ -181,10 +185,16 @@ jQuery (function ()
                                         try{
                                             inst.edit(new_node, new_node.text, function(data){
                                                 var itemclass = $('#' + id).parent('div').parent('div').children('input[name=tabFavorite]:checked').val();
-                                                var deferred = createFolderTreeAjax(url,data.text,itemclass);
+                                                var ret = createFolderTreeAjax(url,data.text,itemclass);
+                                                var deferred = ret.deferred;
                                                 deferred.done(function(){
                                                     $.unblockUI();
-                                                    location.reload();
+                                                    if (ret.result){
+                                                        location.reload();
+                                                    }
+                                                    else {
+                                                        location.href = './Error/systemError';
+                                                    }
                                                 });
                                              });
                                             
@@ -202,9 +212,13 @@ jQuery (function ()
                             "_disabled": isToCartDisabled || isNodata,
                             "action": function (obj) {
                                 itemkey = $node.original.key;
-                                var deferred = moveToCartTreeAjax(url,itemkey);
+                                var ret = moveToCartTreeAjax(url,itemkey);
+                                var deferred = ret.deferred;
                                 deferred.done(function(){
                                     $.unblockUI();
+                                    if (!ret.result){
+                                        location.href = './Error/systemError';
+                                    }
                                 });                            
                             }
                         },
@@ -217,10 +231,14 @@ jQuery (function ()
             parentKey = '-1';
             if (data.parent !== '#') {
                 parentKey = data.instance.get_node(data.node.parent).original.key;        
-            }    
-            var deferred = moveTreeAjax(url,movenodeKey,parentKey);
+            }
+            var ret = moveTreeAjax(url,movenodeKey,parentKey);
+            var deferred = ret.deferred;
             deferred.done(function(){
                 $.unblockUI();
+                if (!ret.result){
+                    location.href = './Error/systemError';
+                }
             });         
         }).bind("loaded.jstree", function (event, data) {
             $("#wrapperFavoriteList a").tooltip({
@@ -242,9 +260,11 @@ jQuery (function ()
     
     
     function createFolderTreeAjax(url,foldername,itemclass){
+        var ret = new Object();
         processing();
         var deferred = new $.Deferred();
         var isShared = false;
+        ret.result = true;
         if (sessionStorage.getItem('IsFavoriteSharedChecked')!==null){
             isShared = sessionStorage.getItem('IsFavoriteSharedChecked')=='true'? true : false;
         }
@@ -260,24 +280,29 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert(processingFailed[selLang]);
+                //alert(processingFailed[selLang]);
+                ret.result = false;
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
             alert(processingFailed[selLang]);
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
+        ret.deferred = deferred;
+        return ret;
     
     }
     
     function moveToCartTreeAjax(url,itemkey){
+        var ret = new Object();
         processing();
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -295,7 +320,8 @@ jQuery (function ()
                     location.reload();
                 }
                 else{
-                    alert(processingFailed[selLang] + data['status']);
+                    //alert(processingFailed[selLang] + data['status']);
+                    ret.result = false;
                 }
             }
             else{
@@ -304,20 +330,24 @@ jQuery (function ()
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert(processingFailed[selLang]);
+            //alert(processingFailed[selLang]);
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
+        ret.deferred = deferred;
+        return ret;
     
     }
     //'url + '/' + deletekey + ''
     //data : {'update_id' : -1, 'parent_id' : -1, 'delete_id' : deletekey, 'order_number' : -1}
     function deleteTreeAjax(url,deletekey,tree,$node){
+        var ret = new Object();
         processing();
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -335,7 +365,8 @@ jQuery (function ()
                     location.reload();
                 }
                 else{
-                    alert(processingFailed[selLang] + data['status']);
+                    //alert(processingFailed[selLang] + data['status']);
+                    ret.result = false;
                 }
             }
             else{
@@ -349,19 +380,23 @@ jQuery (function ()
                 location.reload();
             }
             else {
-                alert(processingFailed[selLang] + data['status']);
+                //alert(processingFailed[selLang] + data['status']);
+                ret.result = false;
             }
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;;
+        ret.deferred = deferred;
+        return ret;;
     }
     
     function moveTreeAjax(url,movenodeKey,parentKey){
         processing();
+        var ret = new Object();
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -379,7 +414,8 @@ jQuery (function ()
                     location.reload();
                 }
                 else{
-                    alert(processingFailed[selLang] + data['status']);
+                    //alert(processingFailed[selLang] + data['status']);
+                    ret.result = false;
                 }
             }
         })
@@ -390,14 +426,16 @@ jQuery (function ()
                 location.reload();
             }
             else {
-                alert(processingFailed[selLang] + data['status']);
+                //alert(processingFailed[selLang] + data['status']);
+                ret.result = false;
             }
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
+        ret.deferred = deferred;
+        return ret;
     
     }
     
@@ -411,9 +449,62 @@ jQuery (function ()
         $("#FolderName").val("");
     });
 
-    
+
     
 })
+
+function cartListDelete(cartid){
+    if (confirm(confirmDelete[selLang])){
+        var ret = deleteCart(cartid);
+        var deferred = ret.deferred;
+        deferred.done(function(){
+            $.unblockUI();
+            if (ret.result){
+                location.reload();
+            }
+            else {
+                location.href = './Error/systemError';
+            }
+        }); 
+    }
+
+}
+
+function deleteCart(cartid){
+    var ret = new Object();
+    processing();
+    var deferred = new $.Deferred();
+    ret.result = true;
+    $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        url: 'SearchPage/deleteCart',
+        type: 'GET',
+        datatype: 'json',
+        data : {'cart_id' : cartid}
+    })
+    // Ajaxリクエスト成功時の処理
+    .done(function(data) {
+        if (data['status'] !== 'OK') {
+            //alert(processingFailed[selLang]);
+            ret.result = false;
+        }
+    })
+    // Ajaxリクエスト失敗時の処理
+    .fail(function(data) {
+        alert(processingFailed[selLang] + data['status']);
+        ret.result = false;
+})
+    .always(function(data) {
+        deferred.resolve();           
+    });
+
+    ret.deferred = deferred;
+
+    return ret;
+}
+
 
 function getDate(element) {
     var date;
@@ -431,10 +522,10 @@ function getToday(splitchar) {
         ( "0"+( today.getMonth()+1 ) ).slice(-2) + splitchar +
         ( "0"+today.getDate() ).slice(-2);
 }
-function getAddMonth(splitchar,addmonth) {
+function getAddDay(splitchar,addday) {
     var today = new Date();
-    today.setMonth(today.getMonth() + addmonth);
-    today.setDate(today.getDate() -1);
+    today.setDate(today.getDate() + parseInt(addday));
+    console.log(today);
     return today.getFullYear() + splitchar + 
         ( "0"+( today.getMonth()+1 ) ).slice(-2) + splitchar +
         ( "0"+today.getDate() ).slice(-2);

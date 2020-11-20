@@ -52,6 +52,13 @@ jQuery (function ()
         }
     });
 
+    //リスト削除
+    $("input[name=btnListDeliveryDelete]").click(function() {
+        if (confirm(confirmDelete[selLang])){
+            $(this).parent("form").submit();
+        }
+    });
+
 
     /*一覧の行をダブルクリック */
     $(".table-deliveryFixed-tr").dblclick(function() {

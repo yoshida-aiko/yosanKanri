@@ -31,7 +31,8 @@ jQuery (function ()
         $("#RegistDate").val(getToday('/'));
         $("#Title").val("");
         $("#Contents").val("");
-        $("#LimitDate").val(getAddMonth('/',1));
+        var bulletinterm = $("#hidBulletinTerm").val();
+        $("#LimitDate").val(getAddDay('/',bulletinterm));
         $("#BulletinBoardId").val("");
         $("#RegistUserId").val("");
         $("#DeleteFlag").val("");
@@ -43,7 +44,7 @@ jQuery (function ()
     $("#btnBulletinBoardClear").click(function() {
         $("#Title").val("");
         $("#Contents").val("");
-        $("#LimitDate").val(getAddMonth('/',1));       
+        $("#LimitDate").val("");       
     });
     /*掲示板　更新ポップアップ表示*/
     $(".editicon").click(function() {
@@ -87,10 +88,7 @@ jQuery (function ()
                 message += '<li>' + maxTitle[selLang] + '</li>';
             }
         }
-        if ($("#Contents").val()==""){
-            message += '<li>' + requireContents[selLang] + '</li>';
-        }
-        else{
+        if ($("#Contents").val()!=""){
             if($("#Contents").val().length > 500){
                 message += '<li>' + maxContents[selLang] + '</li>';
             }
@@ -105,10 +103,16 @@ jQuery (function ()
             return false;
         }
         if (confirm(confirmSave[selLang])){
-            var deferred = insertBulletinboard();
-            deferred.done(function(){
+            var ret = insertBulletinboard();
+            ret.deferred.done(function(){
                 $.unblockUI();
-                location.reload();
+                console.log(ret.result);
+                if (ret.result){
+                    location.reload();
+                }
+                else {
+                    location.href = './Error/systemError';
+                }
             });
         }
     });
@@ -140,6 +144,8 @@ jQuery (function ()
             'LimitDate' : $("#LimitDate").val()
         }
         processing();
+        var ret = new Object();
+        ret.result = true;
         var deferred = new $.Deferred();
         $.ajax({
             headers: {
@@ -153,7 +159,9 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert(processingFailed[selLang] + data['status']);
+                ret.result = false;
+                /*alert(processingFailed[selLang] + data['status']);*/
+                /*window.location.href = 'http://infogram-x.xsrv.jp/budget/Error/systemError';*/
             }
         })
         // Ajaxリクエスト失敗時の処理
@@ -164,7 +172,9 @@ jQuery (function ()
             deferred.resolve();           
         });
         
-        return deferred;        
+        ret.deferred = deferred;
+
+        return ret;        
     }
 
     function deleteBulletinboard(){
