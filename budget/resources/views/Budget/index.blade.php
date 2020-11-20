@@ -26,7 +26,7 @@
             @foreach($Budgets as $Budget)
             <tr>
                 <td>
-                    <form id="frmBudgetDelete" action="{{ route('Budget.destroy', $Budget->id) }}" method='post'>
+                    <form class="frmBudgetDelete" action="{{ route('Budget.destroy', $Budget->id) }}" method='post'>
                         @csrf
                         @method('DELETE')
                         <input type="submit" value="&#xf1f8;" 

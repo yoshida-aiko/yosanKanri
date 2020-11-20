@@ -106,8 +106,7 @@ class BudgetController extends Controller
             }
             $Nendo = $request->year;
             $Budget->fiscalYear = $Nendo;
-            // $Budget->budgetNameJp = $request->budgetNameJp;
-            $Budget->ErrbudgetNameJp = $request->budgetNameJp;
+            $Budget->budgetNameJp = $request->budgetNameJp;
             $Budget->budgetNameEn = $request->budgetNameEn;
             $Budget->budgetAmount = $request->budgetAmount;
             $Budget->useStartDate = $request->useStartDate;

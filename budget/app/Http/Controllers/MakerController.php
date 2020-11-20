@@ -79,8 +79,7 @@ class MakerController extends Controller
             else {
                 $Maker = new Maker();
             }
-            // $Maker->MakerNameJp = $request->MakerNameJp;
-            $Maker->ErrMakerNameJp = $request->MakerNameJp;
+            $Maker->MakerNameJp = $request->MakerNameJp;
             $Maker->MakerNameEn = $request->MakerNameEn;
             $Maker->MainSupplierId = $request->MainSupplierId;
             $Maker->CatalogUseFlag= 0;

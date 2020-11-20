@@ -16,7 +16,7 @@
         @foreach($Users as $User)
         <tr>
             <td>
-                <form id="frmUserDelete" action="{{ route('User.destroy', $User->id) }}" method='post'>
+                <form class="frmUserDelete" action="{{ route('User.destroy', $User->id) }}" method='post'>
                     @csrf
                     @method('DELETE')
                     <input type="submit" value="&#xf1f8;" 

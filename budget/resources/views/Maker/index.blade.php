@@ -16,7 +16,7 @@
             @foreach($Makers as $Maker)
             <tr>
                 <td>
-                    <form id="frmMakerDelete" action="{{ route('Maker.destroy', $Maker->id) }}" method='post'>
+                    <form class="frmMakerDelete" action="{{ route('Maker.destroy', $Maker->id) }}" method='post'>
                         @csrf
                         @method('DELETE')
                         @if ($Maker->CatalogUseFlag == "0")

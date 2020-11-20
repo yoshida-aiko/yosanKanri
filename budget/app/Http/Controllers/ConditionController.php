@@ -97,8 +97,7 @@ class ConditionController extends Controller
 
         $this->validate($request, $rules);
         try {
-            // $Condition->VersionNo = 0;
-            $Condition->ErrorVersionNo = 0;
+            $Condition->VersionNo = 0;
             $Condition->bilingual = $request->bilingual;
             $Condition->SystemNameJp = $request->SystemNameJp;
             if ($request->SystemNameEn == NULL) {

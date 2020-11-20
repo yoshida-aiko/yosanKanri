@@ -16,7 +16,7 @@
             @foreach($Suppliers as $Supplier)
             <tr>
                 <td>
-                    <form id="frmSupplierDelete" action="{{ route('Supplier.destroy', $Supplier->id) }}" method='post'>
+                    <form class="frmSupplierDelete" action="{{ route('Supplier.destroy', $Supplier->id) }}" method='post'>
                         @csrf
                         @method('DELETE')
                         <input type="submit" value="&#xf1f8;" 

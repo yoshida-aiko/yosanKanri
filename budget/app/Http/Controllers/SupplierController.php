@@ -84,8 +84,7 @@ class SupplierController extends Controller
             else {
                 $Supplier = new Supplier();
             }            
-            // $Supplier->SupplierNameJp = $request->SupplierNameJp;
-            $Supplier->ErrSupplierNameJp = $request->SupplierNameJp;
+            $Supplier->SupplierNameJp = $request->SupplierNameJp;
             $Supplier->SupplierNameEn = $request->SupplierNameEn;
             $Supplier->ChargeUserJp = $request->ChargeUserJp;
             $Supplier->ChargeUserEn = $request->ChargeUserEn;
@@ -142,12 +141,9 @@ class SupplierController extends Controller
         //メーカーマスタの優先する発注先に登録されていれば、メッセージを出力
         $exists = Maker::where('MainSupplierId',$id)->exists();
         if ($exists) {
-            $msg = '';
-            if (App::getLocale()=='en') {
-                $msg ='It is not possible to delete it because there is a manufacturer that specifies it for the source that gives priority.';
-            }else{
-                $msg ='優先する発注先に指定しているメーカーがある為、削除できません';
-            }
+
+            $msg = __('messages.makerSupplierIdError');
+           
             return redirect()->back()->with('MainSupplierIdError', $msg);
         }
         $Supplier = Supplier::lockForUpdate()->withTrashed()->find($id);

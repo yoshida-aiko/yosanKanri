@@ -147,8 +147,7 @@ class UserController extends Controller
                 $User->password = Hash::make($request->password);
             }
             $User->LoginAccount = $request->LoginAccount;
-            // $User->UserNameJp = $request->UserNameJp;
-            $User->ErrUserNameJp = $request->UserNameJp;
+            $User->UserNameJp = $request->UserNameJp;
             $User->UserNameEn = $request->UserNameEn;
             $User->Tel = $request->Tel;
             $User->email = $request->email;
