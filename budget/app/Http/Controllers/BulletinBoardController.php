@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use App\Http\Controllers\Controller;
 use App\BulletinBoard;
 use Auth;
@@ -28,13 +29,17 @@ class BulletinBoardController extends Controller
             $BulletinBoard->Title = $request->Title;
             $BulletinBoard->Contents = $request->Contents;
             $BulletinBoard->save();
-        }
-        catch(Exception $e){
+
+        } catch (QueryException $e) {
+            logger()->error("掲示板　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';        
+
+        } catch(Exception $e){
             $response['status'] = 'NG';
             $response['errorMsg'] = $e->getMessage();
         }
         return Response::json($response);
- 
     }
 
 

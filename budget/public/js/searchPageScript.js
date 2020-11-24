@@ -323,8 +323,14 @@ jQuery (function ($)
         var ret = cartAddAjax(id);
         var deferred = ret.deferred;
         deferred.done(function(){
-            $.unblockUI();
-            location.reload();
+            // $.unblockUI();
+            console.log(ret.result);
+                if (ret.result){
+                    location.reload();
+                }
+                else {
+                    location.href = './Error/systemError';
+                }
         });  
     }
 
@@ -332,7 +338,7 @@ jQuery (function ($)
         var ret = new Object();
         processing();
         var deferred = new $.Deferred();
-        var result = true;
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -345,19 +351,19 @@ jQuery (function ($)
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if(data['status'] == 'NG'){
-                alert(processingFailed[selLang]);
+                // alert(processingFailed[selLang]);
+                ret.result = false;
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
             alert(processingFailed[selLang] + data['status']);
-            result = false;
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();
         });
         
-        ret.result = result;
         ret.deferred = deferred;
 
         return ret;

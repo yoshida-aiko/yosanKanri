@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Database\Query;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Response;
 use App\Http\Controllers\Controller;
@@ -93,6 +94,10 @@ class OrderRequestController extends Controller
             }
             $Cart->SupplierId = $supplierid;
             $Cart->save();
+        }catch (QueryException $e) {
+            logger()->error("お気に入りから発注依頼リストに登録　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';      
         }
         catch(Exception $e) {
             $response['status'] = $e->getMessage();
@@ -147,7 +152,8 @@ class OrderRequestController extends Controller
             $Cart = new Cart();
             $Cart->UserId = Auth::id();
             $Cart->CatalogItemId = -1;
-            $Cart->ItemClass = $request->ItemClass;
+            // $Cart->ItemClass = $request->ItemClass;
+            $Cart->ErrItemClass = $request->ItemClass;
             $Cart->SupplierId = $request->SupplierId;
             $Cart->CatalogCode = $request->CatalogCode;
             $Cart->MakerNameJp =$request->MakerNameJp;
@@ -160,6 +166,10 @@ class OrderRequestController extends Controller
             $Cart->UnitPrice = $request->UnitPrice;
             $Cart->OrderRequestNumber = 1;
             $Cart->save();
+        }catch (QueryException $e) {
+            logger()->error("新商品入力登録　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';        
         }
         catch(Exception $e){
             $response['status'] = 'NG';

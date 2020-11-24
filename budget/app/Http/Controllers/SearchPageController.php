@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Config;
 use Response;
 use App\Http\Controllers\Controller;
@@ -232,8 +233,12 @@ class SearchPageController extends Controller
                 $isShared = true;
             }
             BaseClass::favoriteAdd($id,$favoriteUserId,$isShared);
-        }
-        catch(Exception $e){
+        }catch (QueryException $e) {
+            logger()->error("お気に入り登録　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';        
+
+        }catch(Exception $e){
             $response['status'] = $e->getMessage();
         }
         return Response::json($response);
@@ -249,6 +254,10 @@ class SearchPageController extends Controller
             $page = PostRequest::session()->get('searchPageCatalogItemWhere_page');
             $id = $request->update_id;
             BaseClass::cartAdd($id);
+        }catch (QueryException $e) {
+            logger()->error("発注依頼リスト登録　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';        
         }
         catch(Exception $e){
             $response['status'] = $e->getMessage();

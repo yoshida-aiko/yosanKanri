@@ -84,10 +84,17 @@ jQuery (function ()
             return false;
         }
         if (confirm(confirmSave[selLang])){
-            var deferred = insertNewProduct();
+            ret = insertNewProduct();
+            var deferred =  ret.deferred;
             deferred.done(function(){
                 $.unblockUI();
-                location.reload();
+                console.log(ret.result);
+                if (ret.result){
+                    location.reload();
+                }
+                else {
+                    location.href = './Error/systemError';
+                }
             });
         }
     });
@@ -376,6 +383,8 @@ jQuery (function ()
             'UnitPrice' : $("#newUnitPrice").val()
         }
         processing();
+        var ret = new Object();
+        ret.result = true;
         var deferred = new $.Deferred();
         $.ajax({
             headers: {
@@ -389,7 +398,8 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert(processingFailed[selLang] + data['status']);
+                ret.result = false;
+                // alert(processingFailed[selLang] + data['status']);
             }
         })
         // Ajaxリクエスト失敗時の処理
@@ -400,7 +410,8 @@ jQuery (function ()
             deferred.resolve();           
         });
         
-        return deferred;        
+        ret.deferred = deferred;
+        return ret;        
     }
 })
 $(window).on("load", function(){
