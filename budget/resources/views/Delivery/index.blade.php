@@ -43,8 +43,7 @@
                             <form action="{{ route('Delivery.destroy', $order->id) }}" method='post'>
                                 @csrf
                                 @method('DELETE')
-                                <input type="submit" value="&#xf1f8;" 
-                                    onClick="if (!confirm({{ __('messages.confirmDelete') }})){ return false;} return true;" class="fa btn-delete-icon">
+                                <input type="submit" name="btnListDeliveryDelete" value="&#xf1f8;" class="fa btn-delete-icon">
                                 <input type="hidden" name="orderId" value="{{$order->id}}">
                             </form>
                         </td>

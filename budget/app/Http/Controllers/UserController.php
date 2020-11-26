@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\User;// as Authenticatable;;
+use App\BulletinBoard;
+use App\OrderRequest;
+use App\Delivery;
 use Auth;
 use App\Rules\Exists;
 use App\Exceptions\ExclusiveLockException;
@@ -18,17 +21,6 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        /*
-        if (strpos(Auth::user()->UserAuthString,'Master') === false){
-            $Users = User::where('id','=',Auth::id())->get();
-            $editUser = $Users->first();
-            $editUser->password = 'resetLink';
-        }
-        else{
-            $Users = User::all();
-            $editUser = new User();
-        }*/
-        
         [$Users,$editUser] = $this->getUserData();
         //設定マスタよりバイリンガル取得
         $Condition = Condition::first();
@@ -106,7 +98,7 @@ class UserController extends Controller
         }
         if ($isUpdate){
             $account = $request->LoginAccount;
-            $rules['LoginAccount'] =  ['required', 'string', 'max:50', Rule::unique('users', 'LoginAccount')->whereNull('deleted_at')->ignore($request->id)];
+            $rules['LoginAccount'] =  ['required', 'string','regex:/^[a-zA-Z0-9]+$/', 'max:50', Rule::unique('users', 'LoginAccount')->whereNull('deleted_at')->ignore($request->id)];
             $rules['UserNameJp'] = ['required', 'string', 'max:100'];
              // 設定画面のバイリンガルが使用するの場合、ユーザ(英名)必須              
             if ($request->session()->get('bilingual') == "1") {
@@ -117,13 +109,13 @@ class UserController extends Controller
             $rules['Signature'] = ['nullable','max:1000'];
         }
         else {
-            $rules['LoginAccount'] =  ['required', 'string', 'max:50', Rule::unique('users', 'LoginAccount')->whereNull('deleted_at')];
+            $rules['LoginAccount'] =  ['required', 'string','regex:/^[a-zA-Z0-9]+$/','max:50', Rule::unique('users', 'LoginAccount')->whereNull('deleted_at')];
+            $rules['password'] =  ['required','string','min:8','regex:/^[0-9a-zA-Z@$!%*#?&]+$/'];
             $rules['UserNameJp'] = ['required', 'string', 'max:100'];
              // 設定画面のバイリンガルが使用するの場合、ユーザ(英名)必須              
             if ($request->session()->get('bilingual') == "1") {
                 $rules['UserNameEn'] = ['required', 'string', 'max:100'];
             }
-            $rules['password'] =  ['required','string','min:8','regex:/^[0-9a-zA-Z@$!%*#?&]+$/'];
             $rules['Tel'] = ['nullable','string', 'max:20'];
             $rules['email'] = ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')];
             $rules['Signature'] = ['nullable','max:1000'];
@@ -140,7 +132,11 @@ class UserController extends Controller
         }
         try {
             if ($isUpdate){
-                $User = User::findOrFail($request->id);
+                $exists  = User::where('id',$request->id)->exists();
+                if (!$exists) {
+                    return redirect()->route('User.index')->with('exclusiveError', __('messages.alertExclusiveLock'));
+                }
+                $User = User::where('id',$request->id)->first();
             }
             else {
                 $User = new User();
@@ -160,7 +156,8 @@ class UserController extends Controller
             $status = true;
            
             return view('User/index',compact('Users','editUser','status'));
-        } catch (QueryException $e) {
+        }
+        catch (QueryException $e) {
             logger()->error("ユーザーマスタ保存処理　QueryException"); 
             throw $e;
         }
@@ -170,6 +167,13 @@ class UserController extends Controller
 
     public function destroy($id)
     {
+        //OrderRequestに存在するか
+        $orderrequest_exists  = OrderRequest::where('RequestUserId',$id)->orWhere('ReceiveUserId',$id)->exists();
+        
+        if ($orderrequest_exists) {
+            return redirect()->route('User.index')->with('deleteError', __('messages.alertUserDeleteOrderProcessing'));
+        }
+
         $User = User::lockForUpdate()->withTrashed()->find($id);
         $User->delete();
 

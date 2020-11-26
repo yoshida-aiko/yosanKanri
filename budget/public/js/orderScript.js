@@ -225,9 +225,13 @@ jQuery (function ()
                     $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                     var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
                     var ordernum = $(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderRequestNumber').val();
-                    var deferred = updateOrder(id,price,ordernum);
+                    var ret = updateOrder(id,price,ordernum);
+                    var deferred = ret.deferred;
                     deferred.done(function(){
                         $.unblockUI();
+                        if (!ret.result){
+                            location.href = './Error/systemError';
+                        }
                     });  
                     var totalfee = (price * ordernum).toLocaleString();
                     $(this).parent().nextAll('.tdOrderTotalFee').html('\\' + totalfee);
@@ -260,11 +264,15 @@ jQuery (function ()
                 $(this).parent().children('.spnOrderInputNumber').css('display','inline-block');
                 var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
                 var ordernum = $(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderRequestNumber').val();
-                var deferred = updateOrder(id,price,ordernum);
+                var ret = updateOrder(id,price,ordernum);
+                var deferred = ret.deferred;
                 deferred.done(function(){
                     $.unblockUI();
+                    if (!ret.result){
+                        location.href = './Error/systemError';
+                    }
                 });  
-                var totalfee = (price * ordernum).toLocaleString();
+            var totalfee = (price * ordernum).toLocaleString();
                 $(this).parent().nextAll('.tdOrderTotalFee').html('\\' + totalfee);
             }
         }
@@ -295,10 +303,14 @@ jQuery (function ()
                 $(this).css('display','none');
                 $(this).parent().children('.spnOrderSelectSupplier').css('display','inline-block');
                 if (prevval != selval){
-                    var deferred = updateSupplier(id,selval);
+                    var ret = updateSupplier(id,selval);
+                    var deferred = ret.deferred;
                     deferred.done(function(){
                         $.unblockUI();
-                    });
+                        if (!ret.result){
+                            location.href = './Error/systemError';
+                        }
+                    });  
                 }
             }
         },
@@ -312,11 +324,15 @@ jQuery (function ()
             $(this).css('display','none');
             $(this).parent().children('.spnOrderSelectSupplier').css('display','inline-block');
             if (prevval != selval){
-                var deferred = updateSupplier(id,selval);
+                var ret = updateSupplier(id,selval);
+                var deferred = ret.deferred;
                 deferred.done(function(){
                     $.unblockUI();
-                });
-            }
+                    if (!ret.result){
+                        location.href = './Error/systemError';
+                    }
+                });  
+        }
         }
     });    
     $(".tdOrderSelectSupplier").click(function () {
@@ -374,10 +390,15 @@ jQuery (function ()
                     $("#frmPdfOutput").submit();
                 }
                 else{
-                    var deferred = updateExecOrder(arrayOrderRequestIds,howToOrderFlag);
+                    var ret = updateExecOrder(arrayOrderRequestIds,howToOrderFlag);
+                    var deferred = ret.deferred;
                     deferred.done(function(){
-                        $.unblockUI();
-                        location.reload();
+                        if (ret.result){
+                            $.unblockUI();
+                            location.reload();
+                        }else{
+                            location.href = './Error/systemError';
+                        }
                     });
                 }
             }
@@ -386,8 +407,10 @@ jQuery (function ()
 
 
     function updateExecOrder(arrayOrderRequestIds,howToOrderFlag) {
+        var ret = new Object();
         processing();
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -399,24 +422,30 @@ jQuery (function ()
         })
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
-            if (data['status'] == 'NG') {
-                alert(data['errorMsg']);
+            if (data['status'] == 'NG' || data['status'] == undefined) {
+                //alert(data['errorMsg']);
+                ret.result = false;
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert(processingFailed[selLang] +  alert(data['errorMsg']));
+            //alert(processingFailed[selLang] +  alert(data['errorMsg']));
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
+        ret.deferred = deferred;
+
+        return ret;
     }
 
     function updateOrder(id,price,ordernum) {
+        var ret = new Object();
         processing();
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -428,23 +457,30 @@ jQuery (function ()
         })
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
+            console.log(data['status'] );
             if (data['status'] !== 'OK') {
-                alert(processingFailed[selLang] + data['status']);
+                //alert(processingFailed[selLang] + data['status']);
+                ret.result = false;
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert(processingFailed[selLang] + data['status']);
+            //alert(processingFailed[selLang] + data['status']);
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
+        ret.deferred = deferred;
+
+        return ret;
     }
     function updateSupplier(id,supplierid) {
+        var ret = new Object();
         processing();
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -457,18 +493,22 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert(processingFailed[selLang] + data['status']);
+                //alert(processingFailed[selLang] + data['status']);
+                ret.result = false;
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert(processingFailed[selLang] + data['status']);
+            //alert(processingFailed[selLang] + data['status']);
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
+        ret.deferred = deferred;
+
+        return ret;
     }
 
 
@@ -486,8 +526,10 @@ $(window).on("load", function(){
 
 /*発注依頼に予算IDを付与する*/
 function updateOrderRequestGiveBudget(budgetid,orderrequestid){
+    var ret = new Object();
     processing();
     var deferred = new $.Deferred();
+    ret.result = true;
     $.ajax({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -500,16 +542,20 @@ function updateOrderRequestGiveBudget(budgetid,orderrequestid){
     // Ajaxリクエスト成功時の処理
     .done(function(data) {
         if (data['status'] !== 'OK') {
-            alert(processingFailed[selLang] + data['status']);
+            //alert(processingFailed[selLang] + data['status']);
+            ret.result = false;
         }
     })
     // Ajaxリクエスト失敗時の処理
     .fail(function(data) {
-        alert(processingFailed[selLang] + data.message);
+        //alert(processingFailed[selLang] + data.message);
+        ret.result = false;
     })
     .always(function(data) {
         deferred.resolve();           
     });
     
-    return deferred;
+    ret.deferred = deferred;
+
+    return ret;
 }

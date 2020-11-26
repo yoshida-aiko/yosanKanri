@@ -33,9 +33,6 @@ class OrderRequestController extends Controller
             $join->on('carts.SupplierId','=','suppliers.id');
         })->where('UserId','=',Auth::id())->sortable()->paginate(25);
         
-        /*Makers*/
-        //$Makers = Maker::all();
-
         /*Suppliers */
         $Suppliers = Supplier::all();
 
@@ -127,6 +124,11 @@ class OrderRequestController extends Controller
             $Cart->OrderRemark = $remark;
             $Cart->save();
         }
+        catch (QueryException $e) {
+            logger()->error("単価・数量・備考の更新　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';      
+        }
         catch(Exception $e) {
             $response['status'] = $e->getMessage();
         }
@@ -152,8 +154,7 @@ class OrderRequestController extends Controller
             $Cart = new Cart();
             $Cart->UserId = Auth::id();
             $Cart->CatalogItemId = -1;
-            // $Cart->ItemClass = $request->ItemClass;
-            $Cart->ErrItemClass = $request->ItemClass;
+            $Cart->ItemClass = $request->ItemClass;
             $Cart->SupplierId = $request->SupplierId;
             $Cart->CatalogCode = $request->CatalogCode;
             $Cart->MakerNameJp =$request->MakerNameJp;
@@ -252,6 +253,12 @@ class OrderRequestController extends Controller
                 $targetCart->delete();
             }
             DB::commit();
+        }
+        catch (QueryException $e) {
+            DB::rollback();
+            logger()->error("発注依頼処理　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';        
         }
         catch(Exception $e) {
             DB::rollback();

@@ -35,7 +35,7 @@
             @isset ($status)
             <div class="alert alert-success">
                 <ul>
-                    <li>{{__('screenwords2.registered')}}</li>
+                    <li>{{__('screenwords.registered')}}</li>
                 </ul>
             </div>
             @endisset
@@ -43,48 +43,48 @@
 
             @csrf
             <fieldset>
-            <legend>{{__('screenwords2.environmentalSetting')}}</legend>
+            <legend>{{__('screenwords.environmentalSetting')}}</legend>
                 <div class="form-group">
-                    <label for="bilingual" class="required">{{__('screenwords2.bilingual')}}</label>
+                    <label for="bilingual" class="required">{{__('screenwords.bilingual')}}</label>
                     <input type="radio" id="use" name="bilingual" value="1"  {{ $Condition->bilingual == 1 ? 'checked' : '' }}>
-                    <label for="use" class="radio1">{{__('screenwords2.uses')}}</label>
+                    <label for="use" class="radio1">{{__('screenwords.uses')}}</label>
                     <input type="radio" id="notUse" name="bilingual" value="0" {{ $Condition->bilingual == 0 ? 'checked' : '' }}>
-                    <label for="notUse" class="radio1">{{__('screenwords2.dontUse')}}</label>              
+                    <label for="notUse" class="radio1">{{__('screenwords.dontUse')}}</label>              
                 </div>
                 <div class="form-group">
-                    <label for="SystemNameJp" class="required">{{__('screenwords2.systemNameJp')}}</label>
+                    <label for="SystemNameJp" class="required">{{__('screenwords.systemNameJp')}}</label>
                     <input type="text" id="SystemNameJp" name="SystemNameJp" value="{{ $Condition->SystemNameJp }}" >
                 </div>
                 <div class="form-group">
-                    <label for="SystemNameEn" id="lblSystemNameEn">{{__('screenwords2.systemNameEn')}}</label>
+                    <label for="SystemNameEn" id="lblSystemNameEn">{{__('screenwords.systemNameEn')}}</label>
                     <input type="text" id="SystemNameEn" name="SystemNameEn" value="{{ $Condition->SystemNameEn }}" {{ $Condition->bilingual == 0 ? 'readonly' : '' }}>
                 </div>
                 <div class="form-group">
-                    <label for="FiscalStartMonth" class="required">{{__('screenwords2.fiscalStartMonth')}}</label>
+                    <label for="FiscalStartMonth" class="required">{{__('screenwords.fiscalStartMonth')}}</label>
                     <input type="number" id="FiscalStartMonth" name="FiscalStartMonth" class="text-right" min="1" max="12" value="{{ $Condition->FiscalStartMonth }}">
-                    <span>{{__('screenwords2.month')}}</span>
+                    <span>{{__('screenwords.month')}}</span>
                 </div>              
            </fieldset>
 
            <fieldset>
-            <legend>{{__('screenwords2.bulletinBoard')}}</legend>
+            <legend>{{__('screenwords.bulletinBoard')}}</legend>
                 <div class="form-group">
-                    <label for="BulletinTerm"  class="required">{{__('screenwords2.bulletinTerm')}}</label>
+                    <label for="BulletinTerm"  class="required">{{__('screenwords.bulletinTerm')}}</label>
                     <input type="number" id="BulletinTerm" name="BulletinTerm" class="text-right" min="1" max="999" value="{{ $Condition->BulletinTerm }}">
-                    <span>{{__('screenwords2.betweenDays')}}</span>
+                    <span>{{__('screenwords.betweenDays')}}</span>
                 </div>
                 <div class="form-group">
-                    <label for="NewBulletinTerm"  class="required">{{__('screenwords2.newBulletinTerm')}}</label>
+                    <label for="NewBulletinTerm"  class="required">{{__('screenwords.newBulletinTerm')}}</label>
                     <input type="number" id="NewBulletinTerm" name="NewBulletinTerm" class="text-right" min="0" max="999" value="{{ $Condition->NewBulletinTerm }}">
-                    <span>{{__('screenwords2.betweenDays')}}</span>
+                    <span>{{__('screenwords.betweenDays')}}</span>
                 </div>              
             </fieldset>
 
             {{-- 　SMTP項目、発注　コメント化
             <fieldset>
-            <legend>{{__('screenwords2.order')}}</legend>
+            <legend>{{__('screenwords.order')}}</legend>
                 <div class="form-group">
-                    <label for="email" class="required">{{__('screenwords2.eMail')}}</label>
+                    <label for="email" class="required">{{__('screenwords.eMail')}}</label>
                     <input type="text" id="EMail" name="email" value="{{ $Condition->EMail }}" >
                 </div>              
            </fieldset>
@@ -120,18 +120,18 @@
             --}}
 
             <fieldset>
-            <legend>{{__('screenwords2.executionBasis')}}</legend>
+            <legend>{{__('screenwords.executionBasis')}}</legend>
                 <div class="form-group text-center" id="ExecutionBasisArea">
                     <input type="radio" id="deliveryBasis" name="ExecutionBasis" value="1"  {{ $Condition->ExecutionBasis == 1 ? 'checked' : '' }}>
-                    <label for="deliveryBasis" class="radio1">{{__('screenwords2.deliveryBasis')}}</label>
+                    <label for="deliveryBasis" class="radio1">{{__('screenwords.deliveryBasis')}}</label>
                     <input type="radio" id="paymentBasis" name="ExecutionBasis" value="2"  {{ $Condition->ExecutionBasis == 2 ? 'checked' : '' }}>
-                    <label for="paymentBasis"  class="radio1">{{__('screenwords2.paymentBasis')}}</label>              
+                    <label for="paymentBasis"  class="radio1">{{__('screenwords.paymentBasis')}}</label>              
                 </div>           
            </fieldset>
 
             <div class="form-group text-center">
-                <button id="submit_condition_regist" name="send" class="btn btn-primary" type="submit" onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;">{{__('screenwords2.register')}}</button>
-                <input id="btn_condition_clear" type="submit" name="delete" class="btn btn-secondary" value="{{__('screenwords2.clear')}}">
+                <button id="submit_condition_regist" name="send" class="btn btn-primary" type="submit" onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;">{{__('screenwords.register')}}</button>
+                <input id="btn_condition_clear" type="submit" name="delete" class="btn btn-secondary" value="{{__('screenwords.clear')}}">
                 <input type="hidden" id="id" name="id" value="{{ $Condition->id }}" >
                 <input type="hidden" id="mode" name="mode" value="{{ $mode }}" >
             </div>

@@ -34,7 +34,7 @@ class BudgetStatusController extends Controller
             $endDate = $request->endDate;
         }
 
-        $Budgets = Budget:: where('useStartDate','<=',$endDate)->where('useEndDate','>=',$startDate)->sortable()->get();
+        $Budgets = Budget::where('useStartDate','<=',$endDate)->where('useEndDate','>=',$startDate)->sortable()->get();
         
         $BudgetLists = array();
         foreach($Budgets as $Budget){
@@ -94,6 +94,8 @@ class BudgetStatusController extends Controller
             $response['datas'] = $this->getDetail_Data($selectBudgetId,$startDate,$endDate);
         }
         catch(Exception $e){
+            logger()->error("予算状況詳細取得　QueryException");
+            logger()->error($e->getMessage()); 
             $response['status'] = 'NG';
             $response['errorMsg'] = $e->getMessage();
         }
@@ -102,55 +104,60 @@ class BudgetStatusController extends Controller
 
     function getDetail_Data($BudgetId,$startDate,$endDate){
 
-        $BudgetDetails = array();
-        $selectBudgetId = $BudgetId;
-        if($selectBudgetId <> ''){
-            $details = Delivery::select([
-                'deliveries.*',
-                'items.ItemNameJp as ItemNameJp',
-                'items.ItemNameEn as ItemNameEn',
-                'order_requests.UnitPrice as UnitPrice'
-            ])->leftjoin('items', function($join) {
-                $join->on('deliveries.ItemId','=','items.id');
-            })->leftjoin('order_requests', function($join) {
-                $join->on('deliveries.OrderRequestId','=','order_requests.id');
-            })->where('deliveries.BudgetId','=',$selectBudgetId)
-            ->where('deliveries.DeliveryDate','>=',$startDate)
-            ->where('deliveries.DeliveryDate','<=',$endDate)
-            ->orderBy('deliveries.DeliveryDate')->get();
-            foreach($details as $detail){
-                $item = [
-                    'ExecDate' => $detail->DeliveryDate,
-                    'ItemNameJp' => $detail->ItemNameJp,
-                    'ItemNameEn' => $detail->ItemNameEn,
-                    'UnitPrice' => number_format($detail->UnitPrice),
-                    'ExecNumber' => number_format($detail->DeliveryNumber),
-                    'ExecPrice' => number_format($detail->DeliveryPrice),
-                ];
-                array_push($BudgetDetails,$item);
+        try{
+            $BudgetDetails = array();
+            $selectBudgetId = $BudgetId;
+            if($selectBudgetId <> ''){
+                $details = Delivery::select([
+                    'deliveries.*',
+                    'items.ItemNameJp as ItemNameJp',
+                    'items.ItemNameEn as ItemNameEn',
+                    'order_requests.UnitPrice as UnitPrice'
+                ])->leftjoin('items', function($join) {
+                    $join->on('deliveries.ItemId','=','items.id');
+                })->leftjoin('order_requests', function($join) {
+                    $join->on('deliveries.OrderRequestId','=','order_requests.id');
+                })->where('deliveries.BudgetId','=',$selectBudgetId)
+                ->where('deliveries.DeliveryDate','>=',$startDate)
+                ->where('deliveries.DeliveryDate','<=',$endDate)
+                ->orderBy('deliveries.DeliveryDate')->get();
+                foreach($details as $detail){
+                    $item = [
+                        'ExecDate' => $detail->DeliveryDate,
+                        'ItemNameJp' => $detail->ItemNameJp,
+                        'ItemNameEn' => $detail->ItemNameEn,
+                        'UnitPrice' => number_format($detail->UnitPrice),
+                        'ExecNumber' => number_format($detail->DeliveryNumber),
+                        'ExecPrice' => number_format($detail->DeliveryPrice),
+                    ];
+                    array_push($BudgetDetails,$item);
+                }
+                $details_minou = Order::select([
+                    'orders.*',
+                    'order_requests.UnitPrice as UnitPrice'
+                ])->leftjoin('order_requests', function($join) {
+                    $join->on('orders.OrderRequestId','=','order_requests.id');
+                })->where('orders.BudgetId','=',$selectBudgetId)
+                ->where('orders.DeliveryProgress','<>',config('const.DeliveryProgress.payingcomp'))
+                ->where('orders.OrderDate','>=',$startDate)
+                ->where('orders.OrderDate','<=',$endDate)
+                ->orderBy('orders.OrderDate')->get();
+                foreach($details_minou as $minou){
+                    $minounumber = $minou->OrderNumber - $minou->DeliveryNumber;
+                    $item = [
+                        'ExecDate' => '',
+                        'ItemNameJp' => $minou->item->ItemNameJp,
+                        'ItemNameEn' => $minou->item->ItemNameEn,
+                        'UnitPrice' => number_format($minou->UnitPrice),
+                        'ExecNumber' => number_format($minounumber),
+                        'ExecPrice' => number_format($minou->UnitPrice * floatval($minounumber)),
+                    ];
+                    array_push($BudgetDetails,$item);
+                }
             }
-            $details_minou = Order::select([
-                'orders.*',
-                'order_requests.UnitPrice as UnitPrice'
-            ])->leftjoin('order_requests', function($join) {
-                $join->on('orders.OrderRequestId','=','order_requests.id');
-            })->where('orders.BudgetId','=',$selectBudgetId)
-            ->where('orders.DeliveryProgress','<>',config('const.DeliveryProgress.payingcomp'))
-            ->where('orders.OrderDate','>=',$startDate)
-            ->where('orders.OrderDate','<=',$endDate)
-            ->orderBy('orders.OrderDate')->get();
-            foreach($details_minou as $minou){
-                $minounumber = $minou->OrderNumber - $minou->DeliveryNumber;
-                $item = [
-                    'ExecDate' => '',
-                    'ItemNameJp' => $minou->item->ItemNameJp,
-                    'ItemNameEn' => $minou->item->ItemNameEn,
-                    'UnitPrice' => number_format($minou->UnitPrice),
-                    'ExecNumber' => number_format($minounumber),
-                    'ExecPrice' => number_format($minou->UnitPrice * floatval($minounumber)),
-                ];
-                array_push($BudgetDetails,$item);
-            }
+        }
+        catch(Exception $e){
+            throw $e;
         }
         return $BudgetDetails;
     }
@@ -176,6 +183,7 @@ class BudgetStatusController extends Controller
             $Item->Standard = "";
             $Item->CASNo = "";
             $Item->UnitPrice = 0;
+
             $Item->save();
             
             /*納品データ作成*/
@@ -196,10 +204,17 @@ class BudgetStatusController extends Controller
 
             DB::commit();
         }
-        catch(Exception $e){
-            DB::rollback();
+        catch(QueryException $e){
+            logger()->error("予算状況残高調整　QueryException");
+            logger()->error($e->getMessage()); 
             $response['status'] = 'NG';
             $response['errorMsg'] = $e->getMessage();
+            DB::rollback();
+        }
+        catch(Exception $e){
+            $response['status'] = 'NG';
+            $response['errorMsg'] = $e->getMessage();
+            DB::rollback();
         }
 
         return Response::json($response);
@@ -223,7 +238,7 @@ class BudgetStatusController extends Controller
                     __('screenwords.excutionAmount')
                 ]);
 
-                $Budgets = Budget::where('useStartDate','<=',$startDate)->where('useEndDate','>=',$endDate)->get();               
+                $Budgets = Budget::where('useStartDate','<=',$endDate)->where('useEndDate','>=',$startDate)->get();               
                 
                 foreach($Budgets as $Budget){
                     $details = $this->getDetail_Data($Budget->id,$startDate,$endDate);

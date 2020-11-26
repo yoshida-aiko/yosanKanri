@@ -121,7 +121,6 @@ class PurchaseController extends Controller
             $makerId = $request->selMaker;
         }
 
-//DB::enableQueryLog();
         $Deliveries = Delivery::select([
             'deliveries.*',
             'items.ItemNameJp as ItemNameJp',
@@ -175,7 +174,6 @@ class PurchaseController extends Controller
                 $Deliveries->where('items.MakerId','=',$makerId);
             }
         })->sortable()->paginate(25);
-//dd(DB::getQueryLog());        
 
         return [$Deliveries,$itemclass,$startDate,$endDate,$searchWord,$requestUserId,$makerId];
     }
@@ -213,6 +211,12 @@ class PurchaseController extends Controller
             $OrderRequest->RequestProgress = 0;//発注区分(0：未発注)
             $OrderRequest->OrderRemark = $orderremark;
             $OrderRequest->save();
+        }
+        catch(QueryException $e){
+            logger()->error("再発注登録　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';
+            $response['errorMsg'] = $e->getMessage();
         }
         catch(Exception $e){
             $response['status'] = 'NG';

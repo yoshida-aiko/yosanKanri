@@ -9,8 +9,8 @@
         <table id="tblSupplierMasterList" class="table table-fixed table-masterFixed master3column table-striped">
             <thead>
                 <th>&nbsp;</th>
-                <th>{{__('screenwords2.supplierName')}}</th>
-                <th>{{__('screenwords2.chargeUser')}}</th>
+                <th>{{__('screenwords.supplierName')}}</th>
+                <th>{{__('screenwords.chargeUser')}}</th>
             </thead>
             <tbody>
             @foreach($Suppliers as $Supplier)
@@ -70,44 +70,44 @@
             @isset ($status)
             <div class="alert alert-success">
                 <ul>
-                    <li>{{__('screenwords2.registered')}}</li>
+                    <li>{{__('screenwords.registered')}}</li>
                 </ul>
             </div>
             @endisset
 
             @csrf
             <div class="form-group">
-                <label for="SupplierNameJp" class="required">{{__('screenwords2.supplierNameJp')}}</label>
+                <label for="SupplierNameJp" class="required">{{__('screenwords.supplierNameJp')}}</label>
                 <input type="text" id="SupplierNameJp" name="SupplierNameJp" value="{{ $editSupplier->SupplierNameJp }}" >
            </div>
            <div class="form-group">
-                <label for="SupplierNameEn" id="lblSupplierNameEn">{{__('screenwords2.supplierNameEn')}}</label>
-                <input type="text" id="SupplierNameEn" name="SupplierNameEn" value="{{ $editSupplier->SupplierNameEn }}" {{ session('bilingual') == 0 ? 'readonly' : '' }}>
+                <label for="SupplierNameEn" id="lblSupplierNameEn">{{__('screenwords.supplierNameEn')}}</label>
+                <input type="tel" id="SupplierNameEn" name="SupplierNameEn" value="{{ $editSupplier->SupplierNameEn }}" {{ session('bilingual') == 0 ? 'readonly' : '' }}>
            </div>
             <div class="form-group">
-                <label for="ChargeUserJp">{{__('screenwords2.chargeUserJp')}}</label>
+                <label for="ChargeUserJp">{{__('screenwords.chargeUserJp')}}</label>
                 <input type="text" id="ChargeUserJp" name="ChargeUserJp" value="{{ $editSupplier->ChargeUserJp }}" >
             </div>
             <div class="form-group">
-                <label for="ChargeUserEn">{{__('screenwords2.chargeUserEn')}}</label>
-                <input type="text" id="ChargeUserEn" name="ChargeUserEn" value="{{ $editSupplier->ChargeUserEn }}"  {{ session('bilingual')  == 0 ? 'readonly' : '' }}>
+                <label for="ChargeUserEn">{{__('screenwords.chargeUserEn')}}</label>
+                <input type="tel" id="ChargeUserEn" name="ChargeUserEn" value="{{ $editSupplier->ChargeUserEn }}"  {{ session('bilingual')  == 0 ? 'readonly' : '' }}>
             </div>
             <div class="form-group">
-                <label for="Tel">{{__('screenwords2.tel')}}</label>
+                <label for="Tel">{{__('screenwords.tel')}}</label>
                 <input type="tel" id="Tel" name="SupplierTel" value="{{ $editSupplier->Tel }}">
             </div>
             <div class="form-group">
-                <label for="Fax">{{__('screenwords2.fax')}}</label>
+                <label for="Fax">{{__('screenwords.fax')}}</label>
                 <input type="tel" id="Fax" name="Fax" value="{{ $editSupplier->Fax }}">
             </div>
             <div class="form-group">
-                <label for="email" class="required">{{__('screenwords2.eMail')}}</label>
+                <label for="email" class="required">{{__('screenwords.eMail')}}</label>
                 <input type="text" id="EMail" name="email" value="{{ $editSupplier->EMail }}" >
-                <div class="alert-string" style="margin-left:150px;">{{__('screenwords2.eMailAnnotation')}}</div>
+                <div class="alert-string" style="margin-left:150px;">{{__('screenwords.eMailAnnotation')}}</div>
             </div>
             <div class="form-group text-center">
-                <button id="submit_supplier_regist" name="submit_supplier_regist" class="btn btn-primary" onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;" >{{__('screenwords2.register')}}</button>
-                <input id="btn_supplier_clear" type="button" class="btn btn-secondary" value="{{__('screenwords2.clear')}}">
+                <button id="submit_supplier_regist" name="submit_supplier_regist" class="btn btn-primary" onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;" >{{__('screenwords.register')}}</button>
+                <input id="btn_supplier_clear" type="button" class="btn btn-secondary" value="{{__('screenwords.clear')}}">
                 <input type="hidden" id="id" name="id" value="{{ $editSupplier->id }}" >
                 <input type="hidden" id="bilingual" name="bilingual" value="{{ session('bilingual') }}" >
             </div>

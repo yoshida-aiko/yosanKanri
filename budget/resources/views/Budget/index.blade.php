@@ -10,17 +10,17 @@
         <form id="frmBudgetNendo" action="{{action('BudgetController@index')}}" method="get">
         @csrf
         <div class="form-group text-right prev-masterTable">
-            <label for="fiscalYear">{{__('screenwords2.fiscalYear')}}</label>
+            <label for="fiscalYear">{{__('screenwords.fiscalYear')}}</label>
             <input type="number" id="fiscalYear" name="fiscalYear" min="2001" max="2100" value="{{$Nendo}}" onchange="submit(this.form)">
         </div>
         </form>
         <table id="tblBudgetMasterList" class="table table-fixed table-masterFixed master5column table-striped">
             <thead>
                 <th>&nbsp;</th>
-                <th>{{__('screenwords2.budgetSubject')}}</th>
-                <th>{{__('screenwords2.budgetAmount')}}</th>
-                <th>{{__('screenwords2.excutionPeriod')}}</th>
-                <th>{{__('screenwords2.displayOrder')}}</th>
+                <th>{{__('screenwords.budgetSubject')}}</th>
+                <th>{{__('screenwords.budgetAmount')}}</th>
+                <th>{{__('screenwords.excutionPeriod')}}</th>
+                <th>{{__('screenwords.displayOrder')}}</th>
             </thead>
             <tbody>
             @foreach($Budgets as $Budget)
@@ -74,36 +74,36 @@
             @isset ($status)
             <div class="alert alert-success">
                 <ul>
-                    <li>{{__('screenwords2.registered')}}</li>
+                    <li>{{__('screenwords.registered')}}</li>
                 </ul>
             </div>
             @endisset
             
             @csrf
             <div class="form-group">
-                <label for="budgetNameJp" class="required">{{__('screenwords2.budgetNameJp')}}</label>
+                <label for="budgetNameJp" class="required">{{__('screenwords.budgetNameJp')}}</label>
                 <input type="text" id="budgetNameJp" name="budgetNameJp" value="{{ $editBudget->budgetNameJp }}" >
            </div>
            <div class="form-group">
-                <label for="budgetNameEn" id="lblBudgetNameEn">{{__('screenwords2.budgetNameEn')}}</label>
-                <input type="text" id="budgetNameEn" name="budgetNameEn" value="{{ $editBudget->budgetNameEn }}"  {{ session('bilingual') == 0 ? 'readonly' : '' }} >
+                <label for="budgetNameEn" id="lblBudgetNameEn">{{__('screenwords.budgetNameEn')}}</label>
+                <input type="tel" id="budgetNameEn" name="budgetNameEn" value="{{ $editBudget->budgetNameEn }}"  {{ session('bilingual') == 0 ? 'readonly' : '' }} >
            </div>
             <div class="form-group">
-                <label for="budgetAmount" class="required">{{__('screenwords2.budgetAmount')}}</label>
-                <input type="number" id="budgetAmount" name="budgetAmount" class="text-right" min="0" max="999999999" value="{{ $editBudget->budgetAmount }}" > {{__('screenwords2.yen')}}
+                <label for="budgetAmount" class="required">{{__('screenwords.budgetAmount')}}</label>
+                <input type="number" id="budgetAmount" name="budgetAmount" class="text-right" min="0" max="999999999" value="{{ $editBudget->budgetAmount }}" > {{__('screenwords.yen')}}
             </div>
             <div class="form-group">
-                <label for="useDate" class="required">{{__('screenwords2.excutionPeriod')}}</label>
+                <label for="useDate" class="required">{{__('screenwords.excutionPeriod')}}</label>
                 <input type="text" id="useStartDate" name="useStartDate" readonly="readonly" value="{{ $editBudget->useStartDate }}"> ~
                 <input type="text" id="useEndDate" name="useEndDate"  readonly="readonly" value="{{ $editBudget->useEndDate }}">
             </div>
             <div class="form-group">
-                <label for="Fax">{{__('screenwords2.displayOrder')}}</label>
+                <label for="Fax">{{__('screenwords.displayOrder')}}</label>
                 <input type="number" id="displayOrder" name="displayOrder" class="text-right" min="0" max="999" value="{{ $editBudget->displayOrder }}">
             </div>
             <div class="form-group text-center">
-                <button id="submit_Budget_regist" name="submit_Budget_regist" class="btn btn-primary"  onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;" >{{__('screenwords2.register')}}</button>
-                <input id="btn_Budget_clear" type="button" class="btn btn-secondary" value="{{__('screenwords2.clear')}}">
+                <button id="submit_Budget_regist" name="submit_Budget_regist" class="btn btn-primary"  onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;" >{{__('screenwords.register')}}</button>
+                <input id="btn_Budget_clear" type="button" class="btn btn-secondary" value="{{__('screenwords.clear')}}">
                 <input type="hidden" id="id" name="id" value="{{ $editBudget->id }}" >
                 <input type="hidden" id="year" name="year" value="{{$Nendo}}" >
                 <input type="hidden" id="hidStatDt" name="hidStatDt" value="{{ $editBudget->useStartDate }}">

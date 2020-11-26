@@ -126,6 +126,7 @@ class OrderController extends Controller
             'items.ItemNameJp as ItemNameJp',
             'suppliers.SupplierNameJp as SupplierNameJp',
             'users.UserNameJp as RequestUserNameJp',
+            'users.UserNameEn as RequestUserNameEn',
             'items.UnitPrice as UnitPrice',
             DB::raw('order_requests.UnitPrice * order_requests.RequestNumber as OrderPrice')
         ])
@@ -168,8 +169,8 @@ class OrderController extends Controller
                         'MakerNameEn'=>$orderRequest_Order->item->MakerNameEn,
                         'CatalogCode'=>$orderRequest_Order->item->CatalogCode,
                         'RequestUserId'=>$orderRequest_Order->RequestUserId,
-                        'RequestUserNameJp'=>$orderRequest_Order->user->UserNameJp,
-                        'RequestUserNameEn'=>$orderRequest_Order->user->UserNameEn
+                        'RequestUserNameJp'=>$orderRequest_Order->RequestUserNameJp,
+                        'RequestUserNameEn'=>$orderRequest_Order->RequestUserNameEn
                     ];
                     
                     array_push($childTree,$item);
@@ -279,6 +280,11 @@ class OrderController extends Controller
             $OrderRequest->BudgetId = $request->budgetid;
             $OrderRequest->save();
         }
+        catch(QueryException $e) {
+            logger()->error("予算ID付与　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';      
+        }
         catch(Exception $e) {
             $response['status'] = $e->getMessage();
         }
@@ -307,6 +313,11 @@ class OrderController extends Controller
             
             $OrderRequest->save();
         }
+        catch(QueryException $e) {
+            logger()->error("単価・数量の更新　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';      
+        }
         catch(Exception $e) {
             $response['status'] = $e->getMessage();
         }
@@ -323,10 +334,16 @@ class OrderController extends Controller
             $supplierId = $request->supplierid;
 
             $OrderRequest = OrderRequest::findOrFail($id);
+            
             if ($supplierId <> '') {
                 $OrderRequest->SupplierId = $supplierId;
             }
             $OrderRequest->save();
+        }
+        catch(QueryException $e) {
+            logger()->error("発注先の更新　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';      
         }
         catch(Exception $e) {
             $response['status'] = $e->getMessage();
@@ -334,7 +351,7 @@ class OrderController extends Controller
         return Response::json($response);
     }
 
-    /*発注書理 */
+    /*発注処理 */
     public function orderExec(Request $request){
 
         $response = array();
@@ -357,13 +374,17 @@ class OrderController extends Controller
             }
             else {
                 $response['status'] = 'NG';
-                $response['errorMsg'] = $arrayOrderInformation;
+                $response['errorMsg'] = "Error";
                 
             }
             if ($msg!=""){
                 $response['status'] = 'NG';
                 $response['errorMsg'] = $msg;
             }
+        }
+        catch(QueryException $e) {
+            $response['status'] = 'NG';
+            $response['errorMsg'] = $e->getMessage();   
         }
         catch(Exception $e){
             $response['status'] = 'NG';
@@ -419,6 +440,7 @@ class OrderController extends Controller
                 $OrderSlip->SupplierId = $groupBySupplier;
                 $OrderSlip->UserId = Auth::id();
                 $OrderSlip->OrderMethod = $howToOrder;
+                            
                 $OrderSlip->save();
 
                 /*３．発注テーブル登録*/
@@ -428,7 +450,7 @@ class OrderController extends Controller
                 $supplierChargeUserJp = '';
                 $SupplierMailAddress = '';
                 foreach($forOrders as $forOrder){
-
+                    
                     $Order = new Order();
                     $Order->OrderSlipId = $OrderSlip->id;
                     $Order->OrderRequestId = $forOrder->id;
@@ -482,10 +504,10 @@ class OrderController extends Controller
             DB::commit();
             $ret = $arrayOrderInformation;
         }
-        catch(Exception $e) {
+        catch(QueryException $e) {
+            logger()->error("発注処理　QueryException");
+            logger()->error($e->getMessage()); 
             DB::rollback();
-            throw $e;
-            $ret = $e->getMessage();
         }
 
         return $ret;
@@ -544,6 +566,7 @@ class OrderController extends Controller
         }
         catch(Exception $e){
             $retMessage = $e->getMessage();
+            throw $e;
         }
         if(count(Mail::failures()) > 0){
             $retMessage .= "メール送信エラーアドレス：".Mail::failures();

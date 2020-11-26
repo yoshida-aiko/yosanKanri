@@ -36,10 +36,12 @@ jQuery (function ()
     }
     $("#myNavbar > li").click(function() {
         var classNm = $(this).attr("class");
-        
         sessionStorage.setItem('selectedNavMenu',classNm);
-        /*$("#myNavbar > li.selected").removeClass("selected");
-        $(this).addClass("selected");*/
+    });
+
+    //ヘッダの検索ボタン
+    $("#frmHeaderProductSearch").submit(function() {
+        sessionStorage.setItem('selectedNavMenu','nav-seacrch');
     });
 
     /*共用クリック時*/
@@ -150,15 +152,16 @@ jQuery (function ()
                 "items": function($node) {
                     var tree = $('#' + id).jstree(true);
                     var isNodata = $node.original.key<=-100 ? true : false;
+                    var isFolder = $node.original.icon == 'jstree-folder' ? true : false;
                     return {
                         "Delete": {
                             "separator_before": false,
                             "separator_after": false,
-                            "label": "削除",
+                            "label": FavoriteDelete[selLang],
                             "icon": "contextmenu_deleteicon",
                             "_disabled" : isNodata,
                             "action": function (obj) {
-                                if (confirm('削除しますか？')){
+                                if (confirm(confirmDelete[selLang])){
                                     deletekey = $node.original.key;
                                     var ret = deleteTreeAjax(url,deletekey,tree,$node);
                                     var deferred = ret.deferred;
@@ -174,11 +177,10 @@ jQuery (function ()
                         "createFolder":{
                             "separator_before": true,
                             "separator_after": false,
-                            "label": "新規フォルダ作成",
+                            "label": FavoriteNewFolder[selLang],
                             "icon": "contextmenu_createfoldericon",
                             "action": function(data){
-                               var inst = $.jstree.reference(data.reference),
-                                    obj = inst.get_node(data.reference);
+                               var inst = $.jstree.reference(data.reference);
                                     inst.create_node('#', { text:'New Folder', 'icon':'jstree-folder' }
                                     , "last", 
                                     function(new_node){
@@ -207,11 +209,11 @@ jQuery (function ()
                         "MoveToCart": {
                             "separator_before": true,
                             "separator_after": false,
-                            "label": "リストに追加",
+                            "label": FavoriteToList[selLang],
                             "icon": "contextmenu_movetocarticon",
-                            "_disabled": isToCartDisabled || isNodata,
+                            "_disabled": isToCartDisabled || isNodata || isFolder,
                             "action": function (obj) {
-                                itemkey = $node.original.key;
+                                var itemkey = $node.original.key;
                                 var ret = moveToCartTreeAjax(url,itemkey);
                                 var deferred = ret.deferred;
                                 deferred.done(function(){
@@ -576,6 +578,10 @@ function onlyNumber(e){
     return ret;
 }
 var selLang = $("input[name=rdoLanguage]:checked").val()=="en" ? 1 : 0;
+
+var FavoriteNewFolder = ['新規フォルダ作成','Create new folder'];
+var FavoriteDelete = ['削除','Delete'];
+var FavoriteToList = ['リストに追加','Add to list'];
 
 var requireQuantity = ['数量は必須です','The Quantity field is required.'];
 var numericQuantity = ['数量は「数字」のみ有効です','The Quantity must be a number.'];

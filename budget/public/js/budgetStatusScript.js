@@ -16,9 +16,15 @@ jQuery (function ()
         if (index == selectedRow){
             $(elem).addClass("table-fixed-selectRow");
             var selectedId = $(elem).find("[name=hidBudgetId]").val();
-            var deferred = getDetail(selectedId);
+            var ret = getDetail(selectedId);
+            var deferred = ret.deferred;
             deferred.done(function(){
-                $.unblockUI();
+                if (ret.result){
+                    $.unblockUI();
+                }
+                else {
+                    location.href = './Error/systemError';
+                }
             });
             return false;
         }
@@ -72,17 +78,18 @@ jQuery (function ()
         sessionStorage.setItem('budgetStatusListSelectedRow',rownum);
         var id = $(this).next('input').val();
         $("#hidSelectedBudgetId").val(id);
-        var deferred = getDetail(id);
+        var ret = getDetail(id);
+        var deferred = ret.deferred;
         deferred.done(function(){
             $.unblockUI();
-        });
+            if (!ret.result){
+                location.href = './Error/systemError';
+            }
+    });
     });
 
     $("input[name=btnExec]").click(function() {
         $("#hidSelectedBudgetId").val("");
-    });
-
-    $("input[name=btnExec]").click(function() {
         $(this).parent("form").attr('action','BudgetStatus');
         $(this).parent("form").submit();
     });
@@ -95,6 +102,11 @@ jQuery (function ()
     /*その他の執行*/
     $("input[name=btnOtherExec]").click(function() {
         $("#hidSelectedBudgetId").val($(this).parent('td').next('td').children('[name=hidBudgetId]').val());
+        $("#divError").css('display','none');
+        $("#divError li").remove();
+        $("#txtExecDate").val(getToday('/'));
+        $("#txtExecRemark").val("");
+        $("#txtExecPrice").val("");
         $("#modal-oherExec").modal('show');
     });
     $("#btnClear").click(function() {
@@ -121,7 +133,7 @@ jQuery (function ()
             message += '<li>' + requireRemark[selLang] + '</li>';
         }
         else{
-            if($("#txtExecRemark").val().length > 100){
+            if($("#txtExecRemark").val().length >= 100){
                 message += '<li>' + maxRemark[selLang] + '</li>';
             }
         }
@@ -133,7 +145,7 @@ jQuery (function ()
             if (isNaN(floatprice)){
                 message += '<li>' + numericExcutionAmount[selLang] + '</li>';
             }
-            else if(floatprice > 99999999) {
+            else if(floatprice >= 99999999) {
                 message += '<li>' + maxAmountExcutionAmount[selLang] + '</li>';
             }         
         }
@@ -143,17 +155,25 @@ jQuery (function ()
             return false;
         }
 
-        var deferred = balanceExec();
+        var ret = balanceExec();
+        var deferred = ret.deferred;
         deferred.done(function(){
-            $.unblockUI();
-            $(".budgetStatusConditionForm").submit();
+            if (ret.result){
+                $.unblockUI();
+                $(".budgetStatusConditionForm").submit();
+            }else{
+                location.href = './Error/systemError';
+            }
+
         });
     });
 
 
     function balanceExec(){
+        var ret = new Object();
         processing();
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -170,26 +190,31 @@ jQuery (function ()
         })
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
-            if (data['status'] == 'NG') {
-                alert(data['errorMsg']);
+            if (data['status'] !== 'OK') {
+                //alert(data['errorMsg']);
+                ret.result = false;
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert(processingFailed[selLang] +  alert(data['errorMsg']));
+            //alert(processingFailed[selLang] +  alert(data['errorMsg']));
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
-    
+        ret.deferred = deferred;
+
+        return ret;
     }
 
 
     function getDetail(id) {
+        var ret = new Object();
         processing();
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -206,7 +231,8 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] == 'NG') {
-                alert(data['errorMsg']);
+                //alert(data['errorMsg']);
+                ret.result = false;
             }
             else if(data['status'] == 'OK') {
                 var datas = data['datas'];
@@ -225,13 +251,16 @@ jQuery (function ()
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert(processingFailed[selLang] +  alert(data['errorMsg']));
+            //alert(processingFailed[selLang] +  alert(data['errorMsg']));
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
+        ret.deferred = deferred;
+
+        return ret;
     }
 
 })

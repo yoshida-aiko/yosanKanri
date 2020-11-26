@@ -9,8 +9,8 @@
         <table id="tblMakerMasterList" class="table table-fixed table-masterFixed master3column table-striped">
             <thead>
                 <th>&nbsp;</th>
-                <th>{{__('screenwords2.makerName')}}</th>
-                <th>{{__('screenwords2.prioritySupplier')}}</th>
+                <th>{{__('screenwords.makerName')}}</th>
+                <th>{{__('screenwords.prioritySupplier')}}</th>
             </thead>
             <tbody>
             @foreach($Makers as $Maker)
@@ -67,22 +67,22 @@
             @isset ($status)
             <div class="alert alert-success">
                 <ul>
-                    <li>{{__('screenwords2.registered')}}</li>
+                    <li>{{__('screenwords.registered')}}</li>
                 </ul>
             </div>
             @endisset
             
             @csrf
             <div class="form-group">
-                <label for="MakerNameJp" class="required">{{__('screenwords2.makerNameJp')}}</label>
+                <label for="MakerNameJp" class="required">{{__('screenwords.makerNameJp')}}</label>
                 <input type="text" id="MakerNameJp" name="MakerNameJp" value="{{ $editMaker->MakerNameJp }}" >
            </div>
            <div class="form-group">
-                <label for="MakerNameEn" id="lblMakerNameEn">{{__('screenwords2.makerNameEp')}}</label>
-                <input type="text" id="MakerNameEn" name="MakerNameEn" value="{{ $editMaker->MakerNameEn }}"  {{ session('bilingual') == 0 ? 'readonly' : '' }}>
+                <label for="MakerNameEn" id="lblMakerNameEn">{{__('screenwords.makerNameEp')}}</label>
+                <input type="tel" id="MakerNameEn" name="MakerNameEn" value="{{ $editMaker->MakerNameEn }}"  {{ session('bilingual') == 0 ? 'readonly' : '' }}>
            </div>
             <div class="form-group">
-                <label for="SupplierNameJp">{{__('screenwords2.prioritySupplier')}}</label>
+                <label for="SupplierNameJp">{{__('screenwords.prioritySupplier')}}</label>
                 <select name="MainSupplierId">
                 @foreach($Suppliers as $Supplier)
                     <option value="{{ $Supplier->id }}" {{$editMaker->MainSupplierId == $Supplier->id ? 'selected' : '' }}>
@@ -92,8 +92,8 @@
                 </select>
             </div>
             <div class="form-group text-center">
-                <button id="submit_Maker_regist" name="submit_Maker_regist" class="btn btn-primary" onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;" >{{__('screenwords2.register')}}</button>
-                <input id="btn_Maker_clear" type="button" class="btn btn-secondary" value="{{__('screenwords2.clear')}}">
+                <button id="submit_Maker_regist" name="submit_Maker_regist" class="btn btn-primary" onClick="if (!confirm('{{ __('messages.confirmRegist') }}')){ return false;} return true;" >{{__('screenwords.register')}}</button>
+                <input id="btn_Maker_clear" type="button" class="btn btn-secondary" value="{{__('screenwords.clear')}}">
                 <input type="hidden" id="id" name="id" value="{{ $editMaker->id }}" >
                 <input type="hidden" id="bilingual" name="bilingual" value="{{ session('bilingual') }}" >
             </div>

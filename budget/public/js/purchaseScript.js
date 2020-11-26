@@ -76,7 +76,7 @@ jQuery (function ()
             }         
         }     
         if ($("#txtOrderRemark").val()!=""){
-            if($("#txtOrderRemark").val().length > 100){
+            if($("#txtOrderRemark").val().length >= 100){
                 message += '<li>' + maxRemark[selLang] + '</li>';
             }
         }
@@ -86,9 +86,15 @@ jQuery (function ()
         }
         else {
             if (confirm(confirmSave[selLang])) {
-                var deferred = insertOrderRequest();
+                var ret = insertOrderRequest();
+                var deferred = ret.deferred;
                 deferred.done(function(){
-                    $.unblockUI();
+                    if (ret.result){
+                        $.unblockUI();
+                        location.reload();
+                    }else{
+                        location.href = './Error/systemError';
+                    }
                 });
             }
         }
@@ -118,10 +124,11 @@ jQuery (function ()
     });
 
     function insertOrderRequest(){
-        
+        var ret = new Object();
         var finishOrderRequest = ['発注を依頼しました','It registered.'];
         processing();
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -137,8 +144,9 @@ jQuery (function ()
         })
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
-            if (data['status'] == 'NG') {
-                alert(data['errorMsg']);
+            if (data['status'] !== 'OK') {
+                //alert(data['errorMsg']);
+                ret.result = false;
             }
             else if(data['status'] == 'OK') {
                 $("#modal-orderRequest").modal('hide');
@@ -147,14 +155,16 @@ jQuery (function ()
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert(processingFailed[selLang] + data['errorMsg']);
+            //alert(processingFailed[selLang] + data['errorMsg']);
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
-    
+        ret.deferred = deferred;
+
+        return ret;
     }
 
 })

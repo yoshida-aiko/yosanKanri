@@ -207,8 +207,7 @@
                             <form action="{{ route('Order.destroy', $orderRequest_Order->id) }}" method='post'>
                                 @csrf
                                 @method('DELETE')
-                                <input type="submit" value="&#xf1f8;" 
-                                    onClick="if (!confirm({{ __('messages.confirmDelete') }})){ return false;} return true;" class="fa btn-delete-icon">
+                                <input type="button" name="btnListOrderDelete" value="&#xf1f8;" class="fa btn-delete-icon">
                                 <input type="hidden" name="orderreqId" value="{{$orderRequest_Order->id}}">
                            </form>
                         </td>
@@ -253,8 +252,8 @@
                         </td>
                         <td>{{ $orderRequest_Order->OrderRemark }}</td>
                         <td>
-                            @if(App::getLocale()=='en') {{ $orderRequest_Order->user->UserNameEn }}
-                            @else {{ $orderRequest_Order->user->UserNameJp }}
+                            @if(App::getLocale()=='en') {{ $orderRequest_Order->RequestUserNameEn }}
+                            @else {{ $orderRequest_Order->RequestUserNameJp }}
                             @endif   
                         </td>
                         <td style="display:none;">

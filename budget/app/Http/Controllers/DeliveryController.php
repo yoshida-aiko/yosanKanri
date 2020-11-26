@@ -68,6 +68,9 @@ class DeliveryController extends Controller
     public function destroy($id){
 
         $Order = Order::findOrFail($id);
+        $OrderRequestId = $Order->OrderRequestId;
+        $OrderRequest = OrderRequest::findOrFail($OrderRequestId);
+        $OrderRequest->delete();
         $Order->delete();
  
          return redirect()->route('Delivery.index');
@@ -138,28 +141,8 @@ class DeliveryController extends Controller
                     $OrderRequestLog->OrderRemark = $OrderRequest->OrderRemark;
                     $orderRequestLogInsert[] = $OrderRequestLog->toArray();
                     
-                    /*$OrderRequestLog->save();*/
-                    /*$item = [
-                        'id' => $OrderRequest->id,
-                        'RequestDate' => $OrderRequest->RequestDate,
-                        'OrderDate' => $OrderRequest->OrderDate,
-                        'RequestUserId' => $OrderRequest->RequestUserId,
-                        'ReceiveUserId' => $OrderRequest->ReceiveUserId,
-                        'BudgetId' => $OrderRequest->BudgetId,
-                        'ItemId' => $OrderRequest->ItemId,
-                        'ItemClass' => $OrderRequest->ItemClass,
-                        'UnitPrice' => $OrderRequest->UnitPrice,
-                        'RequestNumber' => $OrderRequest->RequestNumber,
-                        'SupplierId' => $OrderRequest->SupplierId,
-                        'RequestProgress' => $OrderRequest->RequestProgress,
-                        'OrderRemark' => $OrderRequest->OrderRemark
-                    ];
-                    array_push($orderRequestLogInsert,$item);*/
                 }
                 
-                /*if ($isPayingComp){
-                    $OrderRequest->delete();
-                }*/
                 
                 //Deliveryテーブルの登録
                 $Delivery = new Delivery();
@@ -176,36 +159,23 @@ class DeliveryController extends Controller
                 $Delivery->DeliveryNumber = $expectednum;
                 $Delivery->DeliveryPrice = floatval($order[3]);//$order['Price'];
                 $deliveryInsert[] = $Delivery->toArray();
-                /*$Delivery->save();*/
-
-                /*$item = [
-                    'UserId' => Auth::id(),
-                    'OrderSlipId' => $UpdateOrder->OrderSlipId,
-                    'OrderSlipNo' => $UpdateOrder->orderSlip->OrderSlipNo,
-                    'OrderId' => $UpdateOrder->id,
-                    'OrderRequestId' => $UpdateOrder->OrderRequestId,
-                    'BudgetId' => intval($order[4]),
-                    'ItemId' => $UpdateOrder->ItemId,
-                    'ItemClass' => $UpdateOrder->ItemClass,
-                    'OrderDate' => $UpdateOrder->OrderDate,
-                    'DeliveryDate' => $order[1],
-                    'DeliveryNumber' => $expectednum,
-                    'DeliveryPrice' => floatval($order[3])
-                ];
-                array_push($deliveryInsert,$item);*/
 
             }
-            
             Delivery::insert($deliveryInsert);
             OrderRequestLog::insert($orderRequestLogInsert);
             OrderRequest::whereIn('id',$orderRequestDelete)->delete();
             
             DB::commit();
         }
+        catch (QueryException $e) {
+            DB::rollback();
+            logger()->error("納品処理　QueryException");
+            logger()->error($e->getMessage()); 
+            $response['status'] = 'NG';      
+        }
         catch(Exception $e){
             DB::rollback();
             $response['status'] = 'NG';
-            $response['errorMsg'] = $e->getMessage();
         }
 
         return Response::json($response);

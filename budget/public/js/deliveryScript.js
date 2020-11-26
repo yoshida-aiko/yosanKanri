@@ -20,10 +20,7 @@ jQuery (function ()
         }
     }
 
-    $('.inpDeliveryDate').datepicker({        
-        /*minDate : getDate( $(this).parent().children('input[name=hidOrderDate]').val()),
-        maxDate : getDate( $(this).parent().children('input[name=hidOrderDate]').val()),*/
-    });
+    $('.inpDeliveryDate').datepicker();
 
     /*全て選択or解除チェック*/
     $("input[name=chkTargetAll").click(function() {
@@ -42,11 +39,16 @@ jQuery (function ()
         }
         else {
             if (confirm(confirmRegist[selLang].replace('{0}',arrayChecked.length))) {
-                var deferred = insertDelivery();
+                var ret = insertDelivery();
+                var deferred = ret.deferred;
                 deferred.done(function(){
-                    $.unblockUI();
-                    $('input[name="chkTarget[]"]').prop('checked',false);
-                    location.reload();
+                    if (ret.result){
+                        $('input[name="chkTarget[]"]').prop('checked',false);
+                        location.reload();
+                    }
+                    else {
+                        location.href = './Error/systemError';
+                    }
                 });
             }
         }
@@ -198,8 +200,9 @@ jQuery (function ()
 
 
     function insertDelivery() {
+        var ret = new Object();
         processing();
-        var arrayOrderList = [];            
+        var arrayOrderList = [];
         $.each($("#table-deliveryFixed > tbody > tr"),function(index,tr){
 
             if ($(tr).find('[type=checkbox]').prop('checked')){
@@ -214,6 +217,7 @@ jQuery (function ()
             }
         });
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -225,19 +229,24 @@ jQuery (function ()
         })
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
+            console.log(data['status']);
             if (data['status'] !== 'OK') {
-                alert(processingFailed[selLang] + data['status']);
+                //alert(processingFailed[selLang] + data['status']);
+                ret.result = false;
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert(processingFailed[selLang] + data['status']);
+            //alert(processingFailed[selLang] + data['status']);
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
+        ret.deferred = deferred;
+
+        return ret;
     }
 
 

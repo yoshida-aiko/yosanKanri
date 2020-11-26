@@ -84,17 +84,10 @@ jQuery (function ()
             return false;
         }
         if (confirm(confirmSave[selLang])){
-            ret = insertNewProduct();
-            var deferred =  ret.deferred;
+            var deferred = insertNewProduct();
             deferred.done(function(){
                 $.unblockUI();
-                console.log(ret.result);
-                if (ret.result){
-                    location.reload();
-                }
-                else {
-                    location.href = './Error/systemError';
-                }
+                location.reload();
             });
         }
     });
@@ -156,11 +149,16 @@ jQuery (function ()
                 });
                 var userid = $("#selOrderRequestUser option:selected").val();
                 var today = getToday('/');
-                var deferred = orderRequest(arrayCartIds,userid,today);
+                var ret = orderRequest(arrayCartIds,userid,today);
+                var deferred = ret.deferred;
                 deferred.done(function(){
-                    $.unblockUI();
-                    $('input[name="chkTarget[]"]').prop('checked',false);
-                    location.reload();
+                    if (ret.result){
+                        $('input[name="chkTarget[]"]').prop('checked',false);
+                        location.reload();
+                    }
+                    else {
+                        location.href = './Error/systemError';
+                    }
                 });
             }
         }
@@ -205,9 +203,13 @@ jQuery (function ()
                     var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
                     var ordernum = $(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderRequestNumber').val();
                     var remark = $(this).parent().parent().children('.tdOrderRemark').children('.pOrderRemark').html();
-                    var deferred = updateOrder(id,price,ordernum,remark);
+                    var ret = updateOrder(id,price,ordernum,remark);
+                    var deferred = ret.deferred;
                     deferred.done(function(){
                         $.unblockUI();
+                        if (!ret.result){
+                            location.href = './Error/systemError';
+                        }
                     });  
                     var totalfee = (price * ordernum).toLocaleString();
                     $(this).parent().nextAll('.tdOrderTotalFee').html('\\' + totalfee);
@@ -241,11 +243,15 @@ jQuery (function ()
                 var price = Number($(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderUnitPrice').val());
                 var ordernum = $(this).parent().parent().children('.tdOrderInputNumber').children('.inpOrderRequestNumber').val();
                 var remark = $(this).parent().parent().children('.tdOrderRemark').children('.pOrderRemark').html();
-                var deferred = updateOrder(id,price,ordernum,remark);
+                var ret = updateOrder(id,price,ordernum,remark);
+                var deferred = ret.deferred;
                 deferred.done(function(){
                     $.unblockUI();
+                    if (!ret.result){
+                        location.href = './Error/systemError';
+                    }
                 });  
-                var totalfee = (price * ordernum).toLocaleString();
+            var totalfee = (price * ordernum).toLocaleString();
                 $(this).parent().nextAll('.tdOrderTotalFee').html('\\' + totalfee);
             }
         }
@@ -276,9 +282,13 @@ jQuery (function ()
                 $(this).css('display','none');
                 $(this).parent().children('.pOrderRemark').css('display','inline-block');
                 var remark = $(this).parent().children('.pOrderRemark').html();
-                var deferred = updateOrder(id,'-1','-1',remark);
+                var ret = updateOrder(id,'-1','-1',remark);
+                var deferred = ret.deferred;
                 deferred.done(function(){
                     $.unblockUI();
+                    if (!ret.result){
+                        location.href = './Error/systemError';
+                    }
                 });  
             }
         },
@@ -289,11 +299,15 @@ jQuery (function ()
             $(this).css('display','none');
             $(this).parent().children('.pOrderRemark').css('display','inline-block');
             var remark = $(this).parent().children('.pOrderRemark').html();
-            var deferred = updateOrder(id,'-1','-1',remark);
+            var ret = updateOrder(id,'-1','-1',remark);
+            var deferred = ret.deferred;
             deferred.done(function(){
                 $.unblockUI();
-            });
-        }
+                if (!ret.result){
+                    location.href = './Error/systemError';
+                }
+            });  
+    }
     });
     $(".tdOrderRemark").click(function () {
         if ($(this).children('.pOrderRemark').css('display')!='none') {
@@ -314,8 +328,10 @@ jQuery (function ()
        
     
     function updateOrder(id,price,ordernum,remark) {
+        var ret = new Object();
         processing();
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -328,23 +344,29 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert(processingFailed[selLang] + data['status']);
+                //alert(processingFailed[selLang] + data['status']);
+                ret.result = false;
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert(processingFailed[selLang] + data.message);
+            //alert(processingFailed[selLang] + data.message);
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
+        ret.deferred = deferred;
+
+        return ret;
     }
 
     function orderRequest(arrayCartIds,userid,today) {
+        var ret = new Object();
         processing();
         var deferred = new $.Deferred();
+        ret.result = true;
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -357,18 +379,21 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                alert(processingFailed[selLang] + data['status']);
+                //alert(processingFailed[selLang] + data['status']);
+                ret.result = false;
             }
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert(processingFailed[selLang] + data['status']);
+            //alert(processingFailed[selLang] + data['status']);
+            ret.result = false;
         })
         .always(function(data) {
             deferred.resolve();           
         });
         
-        return deferred;
+        ret.deferred = deferred;
+        return ret;
     }
 
     function insertNewProduct(){
@@ -383,8 +408,6 @@ jQuery (function ()
             'UnitPrice' : $("#newUnitPrice").val()
         }
         processing();
-        var ret = new Object();
-        ret.result = true;
         var deferred = new $.Deferred();
         $.ajax({
             headers: {
@@ -398,8 +421,7 @@ jQuery (function ()
         // Ajaxリクエスト成功時の処理
         .done(function(data) {
             if (data['status'] !== 'OK') {
-                ret.result = false;
-                // alert(processingFailed[selLang] + data['status']);
+                alert(processingFailed[selLang] + data['status']);
             }
         })
         // Ajaxリクエスト失敗時の処理
@@ -410,8 +432,7 @@ jQuery (function ()
             deferred.resolve();           
         });
         
-        ret.deferred = deferred;
-        return ret;        
+        return deferred;        
     }
 })
 $(window).on("load", function(){

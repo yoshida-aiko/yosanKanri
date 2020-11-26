@@ -133,7 +133,7 @@
 			<tbody>
                 @foreach($arrayOrderInfo['OrderRequests'] as $order)
 				<tr>
-					<td>{{$order['OrderItemNameJp']}}</td><td>{{$order['OrderCatalogCode']}}</td><td>{{$order['OrderMakerNameJp']}}</td><td>1</td><td>{{$order['OrderRequestUserNameJp']}}</td>
+					<td>{{$order['OrderItemNameJp']}}&emsp;{{$order['OrderStandard']}}&emsp;{{$order['OrderAmountUnit']}}</td><td>{{$order['OrderCatalogCode']}}</td><td>{{$order['OrderMakerNameJp']}}</td><td>{{$order['OrderNumber']}}</td><td>{{$order['OrderRequestUserNameJp']}}</td>
 				</tr>
 				<tr>
 					<td colspan="5">{{$order['OrderRemark']}}&nbsp;</td>

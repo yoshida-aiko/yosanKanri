@@ -25,7 +25,7 @@
                 @endif
                 <h6 title="{{$Bulletin['Title']}}">{{$Bulletin['Title']}}</h6>
                 @if ($Bulletin['UserId']==Auth::id())
-                    <div class="editicon" title="編集画面を表示します"></div>
+                    <div class="editicon" title="{{ __('screenwords.displayEdit') }}"></div>
                 @endif
                 <p>{{$Bulletin['Contents']}}</p>
                 <input type="hidden" name="BulletinBoardIdlist" value="{{$Bulletin['id']}}" >
@@ -41,7 +41,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="Modal">{{ __('screenwords.bulletinBoard') }}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="閉じる">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ __('screenwords.close') }}">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -59,7 +59,7 @@
                             <input type="text" id="Title" name="Title" value="{{old('Title')}}">
                         </div>
                         <div class="form-group">
-                            <label for="Contents" class="required">{{ __('screenwords.content') }}</label>
+                            <label for="Contents">{{ __('screenwords.content') }}</label>
                             <textarea id="Contents" name="Contents" value="{{old('Contents')}}" rows="10"></textarea>
                         </div>
                         <div class="form-group">
@@ -71,6 +71,7 @@
                         <ul></ul>
                         </div>
                     </section>
+                    <input type="hidden" id="hidBulletinTerm" value="{{$BulletinTerm}}" >
                 </div>
                 <div class="modal-footer">
                     <input type="button" id="btnBulletinboardSave" class="btn btn-width70 btn-primary" value="{{ __('screenwords.save') }}"/>
@@ -132,7 +133,10 @@
             </td>
             <td class="align-center " >{{$OrderRequest->item->AmountUnit}}</td>
             <td class="align-center">{{$OrderRequest->item->Standard}}</td>
-            <td class="align-center">{{$OrderRequest->user->UserNameJp}}</td>
+            <td class="align-center">
+                @if(App::getLocale()=='en') {{$OrderRequest->RequestUserNameEn}}
+                @else {{$OrderRequest->RequestUserNameJp}}
+                @endif
             <td class="align-center">{{$OrderRequest->item->CatalogCode}}</td>
             <td >
                 @if(App::getLocale()=='en') {{$OrderRequest->item->MakerNameEn}}

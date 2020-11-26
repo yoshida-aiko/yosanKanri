@@ -10,7 +10,7 @@
     <title>{{ config('app.name', 'Budget Management System') }}</title>
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="shortcut icon" href="favicon.ico">
     
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -66,19 +66,19 @@
                             <li class="nav-home"><a href="{{ route('home') }}" class="nav-menu-home">{{ __('screenwords.top') }}</a></li>
                             <li class="nav-seacrch"><a href="{{ route('SearchPage.index') }}" class="nav-menu-search">{{ __('screenwords.search') }}</a></li>
                             <li class="nav-orderRequest"><a href="{{ route('OrderRequest.index') }}" class="nav-menu-orderrequest">{{ __('screenwords.orderRequest') }}</a></li>
-                            @if (strpos(Auth::user()->UserAuthString,'Order') !== false)
+                            @if (strpos(strtolower(Auth::user()->UserAuthString),'order') !== false)
                             <li class="nav-order"><a href="{{ route('Order.index') }}" class="nav-menu-order">{{ __('screenwords.order') }}</a></li>
                             @endif
-                            @if (strpos(Auth::user()->UserAuthString,'Delivery') !== false)
+                            @if (strpos(strtolower(Auth::user()->UserAuthString),'delivery') !== false)
                             <li class="nav-delivery"><a href="{{ route('Delivery.index') }}" class="nav-menu-delivery">{{ __('screenwords.delivery') }}</a></li>
                             @endif
-                            @if (strpos(Auth::user()->UserAuthString,'Payment') !== false)
-                            <li class="nav-payment"><a href="#" class="nav-menu-payment">{{ __('screenwords.payment') }}</a></li>
+                            @if (strpos(strtolower(Auth::user()->UserAuthString),'payment') !== false)
+                            <!--<li class="nav-payment"><a href="#" class="nav-menu-payment">{{ __('screenwords.payment') }}</a></li>-->
                             @endif
-                            @if (strpos(Auth::user()->UserAuthString,'Budget') !== false)
+                            @if (strpos(strtolower(Auth::user()->UserAuthString),'budget') !== false)
                             <li class="nav-budgetStatus"><a href="{{ route('BudgetStatus.index') }}" class="nav-menu-budget">{{ __('screenwords.budgetStatus') }}</a></li>
                             @endif
-                            @if (strpos(Auth::user()->UserAuthString,'Purchase') !== false)
+                            @if (strpos(strtolower(Auth::user()->UserAuthString),'purchase') !== false)
                             <li class="nav-purchase"><a href="{{ route('Purchase.index') }}" class="nav-menu-purchase">{{ __('screenwords.buyingHistory') }}</a></li>
                             @endif
                            
@@ -86,7 +86,7 @@
                                 <a class="dropdown-toggle nav-menu-master" href="#" data-toggle="dropdown" >{{ __('screenwords.master') }}</a>
                                 <div class="dropdown-menu dropdown-menu-originalcolor" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('User.index') }}">{{ __('screenwords.master_user') }}</a>
-                                    @if (strpos(Auth::user()->UserAuthString,'Master') !== false) 
+                                    @if (strpos(strtolower(Auth::user()->UserAuthString),'master') !== false) 
                                     <a class="dropdown-item" href="{{ route('Supplier.index') }}">{{ __('screenwords.master_supplier') }}</a>
                                     <a class="dropdown-item" href="{{ route('Maker.index') }}">{{ __('screenwords.master_maker') }}</a>
                                     <a class="dropdown-item" href="{{ route('Budget.index') }}">{{ __('screenwords.master_budget') }}</a>
@@ -125,7 +125,7 @@
                         <form id="frmHeaderProductSearch" action="{{url('/SearchPage')}}" method="GET">
                             <div id="headerProductSearchArea">
                                 <input type="text" name="txtHeaderProductSearch" class="txtHeaderProductSearch" placeholder="{{ __('screenwords.searchHeaderPlaceholder') }}">
-                                <input type="submit" class="btn btn-width70 btn-primary" value="検索">
+                                <input type="submit" class="btn btn-width70 btn-primary" value="{{ __('screenwords.search') }}">
                             </div>
                         </form>
                     </div>

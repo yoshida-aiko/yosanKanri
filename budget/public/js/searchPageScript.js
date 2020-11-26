@@ -357,7 +357,7 @@ jQuery (function ($)
         })
         // Ajaxリクエスト失敗時の処理
         .fail(function(data) {
-            alert(processingFailed[selLang] + data['status']);
+            //alert(processingFailed[selLang] + data['status']);
             ret.result = false;
         })
         .always(function(data) {

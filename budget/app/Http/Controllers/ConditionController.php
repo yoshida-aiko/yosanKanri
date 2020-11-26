@@ -87,7 +87,7 @@ class ConditionController extends Controller
         }
         $rules['FiscalStartMonth'] = ['required', 'integer'];
         $rules['BulletinTerm'] = ['required', 'integer'];
-        $rules['NewBulletinTerm'] = ['required', 'integer'];
+        $rules['NewBulletinTerm'] = ['required', 'integer','lte:BulletinTerm'];
         /* emailは新システムでは使用しないためコメント化
             SMTP項目は　.envに設定するためコメント化
         $rules['email'] =  ['required', 'string', 'email', 'max:100'];
@@ -120,8 +120,8 @@ class ConditionController extends Controller
             */
             
             // $Condition->SMTPConnectMethod = 2;
-            $Condition->Organization = "インフォグラム";
-            $Condition->Department = "福岡本社";
+            //$Condition->Organization = "インフォグラム";
+            //$Condition->Department = "福岡本社";
             // emailは新システムでは使用しないためコメント化
             // $Condition->EMail = $request->email;
             $Condition->ExecutionBasis = $request->ExecutionBasis;

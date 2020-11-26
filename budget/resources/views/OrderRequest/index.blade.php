@@ -59,13 +59,8 @@
             @foreach ($Carts as $Cart)
                 <tr class="table-orderRequestFixed-tr">
                     <td>
-                        <form action="{{ route('OrderRequest.destroy', $Cart->id) }}" method='post'>
-                            @csrf
-                            @method('DELETE')
-                            <input type="submit" value="&#xf1f8;" 
-                                onClick="if (!confirm({{ __('messages.confirmDelete') }})){ return false;} return true;" class="fa btn-delete-icon">
-                            <input type="hidden" name="cartId" value="{{$Cart->id}}">
-                        </form>
+                        <input type="button" name="btnListDelete" value="&#xf1f8;" class="fa btn-delete-icon">
+                        <input type="hidden" name="cartId" value="{{$Cart->id}}">
                     </td>
                     <td><input type="checkbox" name="chkTarget[]" checked ></td>
                     <td class="align-center">
